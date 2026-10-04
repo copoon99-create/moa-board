@@ -101,6 +101,7 @@ form select{font:inherit;padding:9px 10px;border:1px solid var(--line);border-ra
   <p class="note" id="refreshNote" hidden></p>
   <div class="tabs" id="tabs" role="toolbar" aria-label="게시판 고르기"></div>
   <p class="updated" id="updated" hidden></p>
+  <p class="note" id="feedErr" hidden></p>
   <ul class="feed" id="feed" hidden></ul>
   <div class="empty" id="feedEmpty">게시판에서 최신 글을 불러오는 중이에요.</div>
   <button class="btn more" id="moreBtn" type="button" hidden>더 보기</button>
@@ -238,6 +239,8 @@ function renderFeed(){
   ul.hidden=!posts.length;
   document.getElementById("feedEmpty").hidden=!!posts.length;
   document.getElementById("moreBtn").hidden=posts.length<=shown;
+  const errs=feedDocs.filter(d=>d.error).map(d=>(d.name||d.id)+" ("+d.error+")");
+  const fe=document.getElementById("feedErr"); fe.hidden=!errs.length; fe.textContent=errs.length?"불러오지 못한 게시판: "+errs.join(", "):"";
   tabs.hidden=!feedDocs.length;
   const up=feedDocs.map(d=>Date.parse(d.updatedAt)||0).reduce((a,b)=>Math.max(a,b),0);
   const ue=document.getElementById("updated"); ue.hidden=!up; if(up) ue.textContent="마지막으로 모은 시각: "+ago(new Date(up).toISOString());
@@ -257,11 +260,11 @@ async function loadFeed(fresh){
     const results=await Promise.all(FEED_IDS.map(async id=>{
       try{
         const r=await fetch(API+"?board="+id+(fresh?"&fresh=1":""),{cache:"no-store"});
-        if(!r.ok) return false;
+        if(!r.ok){got[id]={id,name:id,error:"서버 응답 "+r.status,posts:[]};feedDocs=FEED_IDS.filter(k=>got[k]).map(k=>got[k]);renderFeed();return false}
         got[id]=await r.json();
-        feedDocs=FEED_IDS.filter(k=>got[k]&&(got[k].posts||[]).length).map(k=>got[k]);
+        feedDocs=FEED_IDS.filter(k=>got[k]&&((got[k].posts||[]).length||got[k].error)).map(k=>got[k]);
         renderFeed(); return true;
-      }catch(e){return false}
+      }catch(e){got[id]={id,name:id,error:"연결 실패",posts:[]};feedDocs=FEED_IDS.filter(k=>got[k]).map(k=>got[k]);renderFeed();return false}
     }));
     if(results.some(Boolean)) return true;
   }
