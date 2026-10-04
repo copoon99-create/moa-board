@@ -58,6 +58,7 @@ export function parseTime(s, now = new Date()) {
 const rows = (html, startRe) => html.split(startRe).slice(1).map(r => r.split("</tr>")[0]);
 
 export function parseDc(html, key) {
+  html = dq(html);
   const posts = [];
   for (const tr of rows(html, /<tr\s+class="ub-content/)) {
     const head = tr.slice(0, tr.indexOf(">"));
@@ -91,7 +92,11 @@ async function dc(b) {
   throw new Error("디시 목록을 찾지 못함");
 }
 
+// 작은따옴표 속성(class='x')을 큰따옴표로 맞춰 정규식을 하나로 쓴다
+const dq = html => html.replace(/=\s*'([^']*)'/g, '="$1"');
+
 export function parseMlbpark(html) {
+  html = dq(html);
   const posts = [];
   const body = html.split(/<table[^>]*class="[^"]*tbl_type01/)[1] || "";
   for (const tr of rows(body, /<tr[\s>]/)) {
@@ -118,6 +123,7 @@ async function mlbpark(b) {
 }
 
 export function parseFmkorea(html) {
+  html = dq(html);
   const posts = [];
   const body = html.split(/<table[^>]*class="bd_lst/)[1] || "";
   for (const tr of rows(body, /<tr\b/)) {
