@@ -129,7 +129,7 @@ const DEFAULTS={
   {name:"우리의 식탁",url:"https://claude.ai/artifact/NvnyNs6LDAppHWA79MrQ1z"},
   {name:"스냅 덱",url:"https://snapcomplete.com/play/matches/decks"},
   {name:"PGR21",url:"https://www.pgr21.com/"},
-  {name:"네이버 카페",url:"https://section.cafe.naver.com/ca-fe/home"},
+  {name:"네이버 카페",url:"https://section.cafe.naver.com/ca-fe/home",app:"navercafe"},
   {name:"법무부 전자도서관",url:"https://moj.yes24library.com/default.asp"},
   {name:"수원시 도서관",url:"https://mob.suwonlib.go.kr/"},
   {name:"나라배움터 도서관",url:"https://ebook-nhi.mlss.co.kr/Kyobo_T3_Mobile/Web/Main/Ebook_Main.asp"}
@@ -147,6 +147,7 @@ const clone=()=>JSON.parse(JSON.stringify(DEFAULTS));
 let data=load(), editing=false;
 function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&Array.isArray(s.boards)&&Array.isArray(s.shortcuts)){
   for(const x of s.shortcuts){if(x.url.includes("Kyobo_T3/Default.asp"))x.url="https://ebook-nhi.mlss.co.kr/Kyobo_T3_Mobile/Web/Main/Ebook_Main.asp"}
+  for(const x of s.shortcuts){if(x.url.includes("cafe.naver.com"))x.app="navercafe"}
   for(const x of s.shortcuts) if(x.url.includes("our-table-kitchen")){x.name="우리의 식탁";x.url="https://claude.ai/artifact/NvnyNs6LDAppHWA79MrQ1z"}
   return s}}catch(e){}return clone()}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(data))}catch(e){}}
@@ -158,6 +159,12 @@ function site(u,name){
 function item(kind,b,i,arr){
   const s=site(b.url,b.name),li=document.createElement("li"),a=document.createElement("a");
   a.href=b.url;a.target="_blank";a.rel="noopener";
+  if(b.app==="navercafe"){ /* 네이버 카페 앱으로 열기. 안드로이드는 앱이 없으면 웹으로 */
+    a.href=/Android/i.test(navigator.userAgent)
+      ?"intent://#Intent;scheme=navercafe;package=com.nhn.android.navercafe;S.browser_fallback_url="+encodeURIComponent(b.url)+";end"
+      :"navercafe://";
+    a.removeAttribute("target");
+  }
   a.innerHTML=kind==="boards"
     ?'<span class="chip"></span><span class="txt"><span class="name"></span><span class="url"></span></span><span class="go">›</span>'
     :'<span class="chip"></span><span class="name"></span>';
