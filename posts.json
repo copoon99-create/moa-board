@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-10-04T12:38:09+09:00",
+ "updatedAt": "2026-10-04T12:39:06+09:00",
  "boards": [
   {
    "id": "fm-realestate",
@@ -225,11 +225,11 @@
      "comments": 1
     }
    ],
-   "updatedAt": "2026-10-04T12:38:09+09:00"
+   "updatedAt": "2026-10-04T12:39:06+09:00"
   },
   {
    "id": "dc-bh",
-   "name": "bh 갤러리",
+   "name": "보호직 갤러리",
    "url": "https://m.dcinside.com/board/bh",
    "posts": [
     {
@@ -443,13 +443,20 @@
      "comments": 5
     }
    ],
-   "updatedAt": "2026-10-04T12:38:09+09:00"
+   "updatedAt": "2026-10-04T12:39:06+09:00"
   },
   {
    "id": "dc-thesingularity",
    "name": "특이점이 온다 갤러리",
    "url": "https://m.dcinside.com/board/thesingularity",
    "posts": [
+    {
+     "title": "클로드랑 대화하는게 즐겁다..",
+     "url": "https://m.dcinside.com/board/thesingularity/1460098",
+     "author": "ㅇㅇ",
+     "time": "2026-10-04T12:38:49+09:00",
+     "comments": 0
+    },
     {
      "title": "Ai로인해서 한국남자들 강제징집 시나리오가있던데",
      "url": "https://m.dcinside.com/board/thesingularity/1460097",
@@ -511,7 +518,7 @@
      "url": "https://m.dcinside.com/board/thesingularity/1460090",
      "author": "ㅇㅇ",
      "time": "2026-10-04T12:29:23+09:00",
-     "comments": 3
+     "comments": 4
     },
     {
      "title": "chatgpt codex dots 보이스 전부 목소리가 이상해",
@@ -652,22 +659,22 @@
      "author": "ㅇㅇ",
      "time": "2026-10-04T12:07:03+09:00",
      "comments": 22
-    },
-    {
-     "title": "회계사 슬슬 대체될거니 회계사 준비할거면 잘 생각해봐라는 말을 24년초에",
-     "url": "https://m.dcinside.com/board/thesingularity/1460067",
-     "author": "ㅇㅇ",
-     "time": "2026-10-04T12:06:03+09:00",
-     "comments": 8
     }
    ],
-   "updatedAt": "2026-10-04T12:38:09+09:00"
+   "updatedAt": "2026-10-04T12:39:06+09:00"
   },
   {
    "id": "mlb-bullpen",
    "name": "불펜",
    "url": "https://mlbpark.donga.com/mp/b.php?b=bullpen",
    "posts": [
+    {
+     "title": "아시안게임 군면제 베알꼴리냐고요???",
+     "url": "https://mlbpark.donga.com/mp/b.php?id=202610040119159751&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
+     "author": "부산폭격기",
+     "time": "2026-10-04T12:39:02+09:00",
+     "comments": 0
+    },
     {
      "title": "주변에 최근 결혼을 많이한다 ?",
      "url": "https://mlbpark.donga.com/mp/b.php?id=202610040119159736&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
@@ -680,21 +687,21 @@
      "url": "https://mlbpark.donga.com/mp/b.php?id=202610040119159733&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=naver.com",
      "author": "제이콥디그롬",
      "time": "2026-10-04T12:37:59+09:00",
-     "comments": 0
+     "comments": 3
     },
     {
      "title": "통일은 이제 메리트없나요?",
      "url": "https://mlbpark.donga.com/mp/b.php?id=202610040119159730&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
      "author": "fc2-ppv",
      "time": "2026-10-04T12:37:51+09:00",
-     "comments": 0
+     "comments": 2
     },
     {
      "title": "양민혁 영웅되는법 아시안컵 한일전 결승골 넣고 르브론처럼 디스이즈포유",
      "url": "https://mlbpark.donga.com/mp/b.php?id=202610040119159727&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
      "author": "건즈앤로스",
      "time": "2026-10-04T12:37:48+09:00",
-     "comments": 0
+     "comments": 1
     },
     {
      "title": "아재들 한샘국어라고 들어보셨나요?",
@@ -708,14 +715,14 @@
      "url": "https://mlbpark.donga.com/mp/b.php?id=202610040119159718&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
      "author": "아는행님",
      "time": "2026-10-04T12:36:27+09:00",
-     "comments": 1
+     "comments": 2
     },
     {
      "title": "점심은 삼겹살",
      "url": "https://mlbpark.donga.com/mp/b.php?id=202610040119159715&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
      "author": "먹고싸는기계",
      "time": "2026-10-04T12:36:14+09:00",
-     "comments": 1
+     "comments": 2
     },
     {
      "title": "집 매도계약후 집값 급등하면 집주인들 힘든가보군요 ㄷㄷ",
@@ -729,35 +736,35 @@
      "url": "https://mlbpark.donga.com/mp/b.php?id=202610040119159703&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
      "author": "여소건",
      "time": "2026-10-04T12:35:11+09:00",
-     "comments": 0
+     "comments": 1
     },
     {
      "title": "사실 양민혁 생각이 잘못된건1도없음",
      "url": "https://mlbpark.donga.com/mp/b.php?id=202610040119159697&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
      "author": "김연아",
      "time": "2026-10-04T12:34:58+09:00",
-     "comments": 6
+     "comments": 7
     },
     {
      "title": "결혼은 많이 하는데",
      "url": "https://mlbpark.donga.com/mp/b.php?id=202610040119159694&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
      "author": "humlble",
      "time": "2026-10-04T12:34:48+09:00",
-     "comments": 4
+     "comments": 5
     },
     {
      "title": "전역모 퍼포먼스는 왜 욕먹나요?",
      "url": "https://mlbpark.donga.com/mp/b.php?id=202610040119159688&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
      "author": "레크레카",
      "time": "2026-10-04T12:34:29+09:00",
-     "comments": 8
+     "comments": 9
     },
     {
      "title": "부산해운대 대구수성구 이런곳도 망할까요??",
      "url": "https://mlbpark.donga.com/mp/b.php?id=202610040119159670&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
      "author": "가까운사람",
      "time": "2026-10-04T12:33:21+09:00",
-     "comments": 4
+     "comments": 6
     },
     {
      "title": "노래자랑 지금 초대가수 2012년생이군요 ㄷㄷ",
@@ -855,7 +862,7 @@
      "url": "https://mlbpark.donga.com/mp/b.php?id=202610040119159577&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
      "author": "광란자",
      "time": "2026-10-04T12:28:41+09:00",
-     "comments": 8
+     "comments": 9
     },
     {
      "title": "1989년 삼양라면 우지파동 투서는 누가?",
@@ -870,22 +877,29 @@
      "author": "욱파리",
      "time": "2026-10-04T12:27:51+09:00",
      "comments": 4
-    },
-    {
-     "title": "[위클리] 이수진",
-     "url": "https://mlbpark.donga.com/mp/b.php?id=202610040119159562&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
-     "author": "토네이드오브소울",
-     "time": "2026-10-04T12:27:48+09:00",
-     "comments": 0
     }
    ],
-   "updatedAt": "2026-10-04T12:38:09+09:00"
+   "updatedAt": "2026-10-04T12:39:06+09:00"
   },
   {
    "id": "dc-ai_utilize",
    "name": "AI 활용 갤러리",
    "url": "https://m.dcinside.com/board/ai_utilize",
    "posts": [
+    {
+     "title": "ai 가 왜 거품인지 아냐? 지금 이 갤만 봐도 월 몇만원 몇십씩",
+     "url": "https://m.dcinside.com/board/ai_utilize/110370",
+     "author": "ㅇㅇ",
+     "time": "2026-10-04T12:39:09+09:00",
+     "comments": 0
+    },
+    {
+     "title": "자체하네스 만들려고 해르메스 뜯어보는데 좋은거많네",
+     "url": "https://m.dcinside.com/board/ai_utilize/110369",
+     "author": "장소삼",
+     "time": "2026-10-04T12:38:29+09:00",
+     "comments": 0
+    },
     {
      "title": "6.1 울트라 써본 애들 있냐",
      "url": "https://m.dcinside.com/board/ai_utilize/110368",
@@ -947,7 +961,7 @@
      "url": "https://m.dcinside.com/board/ai_utilize/110360",
      "author": "ㅇㅇ",
      "time": "2026-10-04T12:31:34+09:00",
-     "comments": 0
+     "comments": 1
     },
     {
      "title": "오오푸스 혜자라느껴지는 이유 알앗다",
@@ -961,7 +975,7 @@
      "url": "https://m.dcinside.com/board/ai_utilize/110358",
      "author": "디시콘만낳아요.",
      "time": "2026-10-04T12:30:40+09:00",
-     "comments": 6
+     "comments": 7
     },
     {
      "title": "6.1 이거말하는거면 인정해줄텐데",
@@ -1081,23 +1095,9 @@
      "author": "2016",
      "time": "2026-10-04T12:09:48+09:00",
      "comments": 1
-    },
-    {
-     "title": "아 6.1 사용량 많아진게 아니라",
-     "url": "https://m.dcinside.com/board/ai_utilize/110340",
-     "author": "ㅇㅇ",
-     "time": "2026-10-04T12:08:49+09:00",
-     "comments": 4
-    },
-    {
-     "title": "채팅 답변 퀄은 지피티>클로드인듯ㅇㅇ",
-     "url": "https://m.dcinside.com/board/ai_utilize/110339",
-     "author": "ㅇㅇ",
-     "time": "2026-10-04T12:06:05+09:00",
-     "comments": 2
     }
    ],
-   "updatedAt": "2026-10-04T12:38:09+09:00"
+   "updatedAt": "2026-10-04T12:39:06+09:00"
   }
  ]
 }
