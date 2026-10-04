@@ -10,6 +10,7 @@ export const BOARDS = [
 
 const UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36";
 const MAX_POSTS = 30;
+const MOBILE_UA = "Mozilla/5.0 (Linux; Android 14; SM-S918N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Mobile Safari/537.36";
 
 async function get(url, referer) {
   const r = await fetch(url, { headers: { "User-Agent": UA, "Accept-Language": "ko-KR,ko;q=0.9", ...(referer ? { Referer: referer } : {}) } });
@@ -90,15 +91,49 @@ export function parseDc(html, key) {
   return posts;
 }
 
-async function dc(b) {
-  for (const base of ["https://gall.dcinside.com/mgallery/board/lists/", "https://gall.dcinside.com/board/lists/", "https://gall.dcinside.com/mini/board/lists/"]) {
-    let html;
-    try { html = await get(base + "?id=" + encodeURIComponent(b.key)); } catch (e) { continue; }
-    const posts = parseDc(html, b.key);
-    if (posts.length) return posts;
+// 디시 모바일 목록 (PC 목록이 막혔을 때 쓰는 두 번째 길)
+export function parseDcMobile(html, key) {
+  html = dq(slice(html, "gall-detail-lst", "</ul>\n</section>") || slice(html, "gall-detail-lst", "</section>"));
+  const posts = [];
+  // 글 하나 = class="lt" 링크 하나. 그 링크부터 다음 링크 전까지 잘라 쓴다 (안쪽 ginfo 목록 때문에 li로 못 자른다)
+  for (const li of html.split(/<a\b(?=[^>]*class="[^"]*\blt\b)/).slice(1)) {
+    const a = li.match(/^[^>]*href="https:\/\/m\.dcinside\.com\/board\/[^/"]+\/(\d+)/);
+    if (!a) continue;
+    if (/sp-lst-notice|icon_notice|notice/.test(li.slice(0, 400)) && /공지/.test(li)) continue;
+    const info = [...(pick(li, /<ul class="ginfo"[^>]*>([\s\S]*?)<\/ul>/).matchAll(/<li[^>]*>([\s\S]*?)<\/li>/g))].map(m => clean(m[1]));
+    const timeIdx = info.findIndex(t => /^(\d{1,2}:\d{2}|\d{1,2}\.\d{1,2}|\d{2,4}[.\-]\d{1,2}[.\-]\d{1,2})$/.test(t));
+    posts.push({
+      title: clean(pick(li, /<span class="subjectin"[^>]*>([\s\S]*?)<\/span>/)),
+      url: `https://m.dcinside.com/board/${key}/${a[1]}`,
+      author: timeIdx > 0 ? info[timeIdx - 1] : "",
+      time: timeIdx >= 0 ? parseTime(info[timeIdx]) : "",
+      comments: num(pick(li, /<span class="ct"[^>]*>([\s\S]*?)<\/span>/)),
+    });
   }
-  throw new Error("디시 목록을 찾지 못함");
+  return posts.filter(p => p.title);
 }
+
+async function dc(b, opts = {}) {
+  const errors = [];
+  if (!opts.mobileOnly) {
+    for (const base of ["https://gall.dcinside.com/mgallery/board/lists/", "https://gall.dcinside.com/board/lists/", "https://gall.dcinside.com/mini/board/lists/"]) {
+      let html;
+      try { html = await get(base + "?id=" + encodeURIComponent(b.key)); } catch (e) { errors.push("PC " + e.message); continue; }
+      const posts = parseDc(html, b.key);
+      if (posts.length) return posts;
+    }
+  }
+  try {
+    const r = await fetch("https://m.dcinside.com/board/" + encodeURIComponent(b.key), {
+      headers: { "User-Agent": MOBILE_UA, "Accept-Language": "ko-KR,ko;q=0.9", Referer: "https://m.dcinside.com/" } });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const posts = parseDcMobile(await r.text(), b.key);
+    if (posts.length) return posts;
+    errors.push("모바일 목록 비어 있음");
+  } catch (e) { errors.push("모바일 " + e.message); }
+  throw new Error("디시 목록을 찾지 못함 (" + errors.slice(-3).join(", ") + ")");
+}
+export const dcForTest = dc;
 
 // 작은따옴표 속성(class='x')을 큰따옴표로 맞춰 정규식을 하나로 쓴다
 const dq = html => html.replace(/=\s*'([^']*)'/g, '="$1"');
