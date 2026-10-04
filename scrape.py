@@ -99,7 +99,9 @@ def dc(b):
         posts = []
         for tr in rows:
             no = txt(tr.select_one("td.gall_num"))
-            if not no.isdigit():
+            subj = txt(tr.select_one("td.gall_subject"))
+            if (not no.isdigit() or "notice" in (tr.get("data-type") or "")
+                    or tr.select_one("em.icon_notice") or subj in ("공지", "설문", "AD")):
                 continue  # 공지, 설문, AD
             a = tr.select_one("td.gall_tit a[href*='no=']")
             if not a:
@@ -116,14 +118,71 @@ def dc(b):
                 "comments": num(txt(tr.select_one("span.reply_num"))),
             })
         if posts:
+            t = txt(soup.select_one("title")).split(" - ")[0].strip()
+            if t:
+                print(f"    갤러리 이름: {t}")
             return posts
     raise RuntimeError("디시 목록을 찾지 못함")
 
 
+MOBILE_UA = ("Mozilla/5.0 (Linux; Android 14; SM-S918N) AppleWebKit/537.36 "
+             "(KHTML, like Gecko) Chrome/128.0 Mobile Safari/537.36")
+
+
 def fmkorea(b):
-    key = b["key"]
+    """RSS -> PC 목록 -> 모바일 목록 순서로 시도. 펨코는 해외 서버 접속을 자주 막는다."""
+    errors = []
+    for f in (fmkorea_rss, fmkorea_list_pc, fmkorea_list_mobile):
+        try:
+            return f(b["key"])
+        except Exception as e:
+            errors.append(f"{f.__name__}: {e}")
+    raise RuntimeError(" / ".join(errors))
+
+
+def fmkorea_rss(key):
+    r = S.get("https://www.fmkorea.com/index.php", params={"mid": key, "act": "rss"}, timeout=20,
+              headers={"Referer": "https://www.fmkorea.com/"})
+    r.raise_for_status()
+    soup = BeautifulSoup(r.content, "xml" if _has_lxml() else "html.parser")
+    posts = []
+    for it in soup.find_all("item"):
+        link = txt(it.find("link")) or (it.find("guid") and txt(it.find("guid")))
+        pub = txt(it.find("pubDate"))
+        try:
+            from email.utils import parsedate_to_datetime
+            t = parsedate_to_datetime(pub).astimezone(KST).isoformat()
+        except Exception:
+            t = ""
+        posts.append({"title": txt(it.find("title")), "url": link,
+                      "author": txt(it.find("dc:creator") or it.find("creator") or it.find("author")),
+                      "time": t, "comments": 0})
+    if not posts:
+        raise RuntimeError("RSS 비어 있음")
+    return posts
+
+
+def _has_lxml():
+    try:
+        import lxml  # noqa: F401
+        return True
+    except ImportError:
+        return False
+
+
+def fmkorea_list_mobile(key):
+    soup = get(f"https://m.fmkorea.com/{key}",
+               headers={"User-Agent": MOBILE_UA, "Referer": "https://m.fmkorea.com/"})
+    return fmkorea_parse(soup)
+
+
+def fmkorea_list_pc(key):
     soup = get("https://www.fmkorea.com/index.php", params={"mid": key},
                headers={"Referer": "https://www.fmkorea.com/"})
+    return fmkorea_parse(soup)
+
+
+def fmkorea_parse(soup):
     posts = []
     for tr in soup.select("table.bd_lst tbody tr:not(.notice)"):
         a = tr.select_one("td.title a[href]")
@@ -155,7 +214,7 @@ def fmkorea(b):
             })
     if not posts:
         title = txt(soup.select_one("title"))
-        raise RuntimeError(f"펨코 목록을 찾지 못함 (페이지 제목: {title[:40]})")
+        raise RuntimeError(f"목록을 찾지 못함 (페이지 제목: {title[:40]})")
     return posts
 
 
