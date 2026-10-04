@@ -17,7 +17,7 @@ BOARDS = [
      "url": "https://m.fmkorea.com/realestate"},
     {"id": "dc-marvelsnap", "name": "마블 스냅 갤러리", "kind": "dc", "key": "marvelsnap",
      "url": "https://m.dcinside.com/board/marvelsnap"},
-    {"id": "dc-bh", "name": "bh 갤러리", "kind": "dc", "key": "bh",
+    {"id": "dc-bh", "name": "보호직 갤러리", "kind": "dc", "key": "bh",
      "url": "https://m.dcinside.com/board/bh"},
     {"id": "dc-thesingularity", "name": "특이점이 온다 갤러리", "kind": "dc", "key": "thesingularity",
      "url": "https://m.dcinside.com/board/thesingularity"},
