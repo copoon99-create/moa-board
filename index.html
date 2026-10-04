@@ -132,7 +132,7 @@ const DEFAULTS={
   {name:"네이버 카페",url:"https://section.cafe.naver.com/ca-fe/home"},
   {name:"법무부 전자도서관",url:"https://moj.yes24library.com/default.asp"},
   {name:"수원시 도서관",url:"https://mob.suwonlib.go.kr/"},
-  {name:"나라배움터 도서관",url:"https://ebook-nhi.mlss.co.kr/Kyobo_T3/Default.asp"}
+  {name:"나라배움터 도서관",url:"https://ebook-nhi.mlss.co.kr/Kyobo_T3_Mobile/Web/Main/Ebook_Main.asp"}
  ],
  boards:[
   {name:"부동산",url:"https://m.fmkorea.com/realestate"},
@@ -146,6 +146,7 @@ const KEY="moa-board-v2";
 const clone=()=>JSON.parse(JSON.stringify(DEFAULTS));
 let data=load(), editing=false;
 function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&Array.isArray(s.boards)&&Array.isArray(s.shortcuts)){
+  for(const x of s.shortcuts){if(x.url.includes("Kyobo_T3/Default.asp"))x.url="https://ebook-nhi.mlss.co.kr/Kyobo_T3_Mobile/Web/Main/Ebook_Main.asp"}
   for(const x of s.shortcuts) if(x.url.includes("our-table-kitchen")){x.name="우리의 식탁";x.url="https://claude.ai/artifact/NvnyNs6LDAppHWA79MrQ1z"}
   return s}}catch(e){}return clone()}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(data))}catch(e){}}
