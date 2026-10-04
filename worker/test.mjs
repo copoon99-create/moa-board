@@ -15,6 +15,11 @@ import("./boards.js").then(async m => {
     const p = await m.dcForTest({ key: "bh" }, { mobileOnly: true });
     console.log("[디시 모바일] 보호직", p.length + "개");
     for (const x of p.slice(0, 3)) console.log("    ", x.time, `[${x.comments}]`, x.author, "|", x.title.slice(0, 40), "|", x.url);
+    if (!p[0].time) {
+      const html = await (await fetch("https://m.dcinside.com/board/bh", { headers: { "User-Agent": "Mozilla/5.0 (Linux; Android 14; SM-S918N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Mobile Safari/537.36" } })).text();
+      const i = html.indexOf("/board/bh/59", html.indexOf("gall-detail-lst"));
+      console.log("모바일 글 HTML:"); console.log(html.slice(i - 300, i + 1500));
+    }
   } catch (e) {
     console.log("[디시 모바일 실패]", e.message);
     const html = await (await fetch("https://m.dcinside.com/board/bh", { headers: { "User-Agent": "Mozilla/5.0 (Linux; Android 14) Mobile Safari/537.36" } })).text();
