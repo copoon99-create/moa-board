@@ -100,14 +100,14 @@ export function parseDcMobile(html, key) {
     const a = li.match(/^[^>]*href="https:\/\/m\.dcinside\.com\/board\/[^/"]+\/(\d+)/);
     if (!a) continue;
     if (/sp-lst-notice|icon_notice|notice/.test(li.slice(0, 400)) && /공지/.test(li)) continue;
-    const info = [...(pick(li, /<ul class="ginfo"[^>]*>([\s\S]*?)<\/ul>/).matchAll(/<li[^>]*>([\s\S]*?)<\/li>/g))].map(m => clean(m[1]));
+    const info = [...(pick(li, /<ul class="ginfo[^"]*"[^>]*>([\s\S]*?)<\/ul>/).matchAll(/<li[^>]*>([\s\S]*?)<\/li>/g))].map(m => clean(m[1]));
     const timeIdx = info.findIndex(t => /^(\d{1,2}:\d{2}|\d{1,2}\.\d{1,2}|\d{2,4}[.\-]\d{1,2}[.\-]\d{1,2})$/.test(t));
     posts.push({
       title: clean(pick(li, /<span class="subjectin"[^>]*>([\s\S]*?)<\/span>/)),
       url: `https://m.dcinside.com/board/${key}/${a[1]}`,
-      author: timeIdx > 0 ? info[timeIdx - 1] : "",
+      author: timeIdx > 0 ? info[timeIdx - 1].replace(/\([\d.]+\)$/, "") : "",
       time: timeIdx >= 0 ? parseTime(info[timeIdx]) : "",
-      comments: num(pick(li, /<span class="ct"[^>]*>([\s\S]*?)<\/span>/)),
+      comments: num(pick(li, /<span class="ct[^"]*"[^>]*>([\s\S]*?)<\/span>/)),
     });
   }
   return posts.filter(p => p.title);
