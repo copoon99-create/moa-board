@@ -93,19 +93,19 @@ async function dc(b) {
 
 export function parseMlbpark(html) {
   const posts = [];
-  const body = html.split(/<table[^>]*class="tbl_type01"/)[1] || "";
+  const body = html.split(/<table[^>]*class="[^"]*tbl_type01/)[1] || "";
   for (const tr of rows(body, /<tr[\s>]/)) {
     const first = clean(pick(tr, /<td[^>]*>([\s\S]*?)<\/td>/));
     if (!/^\d+$/.test(first)) continue;
-    const aTag = pick(tr, /(<a\b[^>]*class="txt"[^>]*>)/);
+    const aTag = pick(tr, /(<a\b[^>]*class="(?:[^"]*\s)?txt(?:\s[^"]*)?"[^>]*>)/);
     if (!aTag) continue;
     const href = attr(aTag, "href").replace(/&amp;/g, "&");
     posts.push({
-      title: clean(attr(aTag, "alt")) || clean(pick(tr, /<a\b[^>]*class="txt"[^>]*>([\s\S]*?)<\/a>/)),
+      title: clean(attr(aTag, "alt")) || clean(pick(tr, /<a\b[^>]*class="(?:[^"]*\s)?txt(?:\s[^"]*)?"[^>]*>([\s\S]*?)<\/a>/)),
       url: new URL(href, "https://mlbpark.donga.com/").href,
-      author: clean(pick(tr, /<span class="nick"[^>]*>([\s\S]*?)<\/span>/)),
-      time: parseTime(clean(pick(tr, /<span class="date"[^>]*>([\s\S]*?)<\/span>/))),
-      comments: num(pick(tr, /<span class="replycnt"[^>]*>([\s\S]*?)<\/span>/)),
+      author: clean(pick(tr, /<[a-z]+[^>]*class="[^"]*\bnick\b[^"]*"[^>]*>([\s\S]*?)<\/span>/)),
+      time: parseTime(clean(pick(tr, /<[a-z]+[^>]*class="[^"]*\bdate\b[^"]*"[^>]*>([\s\S]*?)<\/span>/))),
+      comments: num(pick(tr, /<[a-z]+[^>]*class="[^"]*\breplycnt\b[^"]*"[^>]*>([\s\S]*?)<\/span>/)),
     });
   }
   return posts;
