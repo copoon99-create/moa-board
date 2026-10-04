@@ -241,14 +241,20 @@ function renderFeed(){
 }
 document.getElementById("moreBtn").onclick=()=>{shown+=40;renderFeed()};
 renderFeed();
-async function loadFeed(){
+/* 바로 모으기 서버(Cloudflare Worker). 그 서버에서 열면 같은 주소의 /api, 아니면 아래 주소를 쓴다.
+   서버가 없거나 실패하면 GitHub가 30분마다 저장하는 posts.json을 보여준다. */
+const WORKER_URL="";
+const API=location.hostname.endsWith("workers.dev")?"/api":(WORKER_URL?WORKER_URL.replace(/\/$/,"")+"/api":"");
+function applyFeed(j){feedDocs=(j.boards||[]).filter(d=>(d.posts||[]).length||d.error);renderFeed()}
+async function loadFeed(fresh){
+  if(API){
+    try{const r=await fetch(API+(fresh?"?fresh=1":""),{cache:"no-store"});if(r.ok){applyFeed(await r.json());return true}}catch(e){}
+  }
   try{
     const r=await fetch("posts.json?t="+Date.now(),{cache:"no-store"});
-    if(!r.ok) return;
-    const j=await r.json();
-    feedDocs=(j.boards||[]).filter(d=>(d.posts||[]).length||d.error);
-    renderFeed();
+    if(r.ok) applyFeed(await r.json());
   }catch(e){}
+  return false;
 }
 loadFeed();
 setInterval(loadFeed,5*60000);
@@ -273,6 +279,12 @@ function watch(){
 }
 document.getElementById("refreshBtn").onclick=async()=>{
   const b=document.getElementById("refreshBtn"); b.disabled=true;
+  if(API){
+    note("게시판에서 바로 읽어오는 중이에요.");
+    const ok=await loadFeed(true); b.disabled=false;
+    if(ok){note("방금 새로 모았어요.");setTimeout(()=>note(""),4000);return}
+    note("");
+  }
   try{lastUpdated=(await fetchLatest())||lastUpdated}catch(e){}
   b.disabled=false;
   note('지금 바로 새로 모으려면 <a id="runLink" href="'+RUN_URL+'" target="_blank" rel="noopener">GitHub에서 수집 실행</a>을 눌러주세요.');
