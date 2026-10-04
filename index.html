@@ -245,10 +245,22 @@ renderFeed();
    서버가 없거나 실패하면 GitHub가 30분마다 저장하는 posts.json을 보여준다. */
 const WORKER_URL="";
 const API=location.hostname.endsWith("workers.dev")?"/api":(WORKER_URL?WORKER_URL.replace(/\/$/,"")+"/api":"");
+const FEED_IDS=["fm-realestate","dc-marvelsnap","dc-bh","dc-thesingularity","mlb-bullpen","dc-ai_utilize"];
 function applyFeed(j){feedDocs=(j.boards||[]).filter(d=>(d.posts||[]).length||d.error);renderFeed()}
 async function loadFeed(fresh){
   if(API){
-    try{const r=await fetch(API+(fresh?"?fresh=1":""),{cache:"no-store"});if(r.ok){applyFeed(await r.json());return true}}catch(e){}
+    // 게시판마다 따로 불러서 먼저 도착한 게시판부터 보여준다
+    const got={};
+    const results=await Promise.all(FEED_IDS.map(async id=>{
+      try{
+        const r=await fetch(API+"?board="+id+(fresh?"&fresh=1":""),{cache:"no-store"});
+        if(!r.ok) return false;
+        got[id]=await r.json();
+        feedDocs=FEED_IDS.filter(k=>got[k]&&(got[k].posts||[]).length).map(k=>got[k]);
+        renderFeed(); return true;
+      }catch(e){return false}
+    }));
+    if(results.some(Boolean)) return true;
   }
   try{
     const r=await fetch("posts.json?t="+Date.now(),{cache:"no-store"});

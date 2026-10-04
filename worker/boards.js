@@ -57,8 +57,16 @@ export function parseTime(s, now = new Date()) {
 
 const rows = (html, startRe) => html.split(startRe).slice(1).map(r => r.split("</tr>")[0]);
 
+// 무료 Worker는 요청당 CPU 시간이 짧아서, 목록 표 부분만 잘라낸 뒤 정규식을 돌린다
+function slice(html, start, end) {
+  const i = html.indexOf(start);
+  if (i < 0) return "";
+  const j = html.indexOf(end, i);
+  return html.slice(Math.max(0, html.lastIndexOf("<", i)), j < 0 ? undefined : j + end.length);
+}
+
 export function parseDc(html, key) {
-  html = dq(html);
+  html = dq(slice(html, "ub-content", "</tbody>"));
   const posts = [];
   for (const tr of rows(html, /<tr\s+class="ub-content/)) {
     const head = tr.slice(0, tr.indexOf(">"));
@@ -96,7 +104,7 @@ async function dc(b) {
 const dq = html => html.replace(/=\s*'([^']*)'/g, '="$1"');
 
 export function parseMlbpark(html) {
-  html = dq(html);
+  html = dq(slice(html, "tbl_type01", "</table>"));
   const posts = [];
   const body = html.split(/<table[^>]*class="[^"]*tbl_type01/)[1] || "";
   for (const tr of rows(body, /<tr[\s>]/)) {
@@ -123,7 +131,7 @@ async function mlbpark(b) {
 }
 
 export function parseFmkorea(html) {
-  html = dq(html);
+  html = dq(slice(html, "bd_lst", "</table>"));
   const posts = [];
   const body = html.split(/<table[^>]*class="bd_lst/)[1] || "";
   for (const tr of rows(body, /<tr\b/)) {
@@ -150,18 +158,21 @@ async function fmkorea(b) {
 
 const PARSERS = { dc, mlbpark, fmkorea };
 
-// 모든 게시판을 동시에 읽는다. 실패한 게시판은 error만 채워서 돌려준다.
+// 게시판 하나를 읽는다. 실패하면 error만 채워서 돌려준다.
+export async function collectOne(b, updatedAt = new Date().toISOString()) {
+  const entry = { id: b.id, name: b.name, url: b.url, updatedAt };
+  try {
+    entry.posts = (await PARSERS[b.kind](b)).filter(p => p.title).slice(0, MAX_POSTS);
+  } catch (e) {
+    entry.posts = [];
+    entry.error = String(e.message || e).slice(0, 200);
+  }
+  return entry;
+}
+
+// 모든 게시판을 동시에 읽는다.
 export async function collect() {
   const updatedAt = new Date().toISOString();
-  const boards = await Promise.all(BOARDS.map(async b => {
-    const entry = { id: b.id, name: b.name, url: b.url, updatedAt };
-    try {
-      entry.posts = (await PARSERS[b.kind](b)).filter(p => p.title).slice(0, MAX_POSTS);
-    } catch (e) {
-      entry.posts = [];
-      entry.error = String(e.message || e).slice(0, 200);
-    }
-    return entry;
-  }));
+  const boards = await Promise.all(BOARDS.map(b => collectOne(b, updatedAt)));
   return { updatedAt, boards };
 }
