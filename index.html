@@ -67,6 +67,16 @@ form select{font:inherit;padding:9px 10px;border:1px solid var(--line);border-ra
 .empty{background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:22px 16px;color:var(--muted);font-size:14px;line-height:1.6;text-align:center}
 .updated{color:var(--muted);font-size:12px;margin:-8px 0 0 2px}
 .more{align-self:center}
+.feedhead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:-8px}
+.feedhead h2{margin:0 0 0 2px}
+.refresh{display:inline-flex;align-items:center;gap:6px}
+.refresh[disabled]{opacity:.6;cursor:default}
+.refresh[disabled] .spin{display:inline-block;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion: reduce){.refresh[disabled] .spin{animation:none}}
+.note{font-size:13px;color:var(--muted);margin:-6px 0 0 2px;line-height:1.6}
+.note a{color:var(--accent);font-weight:600}
+.feed .badge{min-width:3.6em;text-align:center}
 .foot{color:var(--muted);font-size:12px;text-align:center}
 </style>
 
@@ -84,7 +94,11 @@ form select{font:inherit;padding:9px 10px;border:1px solid var(--line);border-ra
   <h2>바로가기</h2>
   <ul class="shortcuts" id="slist"></ul>
 
-  <h2>최근 글</h2>
+  <div class="feedhead">
+    <h2>최근 글</h2>
+    <button class="btn refresh" id="refreshBtn" type="button"><span class="spin" aria-hidden="true">↻</span><span id="refreshLabel">새로고침</span></button>
+  </div>
+  <p class="note" id="refreshNote" hidden></p>
   <div class="tabs" id="tabs" role="toolbar" aria-label="게시판 고르기"></div>
   <p class="updated" id="updated" hidden></p>
   <ul class="feed" id="feed" hidden></ul>
@@ -112,7 +126,7 @@ const DEFAULTS={
  shortcuts:[
   {name:"유튜브",url:"https://www.youtube.com/"},
   {name:"X",url:"https://x.com/"},
-  {name:"우리집 식탁",url:"https://our-table-kitchen.copoon99.chatgpt.site/"},
+  {name:"우리의 식탁",url:"https://claude.ai/artifact/NvnyNs6LDAppHWA79MrQ1z"},
   {name:"스냅 덱",url:"https://snapcomplete.com/play/matches/decks"},
   {name:"PGR21",url:"https://www.pgr21.com/"},
   {name:"네이버 카페",url:"https://section.cafe.naver.com/ca-fe/home"},
@@ -131,7 +145,9 @@ const DEFAULTS={
 const KEY="moa-board-v2";
 const clone=()=>JSON.parse(JSON.stringify(DEFAULTS));
 let data=load(), editing=false;
-function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&Array.isArray(s.boards)&&Array.isArray(s.shortcuts))return s}catch(e){}return clone()}
+function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&Array.isArray(s.boards)&&Array.isArray(s.shortcuts)){
+  for(const x of s.shortcuts) if(x.url.includes("our-table-kitchen")){x.name="우리의 식탁";x.url="https://claude.ai/artifact/NvnyNs6LDAppHWA79MrQ1z"}
+  return s}}catch(e){}return clone()}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(data))}catch(e){}}
 const SITES=[["dcinside","디시","var(--dc)"],["fmkorea","펨코","var(--fm)"],["mlbpark","엠팍","var(--mlb)"],["youtube","▶","var(--mlb)"],["x.com","X","var(--fg)"],["naver","N","var(--accent)"],["pgr21","P","var(--fm)"],["snapcomplete","S","var(--dc)"]];
 function site(u,name){
@@ -187,6 +203,7 @@ function ago(iso){
   const h=Math.floor(m/60); if(h<24) return h+"시간 전";
   const d=new Date(t); return (d.getMonth()+1)+"."+d.getDate();
 }
+function short(n){return (n||"").replace(/갤러리|\s/g,"").slice(0,3)}
 function renderFeed(){
   const tabs=document.getElementById("tabs"); tabs.innerHTML="";
   const all=[["all","전체"]].concat(feedDocs.map(d=>[d.id,d.name||d.id]));
@@ -201,7 +218,7 @@ function renderFeed(){
     const s=site(p.boardUrl||p.url,p.board),li=document.createElement("li"),a=document.createElement("a");
     a.href=p.url;a.target="_blank";a.rel="noopener";
     a.innerHTML='<span class="badge"></span><span class="txt"><span class="title"></span><span class="meta"></span></span>';
-    const bd=a.querySelector(".badge");bd.textContent=s.t;bd.style.setProperty("--c",s.c);bd.title=p.board;
+    const bd=a.querySelector(".badge");bd.textContent=short(p.board);bd.style.setProperty("--c",s.c);bd.title=p.board;
     const ti=a.querySelector(".title");ti.textContent=p.title;
     if(p.comments){const c=document.createElement("span");c.className="cm";c.textContent=" ["+p.comments+"]";ti.appendChild(c)}
     a.querySelector(".meta").textContent=[p.board,p.author,ago(p.time)].filter(Boolean).join(" · ");
@@ -227,6 +244,32 @@ async function loadFeed(){
 }
 loadFeed();
 setInterval(loadFeed,5*60000);
+
+/* 새로고침: 최신 posts.json을 다시 읽고, GitHub에서 수집을 바로 돌릴 수 있는 링크를 보여준다.
+   링크로 수집을 시작하면 결과가 올라올 때까지 3분 동안 15초마다 다시 읽는다. */
+const RUN_URL="https://github.com/copoon99-create/moa-board/actions/workflows/scrape.yml";
+let lastUpdated="", watching=0;
+function note(html){const n=document.getElementById("refreshNote");n.hidden=!html;n.innerHTML=html||""}
+async function fetchLatest(){
+  const r=await fetch("posts.json?t="+Date.now(),{cache:"no-store"}); if(!r.ok) return null;
+  const j=await r.json(); feedDocs=(j.boards||[]).filter(d=>(d.posts||[]).length||d.error); renderFeed(); return j.updatedAt||"";
+}
+function watch(){
+  clearInterval(watching); const start=lastUpdated, until=Date.now()+180000;
+  note("GitHub에서 <b>Run workflow</b>를 누르면 1~2분 뒤 여기에 새 글이 자동으로 들어와요.");
+  watching=setInterval(async()=>{
+    let u; try{u=await fetchLatest()}catch(e){return}
+    if(u&&u!==start){clearInterval(watching);lastUpdated=u;note("방금 새로 모았어요.");setTimeout(()=>note(""),5000)}
+    else if(Date.now()>until){clearInterval(watching);note("")}
+  },15000);
+}
+document.getElementById("refreshBtn").onclick=async()=>{
+  const b=document.getElementById("refreshBtn"); b.disabled=true;
+  try{lastUpdated=(await fetchLatest())||lastUpdated}catch(e){}
+  b.disabled=false;
+  note('지금 바로 새로 모으려면 <a id="runLink" href="'+RUN_URL+'" target="_blank" rel="noopener">GitHub에서 수집 실행</a>을 눌러주세요.');
+  document.getElementById("runLink").onclick=watch;
+};
 setInterval(renderFeed,60000);
 </script>
 </body>
