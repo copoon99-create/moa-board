@@ -152,7 +152,13 @@ form select{flex:0 0 auto}
 @media (prefers-reduced-motion: reduce){.refresh[disabled] .spin{animation:none}}
 .note{font-size:13px;color:var(--muted);margin:0;line-height:1.6}
 .note a{color:var(--accent);font-weight:600}
-.foot{color:var(--faint);font-size:12px;text-align:center;margin-top:4px}
+.foot{color:var(--faint);font-size:12px;text-align:center;margin-top:4px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.footp{margin:0}
+.linkbtn{font:inherit;font-size:12px;border:0;background:none;color:var(--accent);font-weight:600;cursor:pointer;padding:2px}
+.syncbox{background:var(--card);border-radius:14px;padding:12px;box-shadow:var(--shadow);color:var(--muted);font-size:12.5px;width:100%;text-align:left}
+.syncbox p{margin:0 0 8px}
+.syncbox .row{display:flex;gap:6px}
+.syncbox input{flex:1;min-width:0;font:inherit;font-size:12px;border:1px solid var(--line);border-radius:10px;padding:7px 9px;background:var(--soft);color:var(--fg)}
 @media (max-width:420px){.panel{padding:16px 14px 14px}.panel.slim{padding:8px}}
 </style>
 
@@ -198,7 +204,14 @@ form select{flex:0 0 auto}
     </div>
   </form>
 
-  <p class="foot o6">편집한 내용은 이 기기 브라우저에만 저장돼요.</p>
+  <div class="foot o6">
+    <p class="footp">편집한 내용은 이 기기 브라우저에만 저장돼요.</p>
+    <button class="linkbtn" id="syncBtn" type="button">읽은 글 다른 기기와 연동하기</button>
+    <div class="syncbox" id="syncBox" hidden>
+      <p>이 주소를 다른 기기에서 한 번 열면, 두 기기가 읽은 글을 같이 써요.</p>
+      <div class="row"><input id="syncLink" readonly aria-label="연동 주소"><button class="btn" id="syncCopy" type="button">복사</button></div>
+    </div>
+  </div>
   </div>
   <section class="panel feedp">
     <div class="phead">
@@ -323,9 +336,41 @@ function short(n){n=(n||"").replace(/\s*갤러리/g,"").replace("특이점이 �
 const READ_KEY="moa-read";
 let readSet=new Set();
 try{readSet=new Set(JSON.parse(localStorage.getItem(READ_KEY))||[])}catch(e){}
+function saveRead(){try{localStorage.setItem(READ_KEY,JSON.stringify([...readSet].slice(-3000)))}catch(e){}}
 function markRead(url,li){
-  readSet.delete(url);readSet.add(url);li.classList.add("read");
-  try{localStorage.setItem(READ_KEY,JSON.stringify([...readSet].slice(-3000)))}catch(e){}
+  readSet.delete(url);readSet.add(url);li.classList.add("read");saveRead();
+  syncRead([url]);
+}
+/* 기기 연동: 연동 코드가 같은 기기끼리 읽은 글을 서버에서 맞춘다.
+   주소 끝에 #sync=코드 를 붙여 열면 그 기기도 같은 코드를 쓴다. */
+const SYNC_KEY="moa-sync";
+let syncCode="";
+try{syncCode=localStorage.getItem(SYNC_KEY)||""}catch(e){}
+const hm=location.hash.match(/sync=([a-z0-9]{12,40})/);
+if(hm){syncCode=hm[1];try{localStorage.setItem(SYNC_KEY,syncCode)}catch(e){}history.replaceState(null,"",location.pathname+location.search)}
+function readApi(){const base=location.hostname.endsWith("workers.dev")?"":"https://moa-board.copoon99.workers.dev";return base+"/api/read?k="+syncCode}
+async function syncRead(add){
+  if(!syncCode) return;
+  try{
+    const r=await fetch(readApi(),add&&add.length?{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify({add})}:{cache:"no-store"});
+    if(!r.ok) return;
+    const j=await r.json(); let changed=false;
+    for(const u of j.urls||[]) if(!readSet.has(u)){readSet.add(u);changed=true}
+    if(changed){saveRead();renderFeed()}
+  }catch(e){}
+}
+function syncLink(){return "https://moa-board.copoon99.workers.dev/#sync="+syncCode}
+async function startSync(){
+  if(!syncCode){
+    syncCode=Array.from(crypto.getRandomValues(new Uint8Array(12)),b=>"abcdefghijklmnopqrstuvwxyz0123456789"[b%36]).join("");
+    try{localStorage.setItem(SYNC_KEY,syncCode)}catch(e){}
+    await syncRead([...readSet].slice(-200));
+  }
+  showSync();
+}
+function showSync(){
+  const box=document.getElementById("syncBox"); box.hidden=false;
+  document.getElementById("syncLink").value=syncLink();
 }
 function renderFeed(){
   const tabs=document.getElementById("tabs"); tabs.innerHTML="";
@@ -445,6 +490,13 @@ async function loadFeed(fresh,m=mode){
 }
 loadFeed();
 setInterval(()=>loadFeed(),5*60000);
+syncRead();
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)syncRead()});
+document.getElementById("syncBtn").onclick=startSync;
+document.getElementById("syncCopy").onclick=async()=>{const i=document.getElementById("syncLink");
+  try{await navigator.clipboard.writeText(i.value)}catch(e){i.select();document.execCommand("copy")}
+  document.getElementById("syncCopy").textContent="복사됨"};
+if(syncCode) document.getElementById("syncBtn").textContent="읽은 글 연동 중 (주소 보기)";
 function setMode(m){
   if(m===mode) return;
   mode=m; tab="all"; feedDocs=docsBy[m];

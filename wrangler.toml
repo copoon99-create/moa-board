@@ -5,3 +5,12 @@ compatibility_date = "2026-09-01"
 [assets]
 directory = "."
 binding = "ASSETS"
+
+# 읽은 글 기록을 기기끼리 맞추는 저장소 (연동 코드마다 하나)
+[[durable_objects.bindings]]
+name = "READS"
+class_name = "ReadStore"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["ReadStore"]
