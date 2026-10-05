@@ -1,0 +1,20 @@
+name: 전자책 확인
+
+on:
+  workflow_dispatch:
+    inputs:
+      titles:
+        description: 찾을 책 제목 (| 로 구분)
+        required: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: node tools/check.mjs
+        env:
+          TITLES: ${{ inputs.titles }}
