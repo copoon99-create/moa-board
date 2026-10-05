@@ -136,6 +136,8 @@ form select{flex:0 0 auto}
 .feed li{align-items:flex-start;gap:10px}
 .feed li a{gap:10px;padding:12px 2px;align-items:flex-start;border-radius:10px}
 .feed li a:hover .title{color:var(--accent)}
+.feed li.read .title,.feed li.read a:hover .title{color:var(--faint)}
+.feed li.read .cm{color:var(--faint)}
 .feed .badge{flex:none;width:5.6em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border:0;cursor:pointer;font-family:inherit;margin-top:13px!important;text-align:center;font-size:11px;font-weight:700;color:var(--c);background:color-mix(in srgb,var(--c) 12%,transparent);border-radius:7px;padding:3px 6px;margin-top:1px}
 .feed .title{font-size:15px;line-height:1.45;word-break:break-all;transition:color .15s}
 .feed .cm{color:var(--accent);font-weight:700;font-size:13px}
@@ -317,6 +319,14 @@ function ago(iso){
 }
 // 탭과 글 옆 이름표에 쓰는 짧은 이름 (인기글 화면에서는 "개념글", "최다"도 뺀다)
 function short(n){n=(n||"").replace(/\s*갤러리/g,"").replace("특이점이 온다","특이점");if(mode==="hot")n=n.replace(/\s*개념글/,"").replace("최다","");return n.trim()}
+/* 읽은 글: 누른 글 주소를 이 기기에 저장해서 제목을 회색으로 */
+const READ_KEY="moa-read";
+let readSet=new Set();
+try{readSet=new Set(JSON.parse(localStorage.getItem(READ_KEY))||[])}catch(e){}
+function markRead(url,li){
+  readSet.delete(url);readSet.add(url);li.classList.add("read");
+  try{localStorage.setItem(READ_KEY,JSON.stringify([...readSet].slice(-3000)))}catch(e){}
+}
 function renderFeed(){
   const tabs=document.getElementById("tabs"); tabs.innerHTML="";
   const all=[["all","전체"]].concat(feedDocs.map(d=>[d.id,short(d.name||d.id)]));
@@ -333,6 +343,8 @@ function renderFeed(){
   posts.slice(0,shown).forEach(p=>{
     const s=site(p.boardUrl||p.url,p.board),li=document.createElement("li"),a=document.createElement("a");
     a.href=p.url;a.target="_blank";a.rel="noopener";
+    if(readSet.has(p.url)) li.classList.add("read");
+    a.addEventListener("click",()=>markRead(p.url,li));a.addEventListener("auxclick",e=>{if(e.button===1)markRead(p.url,li)});
     a.innerHTML='<span class="txt"><span class="title"></span><span class="meta"></span></span>';
     // 게시판 이름을 누르면 그 게시판 글만 본다
     const bd=document.createElement("button");bd.type="button";bd.className="badge";bd.textContent=short(p.board);bd.style.setProperty("--c",s.c);
