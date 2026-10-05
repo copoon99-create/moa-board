@@ -85,6 +85,8 @@ form select{flex:0 0 auto}
 .row{display:flex;gap:8px;flex-wrap:wrap}
 
 /* 전자책 찾기 */
+.panel.slim{padding:10px}
+.elabel{flex:none;font-size:13px;font-weight:700;color:var(--accent);margin-right:10px;padding-right:10px;border-right:1px solid var(--line)}
 .esearch{display:flex;align-items:center;gap:0;background:var(--soft);border:1px solid transparent;border-radius:999px;padding:4px 4px 4px 16px;box-shadow:none;transition:border-color .15s,background .15s}
 .esearch:focus-within{border-color:var(--accent);background:var(--card)}
 .esearch input{flex:1;min-width:0;font:inherit;font-size:15px;padding:8px 0;border:0;background:none;color:var(--fg);outline:none}
@@ -127,7 +129,7 @@ form select{flex:0 0 auto}
 .note{font-size:13px;color:var(--muted);margin:0;line-height:1.6}
 .note a{color:var(--accent);font-weight:600}
 .foot{color:var(--faint);font-size:12px;text-align:center;margin-top:4px}
-@media (max-width:420px){.panel{padding:16px 14px 14px}}
+@media (max-width:420px){.panel{padding:16px 14px 14px}.panel.slim{padding:8px}}
 </style>
 
 </head>
@@ -146,10 +148,10 @@ form select{flex:0 0 auto}
     <ul class="shortcuts" id="slist"></ul>
   </section>
 
-  <section class="panel">
-    <h2>전자책 찾기</h2>
+  <section class="panel slim">
     <form class="esearch" id="ebookForm" role="search">
-      <input id="ebookQ" type="search" placeholder="책 제목으로 6곳 한 번에 찾기" aria-label="책 제목" required>
+      <span class="elabel" aria-hidden="true">전자책</span>
+      <input id="ebookQ" type="search" placeholder="책 제목 (도서관 6곳 검색)" aria-label="전자책 찾기: 책 제목" required>
       <button class="btn" type="submit">찾기</button>
     </form>
     <ul class="libs" id="libs" hidden></ul>
