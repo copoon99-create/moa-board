@@ -4,91 +4,130 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>모아게시판</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=IBM+Plex+Sans+KR:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
 *{box-sizing:border-box}
 body{margin:0}
 [hidden]{display:none!important}
-/* 한 줄 목록: 사이트별 색 칩 + 게시판 이름 + 주소, 엄지로 누르기 좋은 큰 행 */
 :root{
-  --bg:#f3f4f1; --card:#ffffff; --fg:#1d2320; --muted:#68716c; --line:#dfe3df; --accent:#2f6f5e;
-  --dc:#3b4890; --fm:#3d6fd8; --mlb:#c8462f;
-  --display:"Gowun Dodum","IBM Plex Sans KR",system-ui,sans-serif;
-  --body:"IBM Plex Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --bg:#f4f5f7; --card:#ffffff; --fg:#17181c; --muted:#6b7079; --faint:#9aa0a8; --line:#e8eaee; --soft:#f1f2f5;
+  --accent:#4f5bd5; --accent-fg:#ffffff;
+  --dc:#4659c8; --fm:#2f7de1; --mlb:#e0533d; --yt:#ff0033; --naver:#03a94d; --ok:#14935a;
+  --shadow:0 1px 2px rgba(16,24,40,.04),0 4px 16px rgba(16,24,40,.05);
+  --r:18px;
+  --body:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#141816; --card:#1d2220; --fg:#e8ece9; --muted:#9aa49f; --line:#2c3330; --accent:#6fc2a9;
-  --dc:#8d98e6; --fm:#7fa6f2; --mlb:#f08a74; color-scheme:dark}}
+  --bg:#0e0f12; --card:#17191d; --fg:#eceef1; --muted:#9a9fa8; --faint:#6c717a; --line:#25282e; --soft:#1e2126;
+  --accent:#8b93ff; --accent-fg:#0e0f12;
+  --dc:#8f9cff; --fm:#6aa8ff; --mlb:#ff8a73; --yt:#ff4d6a; --naver:#2fd27a; --ok:#3ccf8e;
+  --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#141816; --card:#1d2220; --fg:#e8ece9; --muted:#9aa49f; --line:#2c3330; --accent:#6fc2a9;
-  --dc:#8d98e6; --fm:#7fa6f2; --mlb:#f08a74; color-scheme:dark}
-body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px}
-.wrap{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:28px 40px;display:flex;flex-direction:column;gap:18px}
-header{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
-h1{font-family:var(--display);font-size:30px;font-weight:400;margin:0;letter-spacing:-.01em}
-.sub{color:var(--muted);font-size:13px;margin:4px 0 0}
-.btn{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:8px;padding:7px 12px;cursor:pointer}
-.btn:hover{border-color:var(--accent)}
-.btn:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-ul{list-style:none;margin:0;padding:0;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
-li{display:flex;align-items:center;border-top:1px solid var(--line)}
-li:first-child{border-top:0}
-li a{flex:1;min-width:0;display:flex;align-items:center;gap:14px;padding:15px 16px;color:inherit;text-decoration:none}
-li a:hover{background:color-mix(in srgb,var(--accent) 7%,transparent)}
-.chip{flex:none;width:44px;height:44px;border-radius:10px;display:grid;place-items:center;font-weight:700;font-size:13px;color:var(--c);background:color-mix(in srgb,var(--c) 14%,transparent)}
-.txt{min-width:0;display:flex;flex-direction:column;gap:2px}
-.name{font-weight:600;font-size:16px}
-.url{color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.go{margin-left:auto;color:var(--muted);flex:none}
-form{display:flex;flex-wrap:wrap;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
-form input{flex:1 1 180px;min-width:0;font:inherit;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg)}
-.row{display:flex;gap:8px;flex-wrap:wrap}
-h2{font-size:12px;font-weight:600;letter-spacing:.06em;color:var(--muted);margin:0 0 -8px 2px}
-.shortcuts{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px;list-style:none;margin:0;padding:0;background:none;border:0;border-radius:0;overflow:visible}
-.shortcuts li{display:flex;flex-direction:column;align-items:stretch;border:1px solid var(--line);border-radius:10px;background:var(--card)}
-.shortcuts li a{flex-direction:column;gap:6px;padding:12px 6px;text-align:center}
-.shortcuts .chip{width:34px;height:34px;font-size:12px}
-.shortcuts .name{font-size:13px;font-weight:600;line-height:1.3;word-break:keep-all}
-.ctrl{display:flex;gap:4px;flex:none;padding:4px 8px}
-.shortcuts .ctrl{justify-content:center;padding:0 4px 8px}
-.ctrl button{font:inherit;font-size:12px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:6px;padding:5px 8px;cursor:pointer}
+  --bg:#0e0f12; --card:#17191d; --fg:#eceef1; --muted:#9a9fa8; --faint:#6c717a; --line:#25282e; --soft:#1e2126;
+  --accent:#8b93ff; --accent-fg:#0e0f12;
+  --dc:#8f9cff; --fm:#6aa8ff; --mlb:#ff8a73; --yt:#ff4d6a; --naver:#2fd27a; --ok:#3ccf8e;
+  --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark}
+
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;letter-spacing:-.01em}
+a{color:inherit}
+.wrap{max-width:680px;margin:0 auto;padding:0 16px 48px;display:flex;flex-direction:column;gap:14px}
+
+/* 상단 */
+header{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  margin:0 -16px;padding:14px 16px 12px;background:color-mix(in srgb,var(--bg) 82%,transparent);
+  backdrop-filter:saturate(1.6) blur(14px);-webkit-backdrop-filter:saturate(1.6) blur(14px)}
+h1{font-size:22px;font-weight:800;margin:0;letter-spacing:-.03em}
+.sub{color:var(--muted);font-size:12.5px;margin:2px 0 0}
+
+/* 공통 버튼 */
+.btn{font:inherit;font-size:13px;font-weight:600;border:0;background:var(--soft);color:var(--fg);border-radius:999px;padding:8px 14px;cursor:pointer;transition:background .15s,transform .1s}
+.btn:hover{background:color-mix(in srgb,var(--accent) 12%,var(--soft))}
+.btn:active{transform:scale(.97)}
+.btn:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* 카드(섹션) */
+.panel{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);padding:18px 18px 16px;display:flex;flex-direction:column;gap:12px}
+h2{font-size:15px;font-weight:700;margin:0;letter-spacing:-.02em}
+.phead{display:flex;align-items:center;justify-content:space-between;gap:8px}
+
+/* 목록 공통 */
+ul{list-style:none;margin:0;padding:0}
+li{display:flex;align-items:center}
+li a{flex:1;min-width:0;display:flex;align-items:center;gap:12px;color:inherit;text-decoration:none}
+.chip{flex:none;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-weight:800;font-size:13px;color:var(--c);background:color-mix(in srgb,var(--c) 13%,transparent)}
+.txt{min-width:0;display:flex;flex-direction:column;gap:1px}
+.name{font-weight:600;font-size:15px}
+.url{color:var(--faint);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.go{margin-left:auto;color:var(--faint);flex:none;font-size:18px}
+
+/* 바로가기: 앱 아이콘 격자 */
+.shortcuts{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:6px 4px}
+.shortcuts li{flex-direction:column;align-items:stretch}
+.shortcuts li a{flex-direction:column;gap:7px;padding:8px 2px;border-radius:14px;text-align:center;transition:background .15s}
+.shortcuts li a:hover{background:var(--soft)}
+.shortcuts .chip{width:48px;height:48px;border-radius:15px;font-size:15px}
+.shortcuts .name{font-size:12px;font-weight:500;line-height:1.3;word-break:keep-all;color:var(--fg)}
+
+/* 게시판 목록 */
+#list li{border-top:1px solid var(--line)}
+#list li:first-child{border-top:0}
+#list li a{padding:11px 2px}
+
+/* 편집 */
+.ctrl{display:flex;gap:4px;flex:none;padding:2px 0}
+.shortcuts .ctrl{justify-content:center;padding:0 0 6px}
+.ctrl button{font:inherit;font-size:12px;border:0;background:var(--soft);color:var(--fg);border-radius:8px;padding:5px 8px;cursor:pointer}
 .ctrl button:disabled{opacity:.35;cursor:default}
 .ctrl .x{color:var(--mlb)}
-form select{font:inherit;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg)}
-.tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
-.tab{flex:none;font:inherit;font-size:13px;border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:999px;padding:6px 12px;cursor:pointer;white-space:nowrap}
-.tab[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--bg)}
-.feed li a{gap:10px;padding:12px 16px;align-items:flex-start}
-.feed .badge{flex:none;font-size:11px;font-weight:700;color:var(--c);background:color-mix(in srgb,var(--c) 14%,transparent);border-radius:6px;padding:3px 6px;margin-top:2px}
-.feed .title{font-size:15px;line-height:1.4;word-break:break-all}
-.feed .cm{color:var(--accent);font-weight:600;font-size:13px}
-.feed .meta{color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
-.empty{background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:22px 16px;color:var(--muted);font-size:14px;line-height:1.6;text-align:center}
-.updated{color:var(--muted);font-size:12px;margin:-8px 0 0 2px}
+form{display:flex;flex-wrap:wrap;gap:8px;background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);padding:16px}
+form input,form select{flex:1 1 180px;min-width:0;font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--fg)}
+form select{flex:0 0 auto}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+
+/* 전자책 찾기 */
+.esearch{display:flex;align-items:center;gap:0;background:var(--soft);border:1px solid transparent;border-radius:999px;padding:4px 4px 4px 16px;box-shadow:none;transition:border-color .15s,background .15s}
+.esearch:focus-within{border-color:var(--accent);background:var(--card)}
+.esearch input{flex:1;min-width:0;font:inherit;font-size:15px;padding:8px 0;border:0;background:none;color:var(--fg);outline:none}
+.esearch input::placeholder{color:var(--faint)}
+.esearch .btn{flex:none;background:var(--accent);color:var(--accent-fg);padding:9px 18px}
+.esearch .btn:hover{background:color-mix(in srgb,var(--accent) 88%,#000)}
+.libs{display:flex;flex-direction:column}
+.libs li{flex-direction:column;align-items:stretch;padding:12px 0;gap:6px;border-top:1px solid var(--line)}
+.libs li:first-child{border-top:0;padding-top:4px}
+.libs .lh{display:flex;align-items:center;gap:8px}
+.libs .ln{font-weight:600;font-size:14px}
+.libs .st{font-size:11.5px;font-weight:700;border-radius:999px;padding:3px 9px;color:var(--c);background:color-mix(in srgb,var(--c) 13%,transparent)}
+.libs .open{flex:none;margin-left:auto;font-size:13px;font-weight:600;color:var(--accent);text-decoration:none}
+.libs .bk{display:block;font-size:14px;line-height:1.45;padding-left:2px}
+.libs .bk:hover{text-decoration:underline}
+.libs .bk small{color:var(--muted);font-size:12px}
+
+/* 최근 글 */
+.tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -2px;padding:0 2px}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;font:inherit;font-size:13px;font-weight:600;border:0;background:var(--soft);color:var(--muted);border-radius:999px;padding:7px 13px;cursor:pointer;white-space:nowrap;transition:background .15s,color .15s}
+.tab:hover{color:var(--fg)}
+.tab[aria-pressed="true"]{background:var(--fg);color:var(--card)}
+.feed li{border-top:1px solid var(--line)}
+.feed li:first-child{border-top:0}
+.feed li a{gap:10px;padding:12px 2px;align-items:flex-start;border-radius:10px}
+.feed li a:hover .title{color:var(--accent)}
+.feed .badge{flex:none;min-width:3.4em;text-align:center;font-size:11px;font-weight:700;color:var(--c);background:color-mix(in srgb,var(--c) 12%,transparent);border-radius:7px;padding:3px 6px;margin-top:1px}
+.feed .title{font-size:15px;line-height:1.45;word-break:break-all;transition:color .15s}
+.feed .cm{color:var(--accent);font-weight:700;font-size:13px}
+.feed .meta{color:var(--faint);font-size:12px;font-variant-numeric:tabular-nums;margin-top:2px}
+.empty{border-radius:14px;background:var(--soft);padding:22px 16px;color:var(--muted);font-size:14px;line-height:1.6;text-align:center}
+.updated{color:var(--faint);font-size:12px;margin:-4px 0 0}
 .more{align-self:center}
-.feedhead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:-8px}
-.feedhead h2{margin:0 0 0 2px}
 .refresh{display:inline-flex;align-items:center;gap:6px}
 .refresh[disabled]{opacity:.6;cursor:default}
 .refresh[disabled] .spin{display:inline-block;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion: reduce){.refresh[disabled] .spin{animation:none}}
-.note{font-size:13px;color:var(--muted);margin:-6px 0 0 2px;line-height:1.6}
+.note{font-size:13px;color:var(--muted);margin:0;line-height:1.6}
 .note a{color:var(--accent);font-weight:600}
-.feed .badge{min-width:3.6em;text-align:center}
-.foot{color:var(--muted);font-size:12px;text-align:center}
-.esearch{display:flex;gap:8px;background:none;border:0;padding:0}
-.esearch input{flex:1;min-width:0;font:inherit;font-size:15px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--fg)}
-.esearch .btn{flex:none;padding-inline:16px}
-.libs li{flex-direction:column;align-items:stretch;padding:12px 16px;gap:6px}
-.libs .lh{display:flex;align-items:center;gap:8px}
-.libs .ln{font-weight:600}
-.libs .st{font-size:12px;font-weight:700;border-radius:6px;padding:3px 7px;color:var(--c);background:color-mix(in srgb,var(--c) 14%,transparent)}
-.libs .open{flex:none;padding:0;margin-left:auto;font-size:13px;color:var(--accent);font-weight:600;text-decoration:none}
-.libs .bk{display:block;padding:0;font-size:14px;line-height:1.45;color:inherit;text-decoration:none}
-.libs .bk:hover{text-decoration:underline;background:none}
-.libs .bk small{color:var(--muted);font-size:12px}
+.foot{color:var(--faint);font-size:12px;text-align:center;margin-top:4px}
+@media (max-width:420px){.panel{padding:16px 14px 14px}.shortcuts{grid-template-columns:repeat(4,1fr)}}
 </style>
 
 </head>
@@ -102,30 +141,38 @@ form select{font:inherit;padding:9px 10px;border:1px solid var(--line);border-ra
     <button class="btn" id="editBtn" type="button">편집</button>
   </header>
 
-  <h2>바로가기</h2>
-  <ul class="shortcuts" id="slist"></ul>
+  <section class="panel">
+    <h2>바로가기</h2>
+    <ul class="shortcuts" id="slist"></ul>
+  </section>
 
-  <h2>전자책 찾기</h2>
-  <form class="esearch" id="ebookForm" role="search">
-    <input id="ebookQ" type="search" placeholder="책 제목을 넣으면 전자도서관을 한 번에 찾아봐요" aria-label="책 제목" required>
-    <button class="btn" type="submit">찾기</button>
-  </form>
-  <ul class="libs" id="libs" hidden></ul>
+  <section class="panel">
+    <h2>전자책 찾기</h2>
+    <form class="esearch" id="ebookForm" role="search">
+      <input id="ebookQ" type="search" placeholder="책 제목으로 6곳 한 번에 찾기" aria-label="책 제목" required>
+      <button class="btn" type="submit">찾기</button>
+    </form>
+    <ul class="libs" id="libs" hidden></ul>
+  </section>
 
-  <div class="feedhead">
-    <h2>최근 글</h2>
-    <button class="btn refresh" id="refreshBtn" type="button"><span class="spin" aria-hidden="true">↻</span><span id="refreshLabel">새로고침</span></button>
-  </div>
-  <p class="note" id="refreshNote" hidden></p>
-  <div class="tabs" id="tabs" role="toolbar" aria-label="게시판 고르기"></div>
-  <p class="updated" id="updated" hidden></p>
-  <p class="note" id="feedErr" hidden></p>
-  <ul class="feed" id="feed" hidden></ul>
-  <div class="empty" id="feedEmpty">게시판에서 최신 글을 불러오는 중이에요.</div>
-  <button class="btn more" id="moreBtn" type="button" hidden>더 보기</button>
+  <section class="panel">
+    <div class="phead">
+      <h2>최근 글</h2>
+      <button class="btn refresh" id="refreshBtn" type="button"><span class="spin" aria-hidden="true">↻</span><span id="refreshLabel">새로고침</span></button>
+    </div>
+    <p class="note" id="refreshNote" hidden></p>
+    <div class="tabs" id="tabs" role="toolbar" aria-label="게시판 고르기"></div>
+    <p class="updated" id="updated" hidden></p>
+    <p class="note" id="feedErr" hidden></p>
+    <ul class="feed" id="feed" hidden></ul>
+    <div class="empty" id="feedEmpty">게시판에서 최신 글을 불러오는 중이에요.</div>
+    <button class="btn more" id="moreBtn" type="button" hidden>더 보기</button>
+  </section>
 
-  <h2>게시판</h2>
-  <ul id="list"></ul>
+  <section class="panel">
+    <h2>게시판</h2>
+    <ul id="list"></ul>
+  </section>
 
   <form id="addForm" hidden>
     <select id="newKind" aria-label="넣을 곳"><option value="boards">게시판</option><option value="shortcuts">바로가기</option></select>
@@ -170,7 +217,7 @@ function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&Array.is
   for(const x of s.shortcuts) if(x.url.includes("our-table-kitchen")){x.name="우리의 식탁";x.url="https://claude.ai/artifact/NvnyNs6LDAppHWA79MrQ1z"}
   return s}}catch(e){}return clone()}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(data))}catch(e){}}
-const SITES=[["dcinside","디시","var(--dc)"],["fmkorea","펨코","var(--fm)"],["mlbpark","엠팍","var(--mlb)"],["youtube","▶","var(--mlb)"],["x.com","X","var(--fg)"],["naver","N","var(--accent)"],["pgr21","P","var(--fm)"],["snapcomplete","S","var(--dc)"]];
+const SITES=[["dcinside","디시","var(--dc)"],["fmkorea","펨코","var(--fm)"],["mlbpark","엠팍","var(--mlb)"],["youtube","▶","var(--yt)"],["x.com","X","var(--fg)"],["naver","N","var(--naver)"],["pgr21","P","var(--fm)"],["snapcomplete","S","var(--dc)"]];
 function site(u,name){
   for(const [k,t,c] of SITES) if(u.includes(k)) return{t,c};
   return{t:(name||"?").trim()[0].toUpperCase(),c:"var(--accent)"};
@@ -282,7 +329,7 @@ function libRow(l,state,r){
   li.innerHTML='<div class="lh"><span class="ln"></span><span class="st"></span><a class="open" target="_blank" rel="noopener">열기 ›</a></div>';
   li.querySelector(".ln").textContent=l.name;
   const st=li.querySelector(".st"),op=li.querySelector(".open");
-  const [txt,c]={wait:["찾는 중","var(--muted)"],yes:["있음 "+((r&&r.count)||"")+"권","var(--accent)"],no:["없음","var(--mlb)"],
+  const [txt,c]={wait:["찾는 중","var(--muted)"],yes:["있음 "+((r&&r.count)||"")+"권","var(--ok)"],no:["없음","var(--mlb)"],
     err:["확인 못함","var(--muted)"],login:["로그인해야 검색돼요","var(--muted)"]}[state];
   st.textContent=txt;st.style.setProperty("--c",c);
   const href=(r&&r.url)||l.login;
