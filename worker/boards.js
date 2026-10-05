@@ -167,6 +167,22 @@ export function parseMlbpark(html) {
   return posts;
 }
 
+// 엠팍 목록 페이지는 커서(160KB) 글 목록 표가 끝나는 곳까지만 받고 끊는다
+async function getUntil(url, doneRe) {
+  const r = await fetch(url, { headers: { "User-Agent": UA, "Accept-Language": "ko-KR,ko;q=0.9" } });
+  if (!r.ok) throw new Error("HTTP " + r.status);
+  if (!r.body) return r.text();
+  const reader = r.body.getReader(), dec = new TextDecoder();
+  let text = "";
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    text += dec.decode(value, { stream: true });
+    if (doneRe.test(text)) { reader.cancel().catch(() => {}); break; }
+  }
+  return text;
+}
+
 const BEST_MAX = 20;
 const mlbTimes = new Map(); // 같은 Worker 안에서는 한 번 읽은 글 시각을 다시 쓴다
 async function mlbparkTime(url) {
@@ -191,7 +207,7 @@ async function mlbparkTime(url) {
 }
 
 async function mlbpark(b) {
-  const posts = parseMlbpark(await get(b.best ? b.url : `https://mlbpark.donga.com/mp/b.php?b=${b.key}&m=list`));
+  const posts = parseMlbpark(await getUntil(b.best ? b.url : `https://mlbpark.donga.com/mp/b.php?b=${b.key}&m=list`, /tbl_type01[\s\S]*?<\/table>/));
   // 베스트 목록은 날짜만 있어서, 글마다 앞부분만 읽어 작성 시각(contentWriteDate)을 가져온다
   if (b.best) {
     posts.length = Math.min(posts.length, BEST_MAX);

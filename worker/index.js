@@ -10,6 +10,7 @@ import { LIBS, searchLib } from "./ebook.js";
 import { DurableObject } from "cloudflare:workers";
 
 const CACHE_SECONDS = 60; // 1분 안에 다시 열면 같은 결과를 바로 보여준다
+const STALE_SECONDS = 1800; // 그보다 오래된 결과도 30분까지는 먼저 보여주고 뒤에서 새로 읽는다
 
 export default {
   async fetch(request, env, ctx) {
@@ -25,13 +26,22 @@ export default {
 
     const cache = caches.default;
     const key = new Request(url.origin + "/api?board=" + encodeURIComponent(id));
+    // 1분 넘게 지난 결과도 일단 바로 보여주고, 뒤에서 새로 읽어 저장해 둔다 (느린 게시판도 바로 뜨게)
+    const refresh = async () => {
+      const body = JSON.stringify(board ? await collectOne(board) : await collect());
+      const ok = /"posts":\[\{/.test(body);
+      await cache.put(key, new Response(body, { headers: { ...headers, "Cache-Control": `max-age=${ok ? STALE_SECONDS : CACHE_SECONDS}`, "X-Fetched-At": String(Date.now()) } }));
+      return body;
+    };
     if (!url.searchParams.has("fresh")) {
       const hit = await cache.match(key);
-      if (hit) return new Response(hit.body, { headers });
+      if (hit) {
+        const age = Date.now() - (+hit.headers.get("X-Fetched-At") || 0);
+        if (age > CACHE_SECONDS * 1000) ctx.waitUntil(refresh().catch(() => {}));
+        return new Response(hit.body, { headers });
+      }
     }
-    const body = JSON.stringify(board ? await collectOne(board) : await collect());
-    ctx.waitUntil(cache.put(key, new Response(body, { headers: { ...headers, "Cache-Control": `max-age=${CACHE_SECONDS}` } })));
-    return new Response(body, { headers });
+    return new Response(await refresh(), { headers });
   },
 };
 
