@@ -157,6 +157,10 @@ form select{flex:0 0 auto}
 .linkbtn{font:inherit;font-size:12px;border:0;background:none;color:var(--accent);font-weight:600;cursor:pointer;padding:2px}
 .syncbox{background:var(--card);border-radius:14px;padding:12px;box-shadow:var(--shadow);color:var(--muted);font-size:12.5px;width:100%;text-align:left}
 .syncbox p{margin:0 0 8px}
+.syncbox .scode{font-size:22px;font-weight:800;letter-spacing:.12em;color:var(--fg);margin:0 0 8px}
+.syncbox .smsg{margin:8px 0 0;color:var(--accent);font-weight:600}
+.syncbox .smsg:empty{display:none}
+#syncNew{margin-top:8px}
 .syncbox .row{display:flex;gap:6px}
 .syncbox input{flex:1;min-width:0;font:inherit;font-size:12px;border:1px solid var(--line);border-radius:10px;padding:7px 9px;background:var(--soft);color:var(--fg)}
 @media (max-width:420px){.panel{padding:16px 14px 14px}.panel.slim{padding:8px}}
@@ -208,8 +212,15 @@ form select{flex:0 0 auto}
     <p class="footp">편집한 내용은 이 기기 브라우저에만 저장돼요.</p>
     <button class="linkbtn" id="syncBtn" type="button">읽은 글 다른 기기와 연동하기</button>
     <div class="syncbox" id="syncBox" hidden>
-      <p>이 주소를 다른 기기에서 한 번 열면, 두 기기가 읽은 글을 같이 써요.</p>
-      <div class="row"><input id="syncLink" readonly aria-label="연동 주소"><button class="btn" id="syncCopy" type="button">복사</button></div>
+      <div id="syncHave" hidden>
+        <p>이 기기의 연동 코드</p>
+        <p class="scode" id="syncShow"></p>
+        <p>다른 기기에서 이 사이트 맨 아래 연동 버튼을 누르고 아래 칸에 이 코드를 넣으면, 두 기기가 읽은 글을 같이 써요.</p>
+      </div>
+      <p>다른 기기에서 받은 코드가 있으면 여기에 넣으세요.</p>
+      <form class="row" id="syncForm"><input id="syncInput" placeholder="예: AB3K7QXP" autocomplete="off" autocapitalize="characters" aria-label="연동 코드"><button class="btn" type="submit">연결</button></form>
+      <p class="smsg" id="syncMsg"></p>
+      <button class="btn" id="syncNew" type="button">이 기기에서 새 코드 만들기</button>
     </div>
   </div>
   </div>
@@ -346,7 +357,7 @@ function markRead(url,li){
 const SYNC_KEY="moa-sync";
 let syncCode="";
 try{syncCode=localStorage.getItem(SYNC_KEY)||""}catch(e){}
-const hm=location.hash.match(/sync=([a-z0-9]{12,40})/);
+const hm=location.hash.match(/sync=([a-z0-9]{6,40})/);
 if(hm){syncCode=hm[1];try{localStorage.setItem(SYNC_KEY,syncCode)}catch(e){}history.replaceState(null,"",location.pathname+location.search)}
 function readApi(){const base=location.hostname.endsWith("workers.dev")?"":"https://moa-board.copoon99.workers.dev";return base+"/api/read?k="+syncCode}
 async function syncRead(add){
@@ -359,19 +370,20 @@ async function syncRead(add){
     if(changed){saveRead();renderFeed()}
   }catch(e){}
 }
-function syncLink(){return "https://moa-board.copoon99.workers.dev/#sync="+syncCode}
+const fmtCode=c=>c.toUpperCase();
+function setSync(c){syncCode=c;try{localStorage.setItem(SYNC_KEY,c)}catch(e){}showSync()}
 async function startSync(){
-  if(!syncCode){
-    syncCode=Array.from(crypto.getRandomValues(new Uint8Array(12)),b=>"abcdefghijklmnopqrstuvwxyz0123456789"[b%36]).join("");
-    try{localStorage.setItem(SYNC_KEY,syncCode)}catch(e){}
-    await syncRead([...readSet].slice(-200));
-  }
-  showSync();
+  const box=document.getElementById("syncBox");
+  if(!box.hidden){box.hidden=true;return}
+  showSync(); box.hidden=false;
 }
 function showSync(){
-  const box=document.getElementById("syncBox"); box.hidden=false;
-  document.getElementById("syncLink").value=syncLink();
+  document.getElementById("syncHave").hidden=!syncCode;
+  document.getElementById("syncShow").textContent=fmtCode(syncCode);
+  document.getElementById("syncNew").textContent=syncCode?"새 코드로 바꾸기":"이 기기에서 새 코드 만들기";
+  document.getElementById("syncBtn").textContent=syncCode?"읽은 글 연동 중 (코드 보기)":"읽은 글 다른 기기와 연동하기";
 }
+
 function renderFeed(){
   const tabs=document.getElementById("tabs"); tabs.innerHTML="";
   const all=[["all","전체"]].concat(feedDocs.map(d=>[d.id,short(d.name||d.id)]));
@@ -493,10 +505,24 @@ setInterval(()=>loadFeed(),5*60000);
 syncRead();
 document.addEventListener("visibilitychange",()=>{if(!document.hidden)syncRead()});
 document.getElementById("syncBtn").onclick=startSync;
-document.getElementById("syncCopy").onclick=async()=>{const i=document.getElementById("syncLink");
-  try{await navigator.clipboard.writeText(i.value)}catch(e){i.select();document.execCommand("copy")}
-  document.getElementById("syncCopy").textContent="복사됨"};
-if(syncCode) document.getElementById("syncBtn").textContent="읽은 글 연동 중 (주소 보기)";
+document.getElementById("syncNew").onclick=async()=>{
+  // 헷갈리는 글자(0,O,1,I,L)는 빼고 8자리
+  const A="abcdefghjkmnpqrstuvwxyz23456789";
+  setSync(Array.from(crypto.getRandomValues(new Uint8Array(8)),b=>A[b%A.length]).join(""));
+  await syncRead([...readSet].slice(-200));
+  document.getElementById("syncMsg").textContent="코드를 만들었어요. 다른 기기에서 이 코드를 넣어주세요.";
+};
+document.getElementById("syncForm").onsubmit=async e=>{
+  e.preventDefault();
+  const c=document.getElementById("syncInput").value.toLowerCase().replace(/[^a-z0-9]/g,"");
+  const m=document.getElementById("syncMsg");
+  if(c.length<6){m.textContent="코드를 다시 확인해 주세요.";return}
+  setSync(c); m.textContent="연결하는 중이에요.";
+  await syncRead([...readSet].slice(-200));
+  m.textContent="연결됐어요. 이제 두 기기가 읽은 글을 같이 써요.";
+  document.getElementById("syncInput").value="";
+};
+showSync();
 function setMode(m){
   if(m===mode) return;
   mode=m; tab="all"; feedDocs=docsBy[m];

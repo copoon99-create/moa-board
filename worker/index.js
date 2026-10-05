@@ -55,7 +55,7 @@ async function ebook(url, headers, ctx) {
 const READ_MAX = 3000;
 async function reads(request, url, env, headers) {
   const k = url.searchParams.get("k") || "";
-  if (!/^[a-z0-9]{12,40}$/.test(k)) return new Response(JSON.stringify({ error: "연동 코드가 이상해요" }), { status: 400, headers });
+  if (!/^[a-z0-9]{6,40}$/.test(k)) return new Response(JSON.stringify({ error: "연동 코드가 이상해요" }), { status: 400, headers });
   const store = env.READS.get(env.READS.idFromName(k));
   let add = [];
   if (request.method === "POST") {
