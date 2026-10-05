@@ -498,7 +498,9 @@ async function loadFeed(fresh,m=mode){
     const show=()=>setDocs(m,ids.filter(k=>got[k]&&((got[k].posts||[]).length||got[k].error)).map(k=>got[k]));
     const results=await Promise.all(ids.map(async id=>{
       try{
-        const r=await fetch(API+"?board="+id+(fresh?"&fresh=1":""),{cache:"no-store"});
+        let r=await fetch(API+"?board="+id+(fresh?"&fresh=1":""),{cache:"no-store"}).catch(()=>null);
+        // 한 번 실패하면 잠깐 뒤에 한 번 더 시도한다
+        if(!r||!r.ok){await new Promise(z=>setTimeout(z,1500));r=await fetch(API+"?board="+id+"&fresh=1",{cache:"no-store"})}
         if(!r.ok){got[id]={id,name:NAMES[id]||id,error:"서버 응답 "+r.status,posts:[]};show();return false}
         got[id]=await r.json(); show(); return true;
       }catch(e){got[id]={id,name:NAMES[id]||id,error:"연결 실패",posts:[]};show();return false}
