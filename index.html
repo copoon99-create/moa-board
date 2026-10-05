@@ -32,6 +32,23 @@ body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px
 a{color:inherit}
 .wrap{max-width:680px;margin:0 auto;padding:0 16px 48px;display:flex;flex-direction:column;gap:14px}
 
+/* 배치: 휴대폰은 한 줄, PC는 왼쪽(바로가기·전자책·게시판) + 오른쪽(글 목록) 두 칸 */
+.cols{display:flex;flex-direction:column;gap:14px}
+.side{display:contents}
+.o1{order:1}.o2{order:2}.feedp{order:3}.o4{order:4}.o5{order:5}.o6{order:6}
+@media (min-width:960px){
+  .wrap{max-width:1180px}
+  .cols{display:grid;grid-template-columns:minmax(300px,380px) 1fr;gap:16px;align-items:start}
+  .side{display:flex;flex-direction:column;gap:14px;position:sticky;top:72px;max-height:calc(100vh - 88px);overflow:auto;scrollbar-width:thin}
+}
+/* 게시판 원래 페이지: 접어두는 칸 */
+.boards summary{list-style:none;display:flex;align-items:center;gap:8px;cursor:pointer}
+.boards summary::-webkit-details-marker{display:none}
+.boards summary::after{content:"";margin-left:auto;width:8px;height:8px;border-right:2px solid var(--faint);border-bottom:2px solid var(--faint);transform:rotate(45deg);transition:transform .15s}
+.boards[open] summary::after{transform:rotate(-135deg)}
+.boards:not([open]){gap:0}
+.bcount{color:var(--faint);font-size:13px;font-weight:600}
+
 /* 상단 */
 header{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:12px;
   margin:0 -16px;padding:14px 16px 12px;background:color-mix(in srgb,var(--bg) 82%,transparent);
@@ -147,12 +164,14 @@ form select{flex:0 0 auto}
     <button class="btn" id="editBtn" type="button">편집</button>
   </header>
 
-  <section class="panel">
+  <div class="cols">
+  <div class="side">
+  <section class="panel o1">
     <h2>바로가기</h2>
     <ul class="shortcuts" id="slist"></ul>
   </section>
 
-  <section class="panel slim">
+  <section class="panel slim o2">
     <form class="esearch" id="ebookForm" role="search">
       <span class="elabel" aria-hidden="true">전자책</span>
       <input id="ebookQ" type="search" placeholder="책 제목 (도서관 6곳 검색)" aria-label="전자책 찾기: 책 제목" required>
@@ -161,7 +180,24 @@ form select{flex:0 0 auto}
     <ul class="libs" id="libs" hidden></ul>
   </section>
 
-  <section class="panel">
+  <details class="panel boards o4" id="boardsBox">
+    <summary><h2>게시판 원래 페이지</h2><span class="bcount" id="bcount"></span></summary>
+    <ul id="list"></ul>
+  </details>
+
+  <form id="addForm" class="o5" hidden>
+    <select id="newKind" aria-label="넣을 곳"><option value="boards">게시판</option><option value="shortcuts">바로가기</option></select>
+    <input id="newName" placeholder="이름" required>
+    <input id="newUrl" placeholder="https://..." type="url" required>
+    <div class="row">
+      <button class="btn" type="submit">추가</button>
+      <button class="btn" type="button" id="resetBtn">처음 목록으로 되돌리기</button>
+    </div>
+  </form>
+
+  <p class="foot o6">편집한 내용은 이 기기 브라우저에만 저장돼요.</p>
+  </div>
+  <section class="panel feedp">
     <div class="phead">
       <div class="seg" role="tablist" aria-label="글 종류">
         <button type="button" class="segb" id="modeNew" aria-pressed="true">최근 글</button>
@@ -177,23 +213,8 @@ form select{flex:0 0 auto}
     <div class="empty" id="feedEmpty">게시판에서 최신 글을 불러오는 중이에요.</div>
     <button class="btn more" id="moreBtn" type="button" hidden>더 보기</button>
   </section>
+  </div>
 
-  <section class="panel">
-    <h2>게시판</h2>
-    <ul id="list"></ul>
-  </section>
-
-  <form id="addForm" hidden>
-    <select id="newKind" aria-label="넣을 곳"><option value="boards">게시판</option><option value="shortcuts">바로가기</option></select>
-    <input id="newName" placeholder="이름" required>
-    <input id="newUrl" placeholder="https://..." type="url" required>
-    <div class="row">
-      <button class="btn" type="submit">추가</button>
-      <button class="btn" type="button" id="resetBtn">처음 목록으로 되돌리기</button>
-    </div>
-  </form>
-
-  <p class="foot">편집한 내용은 이 기기 브라우저에만 저장돼요.</p>
 </div>
 
 <script>
@@ -268,6 +289,8 @@ function render(){
     data[kind].forEach((b,i,arr)=>ul.appendChild(item(kind,b,i,arr)));
   }
   document.getElementById("count").textContent=data.boards.length;
+  document.getElementById("bcount").textContent=data.boards.length;
+  if(editing) document.getElementById("boardsBox").open=true;
   document.getElementById("scount").textContent=data.shortcuts.length;
   document.getElementById("addForm").hidden=!editing;
   document.getElementById("editBtn").textContent=editing?"완료":"편집";
