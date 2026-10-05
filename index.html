@@ -31,6 +31,7 @@ body{margin:0}
   --c-marvelsnap:#b794ff; --c-bh:#2dd4bf; --c-thesingularity:#7aa7ff; --c-ai_utilize:#fb923c; --c-bullpen:#ff6b8a;
   --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark}
 
+html,body{overflow-x:clip}
 body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;letter-spacing:-.01em}
 a{color:inherit}
 .wrap{max-width:680px;margin:0 auto;padding:0 16px 48px;display:flex;flex-direction:column;gap:14px}
@@ -42,7 +43,8 @@ a{color:inherit}
 /* 폴드 펼친 화면(폭 약 840px)부터 두 칸 */
 @media (min-width:720px){
   .wrap{max-width:1180px}
-  .cols{display:grid;grid-template-columns:minmax(260px,32%) 1fr;gap:14px;align-items:start}
+  .cols{display:grid;grid-template-columns:minmax(260px,32%) minmax(0,1fr);gap:14px;align-items:start}
+  .cols>*{min-width:0}
   .side{display:flex;flex-direction:column;gap:14px;position:sticky;top:72px;max-height:calc(100vh - 88px);overflow:auto;scrollbar-width:thin}
 }
 /* 게시판 원래 페이지: 접어두는 칸 */
