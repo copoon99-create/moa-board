@@ -10,14 +10,6 @@ for (const q of ["불편한 편의점", "없는책제목zzqx"]) {
       console.log((await (await fetch(lib.url(q), { headers: { Referer: "https://ebook.library.kr/" } })).text()).slice(0, 2500));
     }
     for (const it of r.items || []) console.log("    ", it.title, "|", it.author, "|", it.status, "|", it.url);
-    if (lib.id === "semas") {
-      // 소상공인 도서관은 아직 확인 중: 결과와 상관없이 실패로 치지 않고 페이지 모양만 보여준다
-      if (q !== "없는책제목zzqx") {
-        const h = await (await fetch(lib.url(q))).text();
-        for (const k of ['id="total"', 'class="tit"', "로그인", "<title>"]) { const i = h.indexOf(k); console.log("  ", k, i, i < 0 ? "" : h.slice(Math.max(0, i - 200), i + 400).replace(/\s+/g, " ")); }
-      }
-      continue;
-    }
     if (r.error || (q === "불편한 편의점" && !r.count)) bad++;
   }
 }
