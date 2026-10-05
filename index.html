@@ -48,6 +48,9 @@ h1{font-size:22px;font-weight:800;margin:0;letter-spacing:-.03em}
 /* 카드(섹션) */
 .panel{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);padding:18px 18px 16px;display:flex;flex-direction:column;gap:12px}
 h2{font-size:15px;font-weight:700;margin:0;letter-spacing:-.02em}
+.seg{display:flex;gap:2px;background:var(--soft);border-radius:999px;padding:3px}
+.segb{font:inherit;font-size:15px;font-weight:700;border:0;background:none;color:var(--muted);border-radius:999px;padding:6px 14px;cursor:pointer;letter-spacing:-.02em}
+.segb[aria-pressed="true"]{background:var(--card);color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.12)}
 .phead{display:flex;align-items:center;justify-content:space-between;gap:8px}
 
 /* 목록 공통 */
@@ -159,7 +162,10 @@ form select{flex:0 0 auto}
 
   <section class="panel">
     <div class="phead">
-      <h2>최근 글</h2>
+      <div class="seg" role="tablist" aria-label="글 종류">
+        <button type="button" class="segb" id="modeNew" aria-pressed="true">최근 글</button>
+        <button type="button" class="segb" id="modeHot" aria-pressed="false">인기글</button>
+      </div>
       <button class="btn refresh" id="refreshBtn" type="button"><span class="spin" aria-hidden="true">↻</span><span id="refreshLabel">새로고침</span></button>
     </div>
     <p class="note" id="refreshNote" hidden></p>
@@ -200,7 +206,8 @@ const DEFAULTS={
   {name:"네이버 카페",url:"https://section.cafe.naver.com/ca-fe/home",app:"navercafe"},
   {name:"법무부 전자도서관",url:"https://moj.yes24library.com/default.asp"},
   {name:"수원시 도서관",url:"https://mob.suwonlib.go.kr/"},
-  {name:"나라배움터 도서관",url:"https://ebook-nhi.mlss.co.kr/Kyobo_T3_Mobile/Web/Main/Ebook_Main.asp"}
+  {name:"나라배움터 도서관",url:"https://ebook-nhi.mlss.co.kr/Kyobo_T3_Mobile/Web/Main/Ebook_Main.asp"},
+  {name:"세이브티커 뉴스",url:"https://www.saveticker.com/news"}
  ],
  boards:[
   {name:"부동산",url:"https://m.fmkorea.com/realestate"},
@@ -217,6 +224,7 @@ function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&Array.is
   for(const x of s.shortcuts){if(x.url.includes("Kyobo_T3/Default.asp"))x.url="https://ebook-nhi.mlss.co.kr/Kyobo_T3_Mobile/Web/Main/Ebook_Main.asp"}
   for(const x of s.shortcuts){if(x.url.includes("cafe.naver.com"))x.app="navercafe"}
   for(const x of s.shortcuts) if(x.url.includes("our-table-kitchen")){x.name="우리의 식탁";x.url="https://claude.ai/artifact/NvnyNs6LDAppHWA79MrQ1z"}
+  if(!s.st){s.st=1;if(!s.shortcuts.some(x=>x.url.includes("saveticker")))s.shortcuts.push({name:"세이브티커 뉴스",url:"https://www.saveticker.com/news"})}
   return s}}catch(e){}return clone()}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(data))}catch(e){}}
 const SITES=[["dcinside","디시","var(--dc)"],["fmkorea","펨코","var(--fm)"],["mlbpark","엠팍","var(--mlb)"],["youtube","▶","var(--yt)"],["x.com","X","var(--fg)"],["naver","N","var(--naver)"],["pgr21","P","var(--fm)"],["snapcomplete","S","var(--dc)"]];
@@ -273,7 +281,8 @@ document.getElementById("resetBtn").onclick=()=>{data=clone();save();render()};
 render();
 
 /* 최근 글: posts.json(30분마다 GitHub Actions가 갱신)을 모아 시간순으로 */
-let feedDocs=[], tab="all", shown=Infinity;
+let feedDocs=[], tab="all", shown=Infinity, mode="new";
+const docsBy={new:[],hot:[]};
 function ago(iso){
   const t=Date.parse(iso); if(!t) return "";
   const m=Math.round((Date.now()-t)/60000);
@@ -281,19 +290,26 @@ function ago(iso){
   const h=Math.floor(m/60); if(h<24) return h+"시간 전";
   const d=new Date(t); return (d.getMonth()+1)+"."+d.getDate();
 }
-function short(n){return (n||"").replace(/갤러리|\s/g,"").slice(0,3)}
+function short(n){n=n||"";const m=n.match(/^불펜 최다(..)/);if(m)return m[1];return n.replace(/갤러리|개념글|\s/g,"").slice(0,3)}
 function renderFeed(){
   const tabs=document.getElementById("tabs"); tabs.innerHTML="";
   const all=[["all","전체"]].concat(feedDocs.map(d=>[d.id,d.name||d.id]));
   for(const [k,n] of all){const b=document.createElement("button");b.type="button";b.className="tab";b.textContent=n;
     b.setAttribute("aria-pressed",String(tab===k));b.onclick=()=>{tab=k;renderFeed()};tabs.appendChild(b)}
   let posts=[];
+  if(mode==="hot"){
+    // 인기글은 게시판의 순위 순서를 지키고, 전체 보기는 게시판마다 1위, 2위... 차례로 섞는다 (같은 글은 한 번만)
+    const lists=feedDocs.filter(d=>tab==="all"||tab===d.id).map(d=>(d.posts||[]).map(p=>Object.assign({board:d.name||d.id,boardUrl:d.url||""},p)));
+    const seen=new Set();
+    for(let i=0;lists.some(l=>i<l.length);i++) for(const l of lists) if(l[i]&&!seen.has(l[i].url)){seen.add(l[i].url);posts.push(l[i])}
+  }else{
   // 전체 보기는 모든 게시판의 글을 전부 시간순으로 보여준다
   for(const d of feedDocs) if(tab==="all"||tab===d.id){
     const own=(d.posts||[]).slice().sort((a,b)=>(Date.parse(b.time)||0)-(Date.parse(a.time)||0));
     for(const p of own) posts.push(Object.assign({board:d.name||d.id,boardUrl:d.url||""},p));
   }
   posts.sort((a,b)=>(Date.parse(b.time)||0)-(Date.parse(a.time)||0));
+  }
   const ul=document.getElementById("feed"); ul.innerHTML="";
   posts.slice(0,shown).forEach(p=>{
     const s=site(p.boardUrl||p.url,p.board),li=document.createElement("li"),a=document.createElement("a");
@@ -362,23 +378,26 @@ renderFeed();
    서버가 없거나 실패하면 GitHub가 30분마다 저장하는 posts.json을 보여준다. */
 const WORKER_URL="https://moa-board.copoon99.workers.dev";
 const API=location.hostname.endsWith("workers.dev")?"/api":(WORKER_URL?WORKER_URL.replace(/\/$/,"")+"/api":"");
-const FEED_IDS=["fm-realestate","dc-marvelsnap","dc-bh","dc-thesingularity","mlb-bullpen","dc-ai_utilize"];
-function applyFeed(j){feedDocs=(j.boards||[]).filter(d=>(d.posts||[]).length||d.error);renderFeed()}
-async function loadFeed(fresh){
+const IDS={new:["fm-realestate","dc-marvelsnap","dc-bh","dc-thesingularity","mlb-bullpen","dc-ai_utilize"],
+  hot:["hot-dc-marvelsnap","hot-dc-bh","hot-dc-thesingularity","hot-dc-ai_utilize","hot-mlb-like","hot-mlb-view","hot-mlb-reply"]};
+const FEED_IDS=IDS.new;
+function setDocs(m,docs){docsBy[m]=docs;if(m===mode){feedDocs=docs;renderFeed()}}
+function applyFeed(j){setDocs("new",(j.boards||[]).filter(d=>(d.posts||[]).length||d.error))}
+async function loadFeed(fresh,m=mode){
   if(API){
     // 게시판마다 따로 불러서 먼저 도착한 게시판부터 보여준다
-    const got={};
-    const results=await Promise.all(FEED_IDS.map(async id=>{
+    const got={}, ids=IDS[m];
+    const show=()=>setDocs(m,ids.filter(k=>got[k]&&((got[k].posts||[]).length||got[k].error)).map(k=>got[k]));
+    const results=await Promise.all(ids.map(async id=>{
       try{
         const r=await fetch(API+"?board="+id+(fresh?"&fresh=1":""),{cache:"no-store"});
-        if(!r.ok){got[id]={id,name:id,error:"서버 응답 "+r.status,posts:[]};feedDocs=FEED_IDS.filter(k=>got[k]).map(k=>got[k]);renderFeed();return false}
-        got[id]=await r.json();
-        feedDocs=FEED_IDS.filter(k=>got[k]&&((got[k].posts||[]).length||got[k].error)).map(k=>got[k]);
-        renderFeed(); return true;
-      }catch(e){got[id]={id,name:id,error:"연결 실패",posts:[]};feedDocs=FEED_IDS.filter(k=>got[k]).map(k=>got[k]);renderFeed();return false}
+        if(!r.ok){got[id]={id,name:id,error:"서버 응답 "+r.status,posts:[]};show();return false}
+        got[id]=await r.json(); show(); return true;
+      }catch(e){got[id]={id,name:id,error:"연결 실패",posts:[]};show();return false}
     }));
     if(results.some(Boolean)) return true;
   }
+  if(m!=="new") return false;
   try{
     const r=await fetch("posts.json?t="+Date.now(),{cache:"no-store"});
     if(r.ok) applyFeed(await r.json());
@@ -386,7 +405,18 @@ async function loadFeed(fresh){
   return false;
 }
 loadFeed();
-setInterval(loadFeed,5*60000);
+setInterval(()=>loadFeed(),5*60000);
+function setMode(m){
+  if(m===mode) return;
+  mode=m; tab="all"; feedDocs=docsBy[m];
+  document.getElementById("modeNew").setAttribute("aria-pressed",String(m==="new"));
+  document.getElementById("modeHot").setAttribute("aria-pressed",String(m==="hot"));
+  document.getElementById("feedEmpty").textContent=m==="hot"?"개념글과 불펜 베스트를 불러오는 중이에요.":"게시판에서 최신 글을 불러오는 중이에요.";
+  renderFeed();
+  if(!docsBy[m].length) loadFeed(false,m);
+}
+document.getElementById("modeNew").onclick=()=>setMode("new");
+document.getElementById("modeHot").onclick=()=>setMode("hot");
 
 /* 새로고침: 최신 posts.json을 다시 읽고, GitHub에서 수집을 바로 돌릴 수 있는 링크를 보여준다.
    링크로 수집을 시작하면 결과가 올라올 때까지 3분 동안 15초마다 다시 읽는다. */
@@ -395,7 +425,7 @@ let lastUpdated="", watching=0;
 function note(html){const n=document.getElementById("refreshNote");n.hidden=!html;n.innerHTML=html||""}
 async function fetchLatest(){
   const r=await fetch("posts.json?t="+Date.now(),{cache:"no-store"}); if(!r.ok) return null;
-  const j=await r.json(); feedDocs=(j.boards||[]).filter(d=>(d.posts||[]).length||d.error); renderFeed(); return j.updatedAt||"";
+  const j=await r.json(); setDocs("new",(j.boards||[]).filter(d=>(d.posts||[]).length||d.error)); return j.updatedAt||"";
 }
 function watch(){
   clearInterval(watching); const start=lastUpdated, until=Date.now()+180000;

@@ -8,6 +8,14 @@ export const BOARDS = [
   { id: "dc-ai_utilize", name: "AI 활용 갤러리", kind: "dc", key: "ai_utilize", url: "https://m.dcinside.com/board/ai_utilize" },
 ];
 
+// 인기글: 디시 갤러리 개념글, 불펜 베스트(추천·조회·댓글 많은 글)
+export const HOT = [
+  ...BOARDS.filter(b => b.kind === "dc").map(b => ({ ...b, id: "hot-" + b.id, name: b.name.replace(/\s*갤러리$/, "") + " 개념글",
+    recommend: true, url: b.url + "?recommend=1" })),
+  ...[["like", "추천"], ["view", "조회"], ["reply", "댓글"]].map(([m, n]) => ({ id: "hot-mlb-" + m, name: `불펜 최다${n}`, kind: "mlbpark", key: "bullpen",
+    best: m, url: `https://mlbpark.donga.com/mp/best.php?b=bullpen&m=${m}` })),
+];
+
 const UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36";
 const MAX_POSTS = 30;
 const MOBILE_UA = "Mozilla/5.0 (Linux; Android 14; SM-S918N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Mobile Safari/537.36";
@@ -118,13 +126,13 @@ async function dc(b, opts = {}) {
   if (!opts.mobileOnly) {
     for (const base of ["https://gall.dcinside.com/mgallery/board/lists/", "https://gall.dcinside.com/board/lists/", "https://gall.dcinside.com/mini/board/lists/"]) {
       let html;
-      try { html = await get(base + "?id=" + encodeURIComponent(b.key)); } catch (e) { errors.push("PC " + e.message); continue; }
+      try { html = await get(base + "?id=" + encodeURIComponent(b.key) + (b.recommend ? "&exception_mode=recommend" : "")); } catch (e) { errors.push("PC " + e.message); continue; }
       const posts = parseDc(html, b.key);
       if (posts.length) return posts;
     }
   }
   try {
-    const r = await fetch("https://m.dcinside.com/board/" + encodeURIComponent(b.key), {
+    const r = await fetch("https://m.dcinside.com/board/" + encodeURIComponent(b.key) + (b.recommend ? "?recommend=1" : ""), {
       headers: { "User-Agent": MOBILE_UA, "Accept-Language": "ko-KR,ko;q=0.9", Referer: "https://m.dcinside.com/" } });
     if (!r.ok) throw new Error("HTTP " + r.status);
     const posts = parseDcMobile(await r.text(), b.key);
@@ -160,7 +168,9 @@ export function parseMlbpark(html) {
 }
 
 async function mlbpark(b) {
-  const posts = parseMlbpark(await get(`https://mlbpark.donga.com/mp/b.php?b=${b.key}&m=list`));
+  const posts = parseMlbpark(await get(b.best ? b.url : `https://mlbpark.donga.com/mp/b.php?b=${b.key}&m=list`));
+  // 베스트 목록은 날짜만 있어서 시각 대신 순위 순서를 그대로 쓴다
+  if (b.best) for (const p of posts) p.time = "";
   if (!posts.length) throw new Error("엠팍 목록을 찾지 못함");
   return posts;
 }
@@ -206,8 +216,8 @@ export async function collectOne(b, updatedAt = new Date().toISOString()) {
 }
 
 // 모든 게시판을 동시에 읽는다.
-export async function collect() {
+export async function collect(list = BOARDS) {
   const updatedAt = new Date().toISOString();
-  const boards = await Promise.all(BOARDS.map(b => collectOne(b, updatedAt)));
+  const boards = await Promise.all(list.map(b => collectOne(b, updatedAt)));
   return { updatedAt, boards };
 }
