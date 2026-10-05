@@ -297,19 +297,12 @@ function renderFeed(){
   for(const [k,n] of all){const b=document.createElement("button");b.type="button";b.className="tab";b.textContent=n;
     b.setAttribute("aria-pressed",String(tab===k));b.onclick=()=>{tab=k;renderFeed()};tabs.appendChild(b)}
   let posts=[];
-  if(mode==="hot"){
-    // 인기글은 게시판의 순위 순서를 지키고, 전체 보기는 게시판마다 1위, 2위... 차례로 섞는다 (같은 글은 한 번만)
-    const lists=feedDocs.filter(d=>tab==="all"||tab===d.id).map(d=>(d.posts||[]).map(p=>Object.assign({board:d.name||d.id,boardUrl:d.url||""},p)));
-    const seen=new Set();
-    for(let i=0;lists.some(l=>i<l.length);i++) for(const l of lists) if(l[i]&&!seen.has(l[i].url)){seen.add(l[i].url);posts.push(l[i])}
-  }else{
-  // 전체 보기는 모든 게시판의 글을 전부 시간순으로 보여준다
+  // 모든 게시판의 글을 시간순으로 보여준다 (인기글에서 겹치는 불펜 글은 한 번만)
+  const seen=new Set();
   for(const d of feedDocs) if(tab==="all"||tab===d.id){
-    const own=(d.posts||[]).slice().sort((a,b)=>(Date.parse(b.time)||0)-(Date.parse(a.time)||0));
-    for(const p of own) posts.push(Object.assign({board:d.name||d.id,boardUrl:d.url||""},p));
+    for(const p of d.posts||[]) if(!seen.has(p.url)){seen.add(p.url);posts.push(Object.assign({board:d.name||d.id,boardUrl:d.url||""},p))}
   }
   posts.sort((a,b)=>(Date.parse(b.time)||0)-(Date.parse(a.time)||0));
-  }
   const ul=document.getElementById("feed"); ul.innerHTML="";
   posts.slice(0,shown).forEach(p=>{
     const s=site(p.boardUrl||p.url,p.board),li=document.createElement("li"),a=document.createElement("a");
