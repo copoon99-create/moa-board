@@ -24,6 +24,8 @@ async function get(url) {
   return r.text();
 }
 
+const loanStatus = (stock, loan) => stock ? (loan < stock ? "대출 가능" : "모두 대출 중") + ` (보유 ${stock}, 대출 ${loan})` : "";
+
 // 법무부 전자도서관 (YES24)
 export function parseYes24(html, base) {
   const count = num(pick(html, /class="total"[^>]*>\s*전체\s*<em>([\d,]+)/));
@@ -32,7 +34,7 @@ export function parseYes24(html, base) {
     if (!a) return null;
     const stock = num(pick(b, /보유\s*<strong>(\d+)/)), loan = num(pick(b, /대출\s*<strong>(\d+)/));
     return { title: clean(a[2]), author: clean(pick(b, /<p class="writer">([\s\S]*?)<\/p>/)), url: abs(base, a[1]),
-      status: stock ? (loan < stock ? "대출 가능" : "모두 대출 중") + ` (보유 ${stock}, 대출 ${loan})` : "" };
+      status: loanStatus(stock, loan) };
   }).filter(Boolean);
   return { count: count || items.length, items };
 }
@@ -45,8 +47,11 @@ export function parseKyobo(html, base) {
   let m;
   while ((m = re.exec(html))) {
     const rest = m[3];
+    // 예: "대출현황 : 대출 3 권 / 보유10권 &nbsp&nbsp 예약현황 : 0권"
+    const present = clean(pick(rest, /<p class="book_present">([\s\S]*?)<\/p>/).replace(/&nbsp;?/g, " "));
+    const lm = present.match(/대출\s*(\d+)\s*권\s*\/\s*보유\s*(\d+)/);
     items.push({ title: clean(m[2]), author: clean(pick(rest, /<p class="author">([\s\S]*?)<\/p>/)), url: abs(base, m[1]),
-      status: clean(pick(rest, /<p class="book_present">([\s\S]*?)<\/p>/)) });
+      status: lm ? loanStatus(+lm[2], +lm[1]) : present });
   }
   return { count: count || items.length, items };
 }
