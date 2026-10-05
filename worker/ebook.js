@@ -129,6 +129,11 @@ export const LIBS = [
       + encodeURIComponent(q.replace(/ /g, "")),
     parse: parseGgl,
   },
+  {
+    id: "semas", name: "소상공인", home: "https://semas.dkyobobook.co.kr/main.ink",
+    url: q => "https://semas.dkyobobook.co.kr/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt=" + encodeURIComponent(q),
+    parse: parseElibrary,
+  },
 ];
 
 export async function searchLib(lib, q) {
