@@ -36,9 +36,10 @@ a{color:inherit}
 .cols{display:flex;flex-direction:column;gap:14px}
 .side{display:contents}
 .o1{order:1}.o2{order:2}.feedp{order:3}.o4{order:4}.o5{order:5}.o6{order:6}
-@media (min-width:960px){
+/* 폴드 펼친 화면(폭 약 840px)부터 두 칸 */
+@media (min-width:720px){
   .wrap{max-width:1180px}
-  .cols{display:grid;grid-template-columns:minmax(300px,380px) 1fr;gap:16px;align-items:start}
+  .cols{display:grid;grid-template-columns:minmax(260px,32%) 1fr;gap:14px;align-items:start}
   .side{display:flex;flex-direction:column;gap:14px;position:sticky;top:72px;max-height:calc(100vh - 88px);overflow:auto;scrollbar-width:thin}
 }
 /* 게시판 원래 페이지: 접어두는 칸 */
@@ -174,7 +175,7 @@ form select{flex:0 0 auto}
   <section class="panel slim o2">
     <form class="esearch" id="ebookForm" role="search">
       <span class="elabel" aria-hidden="true">전자책</span>
-      <input id="ebookQ" type="search" placeholder="책 제목 (도서관 6곳 검색)" aria-label="전자책 찾기: 책 제목" required>
+      <input id="ebookQ" type="search" placeholder="책 제목 검색" aria-label="전자책 찾기: 책 제목" required>
       <button class="btn" type="submit">찾기</button>
     </form>
     <ul class="libs" id="libs" hidden></ul>
