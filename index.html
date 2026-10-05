@@ -118,7 +118,7 @@ form select{flex:0 0 auto}
 .feed li{align-items:flex-start;gap:10px}
 .feed li a{gap:10px;padding:12px 2px;align-items:flex-start;border-radius:10px}
 .feed li a:hover .title{color:var(--accent)}
-.feed .badge{flex:none;min-width:5.4em;max-width:9em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border:0;cursor:pointer;font-family:inherit;margin-top:13px!important;text-align:center;font-size:11px;font-weight:700;color:var(--c);background:color-mix(in srgb,var(--c) 12%,transparent);border-radius:7px;padding:3px 6px;margin-top:1px}
+.feed .badge{flex:none;width:5.6em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border:0;cursor:pointer;font-family:inherit;margin-top:13px!important;text-align:center;font-size:11px;font-weight:700;color:var(--c);background:color-mix(in srgb,var(--c) 12%,transparent);border-radius:7px;padding:3px 6px;margin-top:1px}
 .feed .title{font-size:15px;line-height:1.45;word-break:break-all;transition:color .15s}
 .feed .cm{color:var(--accent);font-weight:700;font-size:13px}
 .feed .meta{color:var(--faint);font-size:12px;font-variant-numeric:tabular-nums;margin-top:2px}
@@ -291,10 +291,11 @@ function ago(iso){
   const h=Math.floor(m/60); if(h<24) return h+"시간 전";
   const d=new Date(t); return (d.getMonth()+1)+"."+d.getDate();
 }
-function short(n){return (n||"").replace(/\s*갤러리/g,"").replace("특이점이 온다","특이점").trim()}
+// 탭과 글 옆 이름표에 쓰는 짧은 이름 (인기글 화면에서는 "개념글", "최다"도 뺀다)
+function short(n){n=(n||"").replace(/\s*갤러리/g,"").replace("특이점이 온다","특이점");if(mode==="hot")n=n.replace(/\s*개념글/,"").replace("최다","");return n.trim()}
 function renderFeed(){
   const tabs=document.getElementById("tabs"); tabs.innerHTML="";
-  const all=[["all","전체"]].concat(feedDocs.map(d=>[d.id,d.name||d.id]));
+  const all=[["all","전체"]].concat(feedDocs.map(d=>[d.id,short(d.name||d.id)]));
   for(const [k,n] of all){const b=document.createElement("button");b.type="button";b.className="tab";b.textContent=n;
     b.setAttribute("aria-pressed",String(tab===k));b.onclick=()=>{tab=k;renderFeed()};tabs.appendChild(b)}
   let posts=[];
@@ -322,11 +323,12 @@ function renderFeed(){
   ul.hidden=!posts.length;
   document.getElementById("feedEmpty").hidden=!!posts.length;
   document.getElementById("moreBtn").hidden=posts.length<=shown;
-  const errs=feedDocs.filter(d=>d.error).map(d=>(d.name||d.id)+" ("+d.error+")");
-  const fe=document.getElementById("feedErr"); fe.hidden=!errs.length; fe.textContent=errs.length?"불러오지 못한 게시판: "+errs.join(", "):"";
+  const errs=feedDocs.filter(d=>d.error&&!(d.posts||[]).length).map(d=>short(d.name||d.id));
+  const fe=document.getElementById("feedErr"); fe.hidden=!errs.length; fe.textContent=errs.length?"지금 못 불러온 게시판: "+errs.join(", "):"";
   tabs.hidden=!feedDocs.length;
   const up=feedDocs.map(d=>Date.parse(d.updatedAt)||0).reduce((a,b)=>Math.max(a,b),0);
-  const ue=document.getElementById("updated"); ue.hidden=!up; if(up) ue.textContent="마지막으로 모은 시각: "+ago(new Date(up).toISOString());
+  const rb=document.getElementById("refreshBtn"); document.getElementById("refreshLabel").textContent=up?ago(new Date(up).toISOString()):"새로고침";
+  rb.title="새로고침"+(up?" (마지막으로 모은 시각: "+ago(new Date(up).toISOString())+")":"");
 }
 document.getElementById("moreBtn").onclick=()=>{shown+=40;renderFeed()};
 
@@ -376,10 +378,13 @@ renderFeed();
    서버가 없거나 실패하면 GitHub가 30분마다 저장하는 posts.json을 보여준다. */
 const WORKER_URL="https://moa-board.copoon99.workers.dev";
 const API=location.hostname.endsWith("workers.dev")?"/api":(WORKER_URL?WORKER_URL.replace(/\/$/,"")+"/api":"");
-const IDS={new:["fm-realestate","dc-marvelsnap","dc-bh","dc-thesingularity","mlb-bullpen","dc-ai_utilize"],
+const IDS={new:["dc-marvelsnap","dc-bh","dc-thesingularity","mlb-bullpen","dc-ai_utilize"],
   hot:["hot-dc-marvelsnap","hot-dc-bh","hot-dc-thesingularity","hot-dc-ai_utilize","hot-mlb-like","hot-mlb-view","hot-mlb-reply"]};
 const FEED_IDS=IDS.new;
-function setDocs(m,docs){docsBy[m]=docs;if(m===mode){feedDocs=docs;renderFeed()}}
+const NAMES={"dc-marvelsnap":"마블 스냅 갤러리","dc-bh":"보호직 갤러리","dc-thesingularity":"특이점이 온다 갤러리","mlb-bullpen":"불펜","dc-ai_utilize":"AI 활용 갤러리",
+  "hot-dc-marvelsnap":"마블 스냅 개념글","hot-dc-bh":"보호직 개념글","hot-dc-thesingularity":"특이점이 온다 개념글","hot-dc-ai_utilize":"AI 활용 개념글",
+  "hot-mlb-like":"불펜 최다추천","hot-mlb-view":"불펜 최다조회","hot-mlb-reply":"불펜 최다댓글"};
+function setDocs(m,docs){docs=docs.filter(d=>d.id!=="fm-realestate");docsBy[m]=docs;if(m===mode){feedDocs=docs;renderFeed()}}
 function applyFeed(j){setDocs("new",(j.boards||[]).filter(d=>(d.posts||[]).length||d.error))}
 async function loadFeed(fresh,m=mode){
   if(API){
@@ -389,9 +394,9 @@ async function loadFeed(fresh,m=mode){
     const results=await Promise.all(ids.map(async id=>{
       try{
         const r=await fetch(API+"?board="+id+(fresh?"&fresh=1":""),{cache:"no-store"});
-        if(!r.ok){got[id]={id,name:id,error:"서버 응답 "+r.status,posts:[]};show();return false}
+        if(!r.ok){got[id]={id,name:NAMES[id]||id,error:"서버 응답 "+r.status,posts:[]};show();return false}
         got[id]=await r.json(); show(); return true;
-      }catch(e){got[id]={id,name:id,error:"연결 실패",posts:[]};show();return false}
+      }catch(e){got[id]={id,name:NAMES[id]||id,error:"연결 실패",posts:[]};show();return false}
     }));
     if(results.some(Boolean)) return true;
   }
