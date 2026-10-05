@@ -13,6 +13,7 @@ body{margin:0}
   --bg:#f4f5f7; --card:#ffffff; --fg:#17181c; --muted:#6b7079; --faint:#9aa0a8; --line:#e8eaee; --soft:#f1f2f5;
   --accent:#4f5bd5; --accent-fg:#ffffff;
   --dc:#4659c8; --fm:#2f7de1; --mlb:#e0533d; --yt:#ff0033; --naver:#03a94d; --ok:#14935a;
+  --c-marvelsnap:#7c3aed; --c-bh:#0d9488; --c-thesingularity:#2563eb; --c-ai_utilize:#c2410c; --c-bullpen:#e11d48;
   --shadow:0 1px 2px rgba(16,24,40,.04),0 4px 16px rgba(16,24,40,.05);
   --r:18px;
   --body:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
@@ -21,11 +22,13 @@ body{margin:0}
   --bg:#0e0f12; --card:#17191d; --fg:#eceef1; --muted:#9a9fa8; --faint:#6c717a; --line:#25282e; --soft:#1e2126;
   --accent:#8b93ff; --accent-fg:#0e0f12;
   --dc:#8f9cff; --fm:#6aa8ff; --mlb:#ff8a73; --yt:#ff4d6a; --naver:#2fd27a; --ok:#3ccf8e;
+  --c-marvelsnap:#b794ff; --c-bh:#2dd4bf; --c-thesingularity:#7aa7ff; --c-ai_utilize:#fb923c; --c-bullpen:#ff6b8a;
   --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0e0f12; --card:#17191d; --fg:#eceef1; --muted:#9a9fa8; --faint:#6c717a; --line:#25282e; --soft:#1e2126;
   --accent:#8b93ff; --accent-fg:#0e0f12;
   --dc:#8f9cff; --fm:#6aa8ff; --mlb:#ff8a73; --yt:#ff4d6a; --naver:#2fd27a; --ok:#3ccf8e;
+  --c-marvelsnap:#b794ff; --c-bh:#2dd4bf; --c-thesingularity:#7aa7ff; --c-ai_utilize:#fb923c; --c-bullpen:#ff6b8a;
   --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark}
 
 body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;letter-spacing:-.01em}
@@ -133,6 +136,7 @@ form select{flex:0 0 auto}
 .tab{flex:none;font:inherit;font-size:13px;font-weight:600;border:0;background:var(--soft);color:var(--muted);border-radius:999px;padding:7px 13px;cursor:pointer;white-space:nowrap;transition:background .15s,color .15s}
 .tab:hover{color:var(--fg)}
 .tab[aria-pressed="true"]{background:var(--fg);color:var(--card)}
+.tab .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--c);margin-right:6px;vertical-align:1px}
 .feed li{border-top:1px solid var(--line)}
 .feed li:first-child{border-top:0}
 .feed li{align-items:flex-start;gap:10px}
@@ -386,10 +390,14 @@ function showSync(){
   document.getElementById("syncBtn").textContent=syncCode?"읽은 글 연동 중 (코드 보기)":"읽은 글 다른 기기와 연동하기";
 }
 
+// 게시판마다 고유 색 (개념글·불펜 베스트도 원래 게시판 색을 따른다)
+function boardColor(id){const k=(id||"").replace(/^hot-/,"").replace(/^dc-/,"").replace(/^mlb-(like|view|reply)$/,"bullpen").replace(/^mlb-/,"");
+  return ["marvelsnap","bh","thesingularity","ai_utilize","bullpen"].includes(k)?"var(--c-"+k+")":"";}
 function renderFeed(){
   const tabs=document.getElementById("tabs"); tabs.innerHTML="";
   const all=[["all","전체"]].concat(feedDocs.map(d=>[d.id,short(d.name||d.id)]));
   for(const [k,n] of all){const b=document.createElement("button");b.type="button";b.className="tab";b.textContent=n;
+    const bc=boardColor(k);if(bc){const d=document.createElement("span");d.className="dot";d.style.setProperty("--c",bc);b.prepend(d)}
     b.setAttribute("aria-pressed",String(tab===k));b.onclick=()=>{tab=k;renderFeed()};tabs.appendChild(b)}
   let posts=[];
   // 모든 게시판의 글을 시간순으로 보여준다 (인기글에서 겹치는 불펜 글은 한 번만)
@@ -406,7 +414,7 @@ function renderFeed(){
     a.addEventListener("click",()=>markRead(p.url,li));a.addEventListener("auxclick",e=>{if(e.button===1)markRead(p.url,li)});
     a.innerHTML='<span class="txt"><span class="title"></span><span class="meta"></span></span>';
     // 게시판 이름을 누르면 그 게시판 글만 본다
-    const bd=document.createElement("button");bd.type="button";bd.className="badge";bd.textContent=short(p.board);bd.style.setProperty("--c",s.c);
+    const bd=document.createElement("button");bd.type="button";bd.className="badge";bd.textContent=short(p.board);bd.style.setProperty("--c",boardColor(p.boardId)||s.c);
     bd.title=p.board+"만 보기";bd.onclick=()=>{tab=p.boardId;shown=Infinity;renderFeed();
       const t=document.querySelector('#tabs .tab[aria-pressed="true"]');if(t)t.scrollIntoView({block:"nearest",inline:"center"});
       document.getElementById("tabs").scrollIntoView({block:"nearest",behavior:"smooth"})};
