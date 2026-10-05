@@ -85,10 +85,19 @@ export function parseGgl(text, base) {
   const j = JSON.parse(text);
   if (j.httpStatus && j.httpStatus !== "OK") throw new Error(j.message || "검색 실패");
   const d = j.data || {}, res = (d.contents && d.contents.result) || {};
-  const items = (res.rows || []).map(r => r.fields || {}).map(f => ({
-    title: f.TITLE || "", author: [f.AUTHOR, f.PUBLISHER].filter(Boolean).join(" | "),
-    url: base, status: loanStatus(+f.COPYS || 0, +f.LOAN_CNT || 0),
-  })).filter(it => it.title);
+  // 책 목록이 어디에 들었든 TITLE(또는 title)이 있는 객체를 모은다
+  const rows = [];
+  (function walk(v) {
+    if (Array.isArray(v)) return v.forEach(walk);
+    if (!v || typeof v !== "object") return;
+    const f = v.fields || v;
+    if (typeof (f.TITLE || f.title) === "string") return rows.push(f);
+    Object.values(v).forEach(walk);
+  })(d);
+  const items = rows.map(f => ({
+    title: f.TITLE || f.title, author: [f.AUTHOR || f.author, f.PUBLISHER || f.publisher].filter(Boolean).join(" | "),
+    url: base, status: loanStatus(+(f.COPYS ?? f.copys) || 0, +(f.LOAN_CNT ?? f.loanCnt) || 0),
+  }));
   return { count: +d.totalElements || +res.total_count || items.length, items };
 }
 
