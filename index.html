@@ -60,6 +60,12 @@ header{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-c
   margin:0 -16px;padding:14px 16px 12px;background:color-mix(in srgb,var(--bg) 82%,transparent);
   backdrop-filter:saturate(1.6) blur(14px);-webkit-backdrop-filter:saturate(1.6) blur(14px)}
 .home{color:inherit;text-decoration:none}
+.titlerow{display:flex;align-items:center;gap:12px}
+.views{display:flex;gap:2px;background:var(--soft);border-radius:999px;padding:3px}
+.vbtn{font:inherit;font-size:13px;font-weight:700;border:0;background:none;color:var(--muted);border-radius:999px;padding:5px 12px;cursor:pointer}
+.vbtn[aria-pressed="true"]{background:var(--card);color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.ebookv{display:flex;flex-direction:column;gap:14px;max-width:760px;width:100%;margin:0 auto}
+body.v-ebook .cols{display:none}
 .home:active{opacity:.6}
 h1{font-size:22px;font-weight:800;margin:0;letter-spacing:-.03em}
 .sub{color:var(--muted);font-size:12.5px;margin:2px 0 0}
@@ -179,7 +185,13 @@ form select{flex:0 0 auto}
 <div class="wrap">
   <header>
     <div>
-      <h1><a class="home" href="./" title="새로고침">모아게시판</a></h1>
+      <div class="titlerow">
+        <h1><a class="home" href="./" title="새로고침">모아게시판</a></h1>
+        <nav class="views" aria-label="메뉴">
+          <button type="button" class="vbtn" data-view="board" aria-pressed="true">게시판</button>
+          <button type="button" class="vbtn" data-view="ebook" aria-pressed="false">전자책</button>
+        </nav>
+      </div>
       <p class="sub">바로가기 <span id="scount">9</span>곳 · 게시판 <span id="count">6</span>곳</p>
     </div>
     <button class="btn" id="editBtn" type="button">편집</button>
@@ -192,14 +204,6 @@ form select{flex:0 0 auto}
     <ul class="shortcuts" id="slist"></ul>
   </section>
 
-  <section class="panel slim o2">
-    <form class="esearch" id="ebookForm" role="search">
-      <span class="elabel" aria-hidden="true">전자책</span>
-      <input id="ebookQ" type="search" placeholder="책 제목 검색" aria-label="전자책 찾기: 책 제목" required>
-      <button class="btn" type="submit">찾기</button>
-    </form>
-    <ul class="libs" id="libs" hidden></ul>
-  </section>
 
   <details class="panel boards o4" id="boardsBox">
     <summary><h2>게시판 원래 페이지</h2><span class="bcount" id="bcount"></span></summary>
@@ -250,6 +254,21 @@ form select{flex:0 0 auto}
   </section>
   </div>
 
+  <div class="ebookv" id="ebookView" hidden>
+  <section class="panel">
+    <h2>전자책 찾기</h2>
+    <form class="esearch" id="ebookForm" role="search">
+      <input id="ebookQ" type="search" placeholder="책 제목 (도서관 6곳 검색)" aria-label="전자책 찾기: 책 제목" required>
+      <button class="btn" type="submit">찾기</button>
+    </form>
+    <ul class="libs" id="libs" hidden></ul>
+  </section>
+  <section class="panel">
+    <h2>전자도서관 바로가기</h2>
+    <ul class="shortcuts" id="liblinks"></ul>
+  </section>
+  </div>
+
 </div>
 
 <script>
@@ -261,9 +280,6 @@ const DEFAULTS={
   {name:"스냅 덱",url:"https://snapcomplete.com/play/matches/decks"},
   {name:"PGR21",url:"https://www.pgr21.com/"},
   {name:"네이버 카페",url:"https://section.cafe.naver.com/ca-fe/home",app:"navercafe"},
-  {name:"법무부 전자도서관",url:"https://moj.yes24library.com/default.asp"},
-  {name:"수원시 도서관",url:"https://mob.suwonlib.go.kr/"},
-  {name:"나라배움터 도서관",url:"https://ebook-nhi.mlss.co.kr/Kyobo_T3_Mobile/Web/Main/Ebook_Main.asp"},
   {name:"세이브티커 뉴스",url:"https://www.saveticker.com/news"}
  ],
  boards:[
@@ -281,6 +297,8 @@ function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&Array.is
   for(const x of s.shortcuts){if(x.url.includes("Kyobo_T3/Default.asp"))x.url="https://ebook-nhi.mlss.co.kr/Kyobo_T3_Mobile/Web/Main/Ebook_Main.asp"}
   for(const x of s.shortcuts){if(x.url.includes("cafe.naver.com"))x.app="navercafe"}
   for(const x of s.shortcuts) if(x.url.includes("our-table-kitchen")){x.name="우리의 식탁";x.url="https://claude.ai/artifact/NvnyNs6LDAppHWA79MrQ1z"}
+  // 도서관 바로가기는 전자책 메뉴로 옮겼다
+  if(!s.lib){s.lib=1;s.shortcuts=s.shortcuts.filter(x=>!/yes24library|suwonlib|mlss\.co\.kr|dkyobobook|library\.kr|goe\.go\.kr/.test(x.url))}
   if(!s.st){s.st=1;if(!s.shortcuts.some(x=>x.url.includes("saveticker")))s.shortcuts.push({name:"세이브티커 뉴스",url:"https://www.saveticker.com/news"})}
   return s}}catch(e){}return clone()}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(data))}catch(e){}}
@@ -440,13 +458,31 @@ document.getElementById("moreBtn").onclick=()=>{shown+=40;renderFeed()};
 /* 전자책 찾기: 도서관마다 따로 물어보고 먼저 온 곳부터 보여준다.
    login 이 있는 곳은 로그인해야 검색되는 곳이라 바로가기만 보여준다. */
 const LIBS=[
-  {id:"moj",name:"법무부 전자도서관"},
-  {id:"suwon",name:"수원시 전자도서관"},
-  {id:"nhi",name:"나라배움터 전자도서관"},
-  {id:"goe",name:"경기도교육청 전자도서관"},
-  {id:"ggl",name:"경기도서관 전자책"},
-  {id:"semas",name:"소상공인 전자도서관"},
+  {id:"moj",name:"법무부 전자도서관",home:"https://moj.yes24library.com/default.asp"},
+  {id:"suwon",name:"수원시 전자도서관",home:"https://ebook.suwonlib.go.kr/elibrary-front/"},
+  {id:"nhi",name:"나라배움터 전자도서관",home:"https://ebook-nhi.mlss.co.kr/Kyobo_T3_Mobile/Web/Main/Ebook_Main.asp"},
+  {id:"goe",name:"경기도교육청 전자도서관",home:"https://lib.goe.go.kr/elib/index.do"},
+  {id:"ggl",name:"경기도서관 전자책",home:"https://ebook.library.kr/"},
+  {id:"semas",name:"소상공인 전자도서관",home:"https://semas.dkyobobook.co.kr/main.ink"},
 ];
+/* 전자책 메뉴: 도서관 바로가기 (수원시 도서관 홈페이지도 함께) */
+{const ul=document.getElementById("liblinks");
+  for(const l of LIBS.concat([{name:"수원시 도서관 홈페이지",home:"https://mob.suwonlib.go.kr/"}])){
+    const li=document.createElement("li"),a=document.createElement("a");a.href=l.home;a.target="_blank";a.rel="noopener";
+    a.innerHTML='<span class="chip"></span><span class="txt"><span class="name"></span></span>';
+    a.querySelector(".chip").textContent=l.name[0];a.querySelector(".chip").style.setProperty("--c","var(--accent)");
+    a.querySelector(".name").textContent=l.name;li.appendChild(a);ul.appendChild(li)}}
+/* 게시판 / 전자책 메뉴 바꾸기 (주소 끝 #ebook 으로도 열린다) */
+function setView(v){
+  document.body.classList.toggle("v-ebook",v==="ebook");
+  document.getElementById("ebookView").hidden=v!=="ebook";
+  for(const b of document.querySelectorAll(".vbtn")) b.setAttribute("aria-pressed",String(b.dataset.view===v));
+  try{localStorage.setItem("moa-view",v)}catch(e){}
+  history.replaceState(null,"",location.pathname+location.search+(v==="ebook"?"#ebook":""));
+  window.scrollTo(0,0);
+}
+for(const b of document.querySelectorAll(".vbtn")) b.onclick=()=>setView(b.dataset.view);
+{let v="board";try{v=localStorage.getItem("moa-view")||"board"}catch(e){}if(location.hash==="#ebook")v="ebook";if(v==="ebook")setView("ebook")}
 function libRow(l,state,r){
   const li=document.createElement("li");
   li.innerHTML='<div class="lh"><span class="ln"></span><span class="st"></span><a class="open" target="_blank" rel="noopener">열기 ›</a></div>';
