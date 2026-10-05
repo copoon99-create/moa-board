@@ -167,10 +167,36 @@ export function parseMlbpark(html) {
   return posts;
 }
 
+const BEST_MAX = 20;
+const mlbTimes = new Map(); // 같은 Worker 안에서는 한 번 읽은 글 시각을 다시 쓴다
+async function mlbparkTime(url) {
+  if (mlbTimes.has(url)) return mlbTimes.get(url);
+  try {
+    const r = await fetch(url, { headers: { "User-Agent": UA, "Accept-Language": "ko-KR,ko;q=0.9" } });
+    if (!r.ok || !r.body) return "";
+    const reader = r.body.getReader(), dec = new TextDecoder();
+    let text = "", time = "";
+    while (text.length < 60000) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      text += dec.decode(value, { stream: true });
+      const m = text.match(/contentWriteDate'?"?\s*:\s*['"](\d{4}-\d{2}-\d{2} \d{2}:\d{2}(?::\d{2})?)/)
+        || text.match(/<span class=['"]val['"]>(\d{4}-\d{2}-\d{2} \d{2}:\d{2})<\/span>/);
+      if (m) { time = parseTime(m[1]); break; }
+    }
+    reader.cancel().catch(() => {});
+    if (time) mlbTimes.set(url, time);
+    return time;
+  } catch { return ""; }
+}
+
 async function mlbpark(b) {
   const posts = parseMlbpark(await get(b.best ? b.url : `https://mlbpark.donga.com/mp/b.php?b=${b.key}&m=list`));
-  // 베스트 목록은 날짜만 있어서 시각 대신 순위 순서를 그대로 쓴다
-  if (b.best) for (const p of posts) p.time = "";
+  // 베스트 목록은 날짜만 있어서, 글마다 앞부분만 읽어 작성 시각(contentWriteDate)을 가져온다
+  if (b.best) {
+    posts.length = Math.min(posts.length, BEST_MAX);
+    await Promise.all(posts.map(async p => { p.time = (await mlbparkTime(p.url)) || p.time; }));
+  }
   if (!posts.length) throw new Error("엠팍 목록을 찾지 못함");
   return posts;
 }
