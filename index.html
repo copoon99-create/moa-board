@@ -178,11 +178,13 @@ function site(u,name){
 function item(kind,b,i,arr){
   const s=site(b.url,b.name),li=document.createElement("li"),a=document.createElement("a");
   a.href=b.url;a.target="_blank";a.rel="noopener";
-  if(b.app==="navercafe"){ /* 네이버 카페 앱으로 열기. 안드로이드는 앱이 없으면 웹으로 */
-    a.href=/Android/i.test(navigator.userAgent)
-      ?"intent://#Intent;scheme=navercafe;package=com.nhn.android.navercafe;S.browser_fallback_url="+encodeURIComponent(b.url)+";end"
-      :"navercafe://";
-    a.removeAttribute("target");
+  if(b.app==="navercafe"){ /* 휴대폰에서만 네이버 카페 앱으로 열기. 노트북·PC는 웹사이트 그대로 */
+    const ua=navigator.userAgent;
+    const ios=/iPhone|iPad|iPod/i.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1);
+    if(/Android/i.test(ua)){
+      a.href="intent://#Intent;scheme=navercafe;package=com.nhn.android.navercafe;S.browser_fallback_url="+encodeURIComponent(b.url)+";end";
+      a.removeAttribute("target");
+    }else if(ios){a.href="navercafe://";a.removeAttribute("target")}
   }
   a.innerHTML=kind==="boards"
     ?'<span class="chip"></span><span class="txt"><span class="name"></span><span class="url"></span></span><span class="go">›</span>'
