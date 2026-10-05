@@ -12,8 +12,7 @@ for (const u of urls) {
     for (const f of html.match(/<form[\s\S]*?<\/form>/gi) || []) console.log("FORM:", f.replace(/\s+/g, " ").slice(0, 700));
     const links = [...new Set((html.match(/(?:href|action|src)=["'][^"']*(?:[Ss]earch|srch|Srch|ebook|Ebook|SEARCH)[^"']*["']/g) || []))];
     console.log("LINKS:", links.slice(0, 40).join("\n  "));
-    const q = process.env.NEEDLE;
-    if (q) { let i = html.indexOf(q), n = 0; while (i >= 0 && n < 3) { console.log("NEEDLE@", i, html.slice(Math.max(0, i - 600), i + 600).replace(/\s+/g, " ")); i = html.indexOf(q, i + 1); n++; } }
+    for (const q of (process.env.NEEDLE || "").split("|").filter(Boolean)) { let i = html.indexOf(q), n = 0; while (i >= 0 && n < 4) { console.log("NEEDLE[" + q + "]@", i, html.slice(Math.max(0, i - 250), i + 350).replace(/\s+/g, " ")); i = html.indexOf(q, i + 1); n++; } }
     if (process.env.DUMP) console.log("BODY:", html.replace(/\s+/g, " ").slice(0, +process.env.DUMP));
   } catch (e) { console.log("ERR", e.message); }
 }
