@@ -195,7 +195,7 @@ async function mlbpark(b) {
   // 베스트 목록은 날짜만 있어서, 글마다 앞부분만 읽어 작성 시각(contentWriteDate)을 가져온다
   if (b.best) {
     posts.length = Math.min(posts.length, BEST_MAX);
-    await Promise.all(posts.map(async p => { p.time = (await mlbparkTime(p.url)) || p.time; }));
+    await Promise.all(posts.map(async p => { p.time = (await mlbparkTime(p.url)) || ""; }));
   }
   if (!posts.length) throw new Error("엠팍 목록을 찾지 못함");
   return posts;
