@@ -78,6 +78,17 @@ form select{font:inherit;padding:9px 10px;border:1px solid var(--line);border-ra
 .note a{color:var(--accent);font-weight:600}
 .feed .badge{min-width:3.6em;text-align:center}
 .foot{color:var(--muted);font-size:12px;text-align:center}
+.esearch{display:flex;gap:8px;background:none;border:0;padding:0}
+.esearch input{flex:1;min-width:0;font:inherit;font-size:15px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--fg)}
+.esearch .btn{flex:none;padding-inline:16px}
+.libs li{flex-direction:column;align-items:stretch;padding:12px 16px;gap:6px}
+.libs .lh{display:flex;align-items:center;gap:8px}
+.libs .ln{font-weight:600}
+.libs .st{font-size:12px;font-weight:700;border-radius:6px;padding:3px 7px;color:var(--c);background:color-mix(in srgb,var(--c) 14%,transparent)}
+.libs .open{flex:none;padding:0;margin-left:auto;font-size:13px;color:var(--accent);font-weight:600;text-decoration:none}
+.libs .bk{display:block;padding:0;font-size:14px;line-height:1.45;color:inherit;text-decoration:none}
+.libs .bk:hover{text-decoration:underline;background:none}
+.libs .bk small{color:var(--muted);font-size:12px}
 </style>
 
 </head>
@@ -93,6 +104,13 @@ form select{font:inherit;padding:9px 10px;border:1px solid var(--line);border-ra
 
   <h2>바로가기</h2>
   <ul class="shortcuts" id="slist"></ul>
+
+  <h2>전자책 찾기</h2>
+  <form class="esearch" id="ebookForm" role="search">
+    <input id="ebookQ" type="search" placeholder="책 제목을 넣으면 전자도서관을 한 번에 찾아봐요" aria-label="책 제목" required>
+    <button class="btn" type="submit">찾기</button>
+  </form>
+  <ul class="libs" id="libs" hidden></ul>
 
   <div class="feedhead">
     <h2>최근 글</h2>
@@ -246,6 +264,47 @@ function renderFeed(){
   const ue=document.getElementById("updated"); ue.hidden=!up; if(up) ue.textContent="마지막으로 모은 시각: "+ago(new Date(up).toISOString());
 }
 document.getElementById("moreBtn").onclick=()=>{shown+=40;renderFeed()};
+
+/* 전자책 찾기: 도서관마다 따로 물어보고 먼저 온 곳부터 보여준다.
+   login 이 있는 곳은 로그인해야 검색되는 곳이라 바로가기만 보여준다. */
+const LIBS=[
+  {id:"moj",name:"법무부 전자도서관"},
+  {id:"suwon",name:"수원시 전자도서관"},
+  {id:"nhi",name:"나라배움터 전자도서관"},
+  {id:"goe",name:"경기도교육청 전자도서관"},
+  {id:"sbiz",name:"소상공인 지식배움터",login:"https://edu.sbiz.or.kr/edu/online/ebookInfo.do?menuCode=WWW008001"},
+];
+function libRow(l,state,r){
+  const li=document.createElement("li");
+  li.innerHTML='<div class="lh"><span class="ln"></span><span class="st"></span><a class="open" target="_blank" rel="noopener">열기 ›</a></div>';
+  li.querySelector(".ln").textContent=l.name;
+  const st=li.querySelector(".st"),op=li.querySelector(".open");
+  const [txt,c]={wait:["찾는 중","var(--muted)"],yes:["있음 "+((r&&r.count)||"")+"권","var(--accent)"],no:["없음","var(--mlb)"],
+    err:["확인 못함","var(--muted)"],login:["로그인해야 검색돼요","var(--muted)"]}[state];
+  st.textContent=txt;st.style.setProperty("--c",c);
+  const href=(r&&r.url)||l.login;
+  if(href)op.href=href;else op.remove();
+  for(const it of (r&&r.items)||[]){
+    const a=document.createElement("a");a.className="bk";a.href=it.url;a.target="_blank";a.rel="noopener";
+    a.textContent=it.title+" ";
+    const sm=document.createElement("small");sm.textContent=[it.author,it.status].filter(Boolean).join(" · ");a.appendChild(sm);
+    li.appendChild(a);
+  }
+  return li;
+}
+document.getElementById("ebookForm").onsubmit=e=>{
+  e.preventDefault();
+  const q=document.getElementById("ebookQ").value.trim(); if(!q)return;
+  const ul=document.getElementById("libs"); ul.innerHTML=""; ul.hidden=false;
+  for(const l of LIBS){
+    const row=libRow(l,l.login?"login":"wait"); ul.appendChild(row);
+    if(l.login||!API)continue;
+    fetch(API+"/ebook?lib="+l.id+"&q="+encodeURIComponent(q)).then(r=>r.json()).then(r=>{
+      if(document.getElementById("ebookQ").value.trim()!==q)return;
+      row.replaceWith(libRow(l,r.error?"err":r.count?"yes":"no",r));
+    }).catch(()=>{row.replaceWith(libRow(l,"err"))});
+  }
+};
 renderFeed();
 /* 바로 모으기 서버(Cloudflare Worker). 그 서버에서 열면 같은 주소의 /api, 아니면 아래 주소를 쓴다.
    서버가 없거나 실패하면 GitHub가 30분마다 저장하는 posts.json을 보여준다. */
