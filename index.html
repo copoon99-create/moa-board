@@ -148,6 +148,7 @@ form select{flex:0 0 auto}
 .feed li{border-top:1px solid var(--line)}
 .feed li:first-child{border-top:0}
 .feed li{align-items:flex-start;gap:10px}
+.newbar{position:fixed;top:78px;left:50%;transform:translateX(-50%);z-index:6;font:inherit;font-size:13px;font-weight:700;border:0;border-radius:999px;padding:8px 16px;background:var(--accent);color:var(--accent-fg);box-shadow:0 4px 14px rgba(0,0,0,.18);cursor:pointer}
 .feed li a{gap:10px;padding:12px 2px;align-items:flex-start;border-radius:10px}
 .feed li a:hover .title{color:var(--accent)}
 .feed li.read .title,.feed li.read a:hover .title{color:var(--faint)}
@@ -251,6 +252,7 @@ form select{flex:0 0 auto}
     <ul class="feed" id="feed" hidden></ul>
     <div class="empty" id="feedEmpty">게시판에서 최신 글을 불러오는 중이에요.</div>
     <button class="btn more" id="moreBtn" type="button" hidden>더 보기</button>
+    <button class="newbar" id="newBar" type="button" hidden></button>
   </section>
   </div>
 
@@ -358,7 +360,8 @@ document.getElementById("resetBtn").onclick=()=>{data=clone();save();render()};
 render();
 
 /* 최근 글: posts.json(30분마다 GitHub Actions가 갱신)을 모아 시간순으로 */
-let feedDocs=[], tab="all", shown=Infinity, mode="new";
+const PAGE_SHOW=40;
+let feedDocs=[], tab="all", shown=PAGE_SHOW, mode="new";
 const docsBy={new:[],hot:[]};
 function ago(iso){
   const t=Date.parse(iso); if(!t) return "";
@@ -418,7 +421,7 @@ function renderFeed(){
   const all=[["all","전체"]].concat(feedDocs.map(d=>[d.id,short(d.name||d.id)]));
   for(const [k,n] of all){const b=document.createElement("button");b.type="button";b.className="tab";b.textContent=n;
     const bc=boardColor(k);if(bc){const d=document.createElement("span");d.className="dot";d.style.setProperty("--c",bc);b.prepend(d)}
-    b.setAttribute("aria-pressed",String(tab===k));b.onclick=()=>{tab=k;renderFeed()};tabs.appendChild(b)}
+    b.setAttribute("aria-pressed",String(tab===k));b.onclick=()=>{tab=k;shown=PAGE_SHOW;renderFeed()};tabs.appendChild(b)}
   let posts=[];
   // 모든 게시판의 글을 시간순으로 보여준다 (인기글에서 겹치는 불펜 글은 한 번만)
   const seen=new Set();
@@ -426,6 +429,10 @@ function renderFeed(){
     for(const p of d.posts||[]) if(!seen.has(p.url)){seen.add(p.url);posts.push(Object.assign({board:d.name||d.id,boardId:d.id,boardUrl:d.url||""},p))}
   }
   posts.sort((a,b)=>(Date.parse(b.time)||0)-(Date.parse(a.time)||0));
+  // 최근 글은 게시판마다 불러온 만큼의 시각이 다르다. 모든 게시판이 다 불러온 시각(frontier)까지만
+  // 보여줘야 순서가 안 꼬인다. 그 아래는 스크롤하면 해당 게시판의 다음 페이지를 읽어서 채운다.
+  if(mode==="new"){const T=frontier();if(T>-Infinity)posts=posts.filter(p=>!Date.parse(p.time)||Date.parse(p.time)>=T)}
+  feedVisible=posts.length;
   const ul=document.getElementById("feed"); ul.innerHTML="";
   posts.slice(0,shown).forEach(p=>{
     const s=site(p.boardUrl||p.url,p.board),li=document.createElement("li"),a=document.createElement("a");
@@ -435,7 +442,7 @@ function renderFeed(){
     a.innerHTML='<span class="txt"><span class="title"></span><span class="meta"></span></span>';
     // 게시판 이름을 누르면 그 게시판 글만 본다
     const bd=document.createElement("button");bd.type="button";bd.className="badge";bd.textContent=short(p.board);bd.style.setProperty("--c",boardColor(p.boardId)||s.c);
-    bd.title=p.board+"만 보기";bd.onclick=()=>{tab=p.boardId;shown=Infinity;renderFeed();
+    bd.title=p.board+"만 보기";bd.onclick=()=>{tab=p.boardId;shown=PAGE_SHOW;renderFeed();
       const t=document.querySelector('#tabs .tab[aria-pressed="true"]');if(t)t.scrollIntoView({block:"nearest",inline:"center"});
       document.getElementById("tabs").scrollIntoView({block:"nearest",behavior:"smooth"})};
     const ti=a.querySelector(".title");ti.textContent=p.title;
@@ -445,7 +452,9 @@ function renderFeed(){
   });
   ul.hidden=!posts.length;
   document.getElementById("feedEmpty").hidden=!!posts.length;
-  document.getElementById("moreBtn").hidden=posts.length<=shown;
+  const mb=document.getElementById("moreBtn");
+  mb.hidden=!(posts.length>shown||(mode==="new"&&posts.length&&olderBoards().length));
+  mb.textContent=moreLoading?"지난 글 불러오는 중…":"더 보기";
   const errs=feedDocs.filter(d=>d.error&&!(d.posts||[]).length).map(d=>short(d.name||d.id));
   const fe=document.getElementById("feedErr"); fe.hidden=!errs.length; fe.textContent=errs.length?"지금 못 불러온 게시판: "+errs.join(", "):"";
   tabs.hidden=!feedDocs.length;
@@ -453,7 +462,42 @@ function renderFeed(){
   const rb=document.getElementById("refreshBtn"); document.getElementById("refreshLabel").textContent=up?ago(new Date(up).toISOString()):"새로고침";
   rb.title="새로고침"+(up?" (마지막으로 모은 시각: "+ago(new Date(up).toISOString())+")":"");
 }
-document.getElementById("moreBtn").onclick=()=>{shown+=40;renderFeed()};
+document.getElementById("moreBtn").onclick=()=>loadMore();
+/* 지난 글 더 불러오기 */
+let feedVisible=0, moreLoading=false;
+const oldest=d=>{let m=Infinity;for(const p of d.posts||[]){const t=Date.parse(p.time);if(t&&t<m)m=t}return m};
+const inTab=d=>tab==="all"||tab===d.id;
+// 아직 더 읽을 수 있는 게시판들
+function olderBoards(){return feedDocs.filter(d=>inTab(d)&&!d._done&&!d.error&&oldest(d)<Infinity)}
+function frontier(){let T=-Infinity;for(const d of olderBoards())T=Math.max(T,oldest(d));return T}
+async function loadMore(){
+  if(moreLoading) return;
+  if(feedVisible>shown){shown+=PAGE_SHOW;renderFeed();keepGoing();return}
+  if(mode!=="new"||!API) return;
+  moreLoading=true;renderFeed();
+  const before=feedVisible;
+  // 새로 보이는 글이 생길 때까지, 가장 덜 내려온 게시판부터 다음 페이지를 읽는다 (최대 6번)
+  for(let i=0;i<6&&feedVisible<=before;i++){
+    const T=frontier(), lag=olderBoards().filter(d=>oldest(d)===T);
+    if(!lag.length) break;
+    await Promise.all(lag.map(async d=>{
+      const pg=(d._page||1)+1;
+      try{
+        const r=await fetch(API+"?board="+d.id+"&page="+pg,{cache:"no-store"});const j=r.ok?await r.json():null;
+        const have=new Set((d.posts||[]).map(p=>p.url));const add=((j&&j.posts)||[]).filter(p=>!have.has(p.url));
+        d._page=pg;d.posts=(d.posts||[]).concat(add);
+        if(!add.length||pg>=20) d._done=true;
+      }catch(e){d._done=true}
+    }));
+    renderFeed();
+  }
+  moreLoading=false;shown=Math.max(shown,Math.min(feedVisible,shown+PAGE_SHOW));renderFeed();keepGoing();
+}
+// "더 보기"가 아직 화면 근처에 있으면 (관찰자는 다시 안 알려주므로) 이어서 더 불러온다
+function keepGoing(){requestAnimationFrame(()=>{const b=document.getElementById("moreBtn");
+  if(!b.hidden&&b.getBoundingClientRect().top<innerHeight+600)loadMore()})}
+// 목록 끝의 "더 보기"가 화면에 보이면 자동으로 더 불러온다
+if("IntersectionObserver" in window) new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting))loadMore()},{rootMargin:"600px 0px"}).observe(document.getElementById("moreBtn"));
 
 /* 전자책 찾기: 도서관마다 따로 물어보고 먼저 온 곳부터 보여준다.
    login 이 있는 곳은 로그인해야 검색되는 곳이라 바로가기만 보여준다. */
@@ -531,14 +575,25 @@ async function loadFeed(fresh,m=mode){
   if(API){
     // 게시판마다 따로 불러서 먼저 도착한 게시판부터 보여준다
     const got={}, ids=IDS[m];
-    const show=()=>setDocs(m,ids.filter(k=>got[k]&&((got[k].posts||[]).length||got[k].error)).map(k=>got[k]));
+    const prev={};for(const d of docsBy[m]||[])prev[d.id]=d;
+    let fresh_n=0;
+    // 최근 글은 이미 불러온 지난 글을 지우지 않고, 새 글만 위에 붙인다
+    const merge=(id,j)=>{
+      const o=prev[id];
+      if(m!=="new"||!o||!(o.posts||[]).length||!(j.posts||[]).length) return j;
+      const have=new Set(o.posts.map(p=>p.url)), add=j.posts.filter(p=>!have.has(p.url));
+      const upd=new Map(j.posts.map(p=>[p.url,p]));
+      fresh_n+=add.length;
+      return Object.assign({},o,{updatedAt:j.updatedAt,error:j.error,posts:add.concat(o.posts.map(p=>upd.get(p.url)||p))});
+    };
+    const show=()=>{setDocs(m,ids.filter(k=>got[k]&&((got[k].posts||[]).length||got[k].error)).map(k=>got[k]));if(fresh_n)newBar(fresh_n)};
     const results=await Promise.all(ids.map(async id=>{
       try{
         let r=await fetch(API+"?board="+id+(fresh?"&fresh=1":""),{cache:"no-store"}).catch(()=>null);
         // 한 번 실패하면 잠깐 뒤에 한 번 더 시도한다
         if(!r||!r.ok){await new Promise(z=>setTimeout(z,1500));r=await fetch(API+"?board="+id+"&fresh=1",{cache:"no-store"})}
         if(!r.ok){got[id]={id,name:NAMES[id]||id,error:"서버 응답 "+r.status,posts:[]};show();return false}
-        got[id]=await r.json(); show(); return true;
+        got[id]=merge(id,await r.json()); show(); return true;
       }catch(e){got[id]={id,name:NAMES[id]||id,error:"연결 실패",posts:[]};show();return false}
     }));
     if(results.some(Boolean)) return true;
@@ -552,6 +607,15 @@ async function loadFeed(fresh,m=mode){
 }
 loadFeed();
 setInterval(()=>loadFeed(),5*60000);
+/* 새 글 알림 띠: 아래를 보고 있을 때 새 글이 들어오면 띄우고, 누르면 맨 위로 */
+let newCount=0;
+function newBar(n){
+  const b=document.getElementById("newBar");
+  if(window.scrollY<300){b.hidden=true;newCount=0;return}
+  newCount+=n;b.textContent="↑ 새 글 "+newCount+"개";b.hidden=false;
+}
+document.getElementById("newBar").onclick=()=>{window.scrollTo({top:0,behavior:"smooth"});document.getElementById("newBar").hidden=true;newCount=0};
+window.addEventListener("scroll",()=>{if(window.scrollY<150&&!document.getElementById("newBar").hidden){document.getElementById("newBar").hidden=true;newCount=0}},{passive:true});
 syncRead();
 document.addEventListener("visibilitychange",()=>{if(!document.hidden)syncRead()});
 document.getElementById("syncBtn").onclick=startSync;
@@ -575,7 +639,7 @@ document.getElementById("syncForm").onsubmit=async e=>{
 showSync();
 function setMode(m){
   if(m===mode) return;
-  mode=m; tab="all"; feedDocs=docsBy[m];
+  mode=m; tab="all"; shown=PAGE_SHOW; feedDocs=docsBy[m];
   document.getElementById("modeNew").setAttribute("aria-pressed",String(m==="new"));
   document.getElementById("modeHot").setAttribute("aria-pressed",String(m==="hot"));
   document.getElementById("feedEmpty").textContent=m==="hot"?"개념글과 불펜 베스트를 불러오는 중이에요.":"게시판에서 최신 글을 불러오는 중이에요.";
