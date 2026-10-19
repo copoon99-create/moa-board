@@ -1,5 +1,6 @@
 // Cloudflare Worker: /api 로 요청하면 그 자리에서 게시판들을 읽어 JSON으로 돌려준다.
 //   /api?board=<id>  게시판 하나 (페이지는 게시판마다 따로 불러서 먼저 온 것부터 보여준다)
+//   /api?board=<id>&page=2  더 지난 글 (아래로 내릴 때)
 //   /api?board=hot-<id>  인기글 (개념글, 불펜 베스트)
 //   /api             게시판 전부
 //   /api/read?k=<연동 코드>  읽은 글 주소 목록 (GET 읽기, POST {add:[주소]} 추가)
@@ -25,10 +26,11 @@ export default {
     if (id && !board) return new Response(JSON.stringify({ error: "없는 게시판" }), { status: 404, headers });
 
     const cache = caches.default;
-    const key = new Request(url.origin + "/api?board=" + encodeURIComponent(id));
+    const page = Math.min(20, Math.max(1, parseInt(url.searchParams.get("page") || "1", 10) || 1));
+    const key = new Request(url.origin + "/api?board=" + encodeURIComponent(id) + (page > 1 ? "&page=" + page : ""));
     // 1분 넘게 지난 결과도 일단 바로 보여주고, 뒤에서 새로 읽어 저장해 둔다 (느린 게시판도 바로 뜨게)
     const refresh = async () => {
-      const body = JSON.stringify(board ? await collectOne(board) : await collect());
+      const body = JSON.stringify(board ? await collectOne(board, undefined, page) : await collect());
       const ok = /"posts":\[\{/.test(body);
       await cache.put(key, new Response(body, { headers: { ...headers, "Cache-Control": `max-age=${ok ? STALE_SECONDS : CACHE_SECONDS}`, "X-Fetched-At": String(Date.now()) } }));
       return body;

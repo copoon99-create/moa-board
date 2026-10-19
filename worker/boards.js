@@ -126,13 +126,14 @@ async function dc(b, opts = {}) {
   if (!opts.mobileOnly) {
     for (const base of ["https://gall.dcinside.com/mgallery/board/lists/", "https://gall.dcinside.com/board/lists/", "https://gall.dcinside.com/mini/board/lists/"]) {
       let html;
-      try { html = await get(base + "?id=" + encodeURIComponent(b.key) + (b.recommend ? "&exception_mode=recommend" : "")); } catch (e) { errors.push("PC " + e.message); continue; }
+      try { html = await get(base + "?id=" + encodeURIComponent(b.key) + (b.recommend ? "&exception_mode=recommend" : "") + (opts.page > 1 ? "&page=" + opts.page : "")); } catch (e) { errors.push("PC " + e.message); continue; }
       const posts = parseDc(html, b.key);
       if (posts.length) return posts;
     }
   }
   try {
-    const r = await fetch("https://m.dcinside.com/board/" + encodeURIComponent(b.key) + (b.recommend ? "?recommend=1" : ""), {
+    const q = [b.recommend ? "recommend=1" : "", opts.page > 1 ? "page=" + opts.page : ""].filter(Boolean).join("&");
+    const r = await fetch("https://m.dcinside.com/board/" + encodeURIComponent(b.key) + (q ? "?" + q : ""), {
       headers: { "User-Agent": MOBILE_UA, "Accept-Language": "ko-KR,ko;q=0.9", Referer: "https://m.dcinside.com/" } });
     if (!r.ok) throw new Error("HTTP " + r.status);
     const posts = parseDcMobile(await r.text(), b.key);
@@ -206,8 +207,8 @@ async function mlbparkTime(url) {
   } catch { return ""; }
 }
 
-async function mlbpark(b) {
-  const posts = parseMlbpark(await getUntil(b.best ? b.url : `https://mlbpark.donga.com/mp/b.php?b=${b.key}&m=list`, /tbl_type01[\s\S]*?<\/table>/));
+async function mlbpark(b, opts = {}) {
+  const posts = parseMlbpark(await getUntil(b.best ? b.url : `https://mlbpark.donga.com/mp/b.php?b=${b.key}&m=list` + (opts.page > 1 ? `&p=${(opts.page - 1) * 30 + 1}` : ""), /tbl_type01[\s\S]*?<\/table>/));
   // 베스트 목록은 날짜만 있어서, 글마다 앞부분만 읽어 작성 시각(contentWriteDate)을 가져온다
   if (b.best) {
     posts.length = Math.min(posts.length, BEST_MAX);
@@ -246,10 +247,11 @@ async function fmkorea(b) {
 const PARSERS = { dc, mlbpark, fmkorea };
 
 // 게시판 하나를 읽는다. 실패하면 error만 채워서 돌려준다.
-export async function collectOne(b, updatedAt = new Date().toISOString()) {
-  const entry = { id: b.id, name: b.name, url: b.url, updatedAt };
+// page: 2 이상이면 그 게시판의 더 지난 글 페이지를 읽는다
+export async function collectOne(b, updatedAt = new Date().toISOString(), page = 1) {
+  const entry = { id: b.id, name: b.name, url: b.url, updatedAt, page };
   try {
-    entry.posts = (await PARSERS[b.kind](b)).filter(p => p.title).slice(0, MAX_POSTS);
+    entry.posts = (await PARSERS[b.kind](b, { page })).filter(p => p.title).slice(0, MAX_POSTS);
   } catch (e) {
     entry.posts = [];
     entry.error = String(e.message || e).slice(0, 200);
