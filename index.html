@@ -60,9 +60,12 @@ header{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-c
   margin:0 -16px;padding:14px 16px 12px;background:color-mix(in srgb,var(--bg) 82%,transparent);
   backdrop-filter:saturate(1.6) blur(14px);-webkit-backdrop-filter:saturate(1.6) blur(14px)}
 .home{color:inherit;text-decoration:none}
-.titlerow{display:flex;align-items:center;gap:12px}
+.titlerow{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+header>div{min-width:0}
+#editBtn{flex:none;white-space:nowrap}
+h1{white-space:nowrap}
 .views{display:flex;gap:2px;background:var(--soft);border-radius:999px;padding:3px}
-.vbtn{font:inherit;font-size:13px;font-weight:700;border:0;background:none;color:var(--muted);border-radius:999px;padding:5px 12px;cursor:pointer}
+.vbtn{text-decoration:none;white-space:nowrap;font:inherit;font-size:13px;font-weight:700;border:0;background:none;color:var(--muted);border-radius:999px;padding:5px 12px;cursor:pointer}
 .vbtn[aria-pressed="true"]{background:var(--card);color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.12)}
 .ebookv{display:flex;flex-direction:column;gap:14px;max-width:760px;width:100%;margin:0 auto}
 body.v-ebook .cols{display:none}
@@ -191,6 +194,7 @@ form select{flex:0 0 auto}
         <nav class="views" aria-label="메뉴">
           <button type="button" class="vbtn" data-view="board" aria-pressed="true">게시판</button>
           <button type="button" class="vbtn" data-view="ebook" aria-pressed="false">전자책</button>
+          <a class="vbtn" href="https://claude.ai/artifact/RpR4qme3K39i8oo3vpLDBm" target="_blank" rel="noopener">스냅 덱코드</a>
         </nav>
       </div>
       <p class="sub">바로가기 <span id="scount">9</span>곳 · 게시판 <span id="count">6</span>곳</p>
@@ -520,12 +524,12 @@ const LIBS=[
 function setView(v){
   document.body.classList.toggle("v-ebook",v==="ebook");
   document.getElementById("ebookView").hidden=v!=="ebook";
-  for(const b of document.querySelectorAll(".vbtn")) b.setAttribute("aria-pressed",String(b.dataset.view===v));
+  for(const b of document.querySelectorAll(".vbtn[data-view]")) b.setAttribute("aria-pressed",String(b.dataset.view===v));
   try{localStorage.setItem("moa-view",v)}catch(e){}
   history.replaceState(null,"",location.pathname+location.search+(v==="ebook"?"#ebook":""));
   window.scrollTo(0,0);
 }
-for(const b of document.querySelectorAll(".vbtn")) b.onclick=()=>setView(b.dataset.view);
+for(const b of document.querySelectorAll(".vbtn[data-view]")) b.onclick=()=>setView(b.dataset.view);
 {let v="board";try{v=localStorage.getItem("moa-view")||"board"}catch(e){}if(location.hash==="#ebook")v="ebook";if(v==="ebook")setView("ebook")}
 function libRow(l,state,r){
   const li=document.createElement("li");
@@ -612,7 +616,7 @@ let newCount=0;
 function newBar(n){
   const b=document.getElementById("newBar");
   if(window.scrollY<300){b.hidden=true;newCount=0;return}
-  newCount+=n;b.textContent="↑ 새 글 "+newCount+"개";b.hidden=false;
+  newCount+=n;b.style.top=(document.querySelector("header").getBoundingClientRect().bottom+8)+"px";b.textContent="↑ 새 글 "+newCount+"개";b.hidden=false;
 }
 document.getElementById("newBar").onclick=()=>{window.scrollTo({top:0,behavior:"smooth"});document.getElementById("newBar").hidden=true;newCount=0};
 window.addEventListener("scroll",()=>{if(window.scrollY<150&&!document.getElementById("newBar").hidden){document.getElementById("newBar").hidden=true;newCount=0}},{passive:true});
