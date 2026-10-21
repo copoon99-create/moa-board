@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-10-21T21:06:56+09:00",
+ "updatedAt": "2026-10-22T02:27:23+09:00",
  "boards": [
   {
    "id": "fm-realestate",
@@ -15,25 +15,200 @@
    "url": "https://m.dcinside.com/board/marvelsnap",
    "posts": [
     {
+     "title": "신캐가 돈이 안되나",
+     "url": "https://m.dcinside.com/board/marvelsnap/658266",
+     "author": "ㅇㅇ",
+     "time": "2026-10-22T01:39:48+09:00",
+     "comments": 1
+    },
+    {
+     "title": "좀비 감염되면 파리 날아다니네ㅋㅋㅋ",
+     "url": "https://m.dcinside.com/board/marvelsnap/658265",
+     "author": "ㅇㅇ",
+     "time": "2026-10-22T01:25:38+09:00",
+     "comments": 1
+    },
+    {
+     "title": "이미지 왜 첨부 안되냐",
+     "url": "https://m.dcinside.com/board/marvelsnap/658264",
+     "author": "헤롱씌",
+     "time": "2026-10-22T00:55:37+09:00",
+     "comments": 0
+    },
+    {
+     "title": "감염자 싹 다 인피인가",
+     "url": "https://m.dcinside.com/board/marvelsnap/658263",
+     "author": "연어먹는고등어",
+     "time": "2026-10-22T00:27:01+09:00",
+     "comments": 2
+    },
+    {
+     "title": "뱀파 좀비 ㅈㄴ 만나서 졌는데 한번도 감염안됐음",
+     "url": "https://m.dcinside.com/board/marvelsnap/658262",
+     "author": "ㅇㅇ",
+     "time": "2026-10-21T23:47:19+09:00",
+     "comments": 0
+    },
+    {
+     "title": "아레나 1턴 탈출하면 5점 주냐",
+     "url": "https://m.dcinside.com/board/marvelsnap/658261",
+     "author": "그거나아님",
+     "time": "2026-10-21T23:43:44+09:00",
+     "comments": 1
+    },
+    {
+     "title": "아니뭐 감염봇들이라도 확뿌려라;",
+     "url": "https://m.dcinside.com/board/marvelsnap/658260",
+     "author": "ㅇㅇ",
+     "time": "2026-10-21T23:39:08+09:00",
+     "comments": 0
+    },
+    {
+     "title": "뱀파이어 1트컷 성공 ㄷㄷ",
+     "url": "https://m.dcinside.com/board/marvelsnap/658259",
+     "author": "A",
+     "time": "2026-10-21T23:37:40+09:00",
+     "comments": 3
+    },
+    {
+     "title": "존나화나네 진심ㅋㅋㅋㅋㅋ",
+     "url": "https://m.dcinside.com/board/marvelsnap/658258",
+     "author": "sunday",
+     "time": "2026-10-21T23:34:28+09:00",
+     "comments": 3
+    },
+    {
+     "title": "매그니토 공상향은 언제해줌",
+     "url": "https://m.dcinside.com/board/marvelsnap/658257",
+     "author": "ㅇㅇ",
+     "time": "2026-10-21T23:26:47+09:00",
+     "comments": 2
+    },
+    {
+     "title": "비전 드라마 보는데 이거 핑팽품 오마쥬? 그런건가",
+     "url": "https://m.dcinside.com/board/marvelsnap/658256",
+     "author": "ㅇㅇ",
+     "time": "2026-10-21T23:14:04+09:00",
+     "comments": 0
+    },
+    {
+     "title": "뉴비 조언좀. 시즌팩 이거 다 사버릴까?",
+     "url": "https://m.dcinside.com/board/marvelsnap/658255",
+     "author": "ㅇㅇ",
+     "time": "2026-10-21T23:06:41+09:00",
+     "comments": 4
+    },
+    {
+     "title": "이벤트 포기하니까 이렇게 편할수가 없음",
+     "url": "https://m.dcinside.com/board/marvelsnap/658254",
+     "author": "ㅇㅇ",
+     "time": "2026-10-21T22:57:12+09:00",
+     "comments": 0
+    },
+    {
+     "title": "얘네 라우페이한테 원수졌냐",
+     "url": "https://m.dcinside.com/board/marvelsnap/658253",
+     "author": "ㅇㅇ",
+     "time": "2026-10-21T22:52:20+09:00",
+     "comments": 3
+    },
+    {
+     "title": "뱀파 뒷면좆같아서 만날때마다 개빡겜하는중",
+     "url": "https://m.dcinside.com/board/marvelsnap/658252",
+     "author": "ㅇㅇ",
+     "time": "2026-10-21T22:50:19+09:00",
+     "comments": 2
+    },
+    {
+     "title": "7번은 만난거 같은데 왜 감염 안되나.",
+     "url": "https://m.dcinside.com/board/marvelsnap/658251",
+     "author": "ㅇㅇ",
+     "time": "2026-10-21T22:40:51+09:00",
+     "comments": 2
+    },
+    {
+     "title": "혼위치는 첫번쨰 스킨이 진짜 고트인거같은데",
+     "url": "https://m.dcinside.com/board/marvelsnap/658250",
+     "author": "ㅇㅇ",
+     "time": "2026-10-21T22:26:00+09:00",
+     "comments": 2
+    },
+    {
+     "title": "이게 될까?",
+     "url": "https://m.dcinside.com/board/marvelsnap/658249",
+     "author": "donex`",
+     "time": "2026-10-21T22:16:57+09:00",
+     "comments": 1
+    },
+    {
+     "title": "자유 얼라 아무나",
+     "url": "https://m.dcinside.com/board/marvelsnap/658248",
+     "author": "코드입력안해도됨",
+     "time": "2026-10-21T22:12:56+09:00",
+     "comments": 0
+    },
+    {
+     "title": "복귀 뉴비 갤럭덱으로 인피 달성했어",
+     "url": "https://m.dcinside.com/board/marvelsnap/658247",
+     "author": "ㅇㅇ",
+     "time": "2026-10-21T22:10:40+09:00",
+     "comments": 2
+    },
+    {
+     "title": "아레나에서도 감염 되네?",
+     "url": "https://m.dcinside.com/board/marvelsnap/658246",
+     "author": "ㅇㅇ",
+     "time": "2026-10-21T22:09:49+09:00",
+     "comments": 1
+    },
+    {
+     "title": "좀랙캣 살까",
+     "url": "https://m.dcinside.com/board/marvelsnap/658245",
+     "author": "차단당했어",
+     "time": "2026-10-21T21:58:03+09:00",
+     "comments": 0
+    },
+    {
+     "title": "이모티콘 쓰는거 스크롤로 바꼈네?",
+     "url": "https://m.dcinside.com/board/marvelsnap/658244",
+     "author": "마블스냅아리셈",
+     "time": "2026-10-21T21:28:55+09:00",
+     "comments": 2
+    },
+    {
+     "title": "좀비 블랙캣 카드효과가 뭐임",
+     "url": "https://m.dcinside.com/board/marvelsnap/658243",
+     "author": "ㅇㅇ",
+     "time": "2026-10-21T21:25:06+09:00",
+     "comments": 3
+    },
+    {
+     "title": "3턴만에 다람쥐 8마리 ㅋㅋㅋ",
+     "url": "https://m.dcinside.com/board/marvelsnap/658242",
+     "author": "볼때마다허리피기",
+     "time": "2026-10-21T21:14:01+09:00",
+     "comments": 1
+    },
+    {
      "title": "버리기 되게 괜찮아졌네 ㄷㄷ",
      "url": "https://m.dcinside.com/board/marvelsnap/658241",
      "author": "ㅇㅇ",
      "time": "2026-10-21T21:05:34+09:00",
-     "comments": 0
+     "comments": 2
     },
     {
      "title": "둘 중에 뭐 살까요",
      "url": "https://m.dcinside.com/board/marvelsnap/658240",
      "author": "문모",
      "time": "2026-10-21T21:04:48+09:00",
-     "comments": 1
+     "comments": 6
     },
     {
      "title": "24시간 내내 랭전만 돌렸는데 뱀파 딱 한 번, 좀비만 주구장창 만나더니",
      "url": "https://m.dcinside.com/board/marvelsnap/658239",
      "author": "ㅇㅇ",
      "time": "2026-10-21T20:48:16+09:00",
-     "comments": 2
+     "comments": 3
     },
     {
      "title": "감염 진짜 ㅈ같다",
@@ -47,185 +222,10 @@
      "url": "https://m.dcinside.com/board/marvelsnap/658237",
      "author": "ㅇㅇ",
      "time": "2026-10-21T20:44:04+09:00",
-     "comments": 1
-    },
-    {
-     "title": "루크로 쉐도우킹 못막음???",
-     "url": "https://m.dcinside.com/board/marvelsnap/658236",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T20:35:57+09:00",
      "comments": 5
-    },
-    {
-     "title": "테두리 추천점여",
-     "url": "https://m.dcinside.com/board/marvelsnap/658235",
-     "author": "Shaii",
-     "time": "2026-10-21T20:33:43+09:00",
-     "comments": 3
-    },
-    {
-     "title": "희귀도에 Sensational 적힌건 금고에만 뜸?",
-     "url": "https://m.dcinside.com/board/marvelsnap/658234",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T20:33:13+09:00",
-     "comments": 3
-    },
-    {
-     "title": "frontline / backline은 어떻게 번역되려나?",
-     "url": "https://m.dcinside.com/board/marvelsnap/658233",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T20:28:06+09:00",
-     "comments": 1
-    },
-    {
-     "title": "이거 어케 낼 수 있는지 알려주세여",
-     "url": "https://m.dcinside.com/board/marvelsnap/658232",
-     "author": "초초",
-     "time": "2026-10-21T20:21:49+09:00",
-     "comments": 4
-    },
-    {
-     "title": "라보나 렌슬레이어는 스킨이 죄다 흑인이네",
-     "url": "https://m.dcinside.com/board/marvelsnap/658231",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T20:18:58+09:00",
-     "comments": 1
-    },
-    {
-     "title": "3레전 처음이다",
-     "url": "https://m.dcinside.com/board/marvelsnap/658230",
-     "author": "쇼붕이",
-     "time": "2026-10-21T20:17:55+09:00",
-     "comments": 0
-    },
-    {
-     "title": "드디어 늘 돌려보고 싶었던 좀갤 뽑았는데",
-     "url": "https://m.dcinside.com/board/marvelsnap/658229",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T20:17:29+09:00",
-     "comments": 1
-    },
-    {
-     "title": "어쩌다보니 인피 달성해버렸네.",
-     "url": "https://m.dcinside.com/board/marvelsnap/658228",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T20:14:16+09:00",
-     "comments": 1
-    },
-    {
-     "title": "엊그제 시작한 컬렙 140늅입데여",
-     "url": "https://m.dcinside.com/board/marvelsnap/658227",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T20:00:17+09:00",
-     "comments": 7
-    },
-    {
-     "title": "감염 이벤트의 헛점",
-     "url": "https://m.dcinside.com/board/marvelsnap/658226",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T19:59:21+09:00",
-     "comments": 0
-    },
-    {
-     "title": "스냅컴플리트 새시즌 당일은 안되나",
-     "url": "https://m.dcinside.com/board/marvelsnap/658225",
-     "author": "sunday",
-     "time": "2026-10-21T19:49:39+09:00",
-     "comments": 0
-    },
-    {
-     "title": "좀캣이거 버려지면이라는게 버릴때 말하는거지?",
-     "url": "https://m.dcinside.com/board/marvelsnap/658224",
-     "author": "평범한닉네임",
-     "time": "2026-10-21T19:44:49+09:00",
-     "comments": 2
-    },
-    {
-     "title": "복귀팩 가성비 어떰?",
-     "url": "https://m.dcinside.com/board/marvelsnap/658223",
-     "author": "도다",
-     "time": "2026-10-21T19:41:45+09:00",
-     "comments": 4
-    },
-    {
-     "title": "아레나에서 닥터 옥토퍼스의 저력을 봤음",
-     "url": "https://m.dcinside.com/board/marvelsnap/658222",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T19:18:40+09:00",
-     "comments": 0
-    },
-    {
-     "title": "뉴비 하이에볼루셔너리 정가 질문 (+아리솀)",
-     "url": "https://m.dcinside.com/board/marvelsnap/658221",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T19:09:40+09:00",
-     "comments": 4
-    },
-    {
-     "title": "아 천토큰 먹고 빨리 정가치고싶은데",
-     "url": "https://m.dcinside.com/board/marvelsnap/658220",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T19:09:05+09:00",
-     "comments": 1
-    },
-    {
-     "title": "어제오늘해서 250점 좀 넘게 까먹을동안",
-     "url": "https://m.dcinside.com/board/marvelsnap/658219",
-     "author": "견과",
-     "time": "2026-10-21T18:49:03+09:00",
-     "comments": 0
-    },
-    {
-     "title": "뉴비 질문",
-     "url": "https://m.dcinside.com/board/marvelsnap/658218",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T18:46:43+09:00",
-     "comments": 6
-    },
-    {
-     "title": "패작이나 해야지…",
-     "url": "https://m.dcinside.com/board/marvelsnap/658217",
-     "author": "카미시라이시모네99",
-     "time": "2026-10-21T18:37:25+09:00",
-     "comments": 0
-    },
-    {
-     "title": "감염 이벤트 기획한 놈 월급 한 달 정도 주지마라",
-     "url": "https://m.dcinside.com/board/marvelsnap/658216",
-     "author": "14만원돌려주세요",
-     "time": "2026-10-21T18:22:46+09:00",
-     "comments": 3
-    },
-    {
-     "title": "뱀몽거 너프 확정급 아닌가?",
-     "url": "https://m.dcinside.com/board/marvelsnap/658215",
-     "author": "참피보러왔어요",
-     "time": "2026-10-21T18:13:50+09:00",
-     "comments": 4
-    },
-    {
-     "title": "혼칼렛이 뽑아준",
-     "url": "https://m.dcinside.com/board/marvelsnap/658214",
-     "author": "작명가",
-     "time": "2026-10-21T18:13:36+09:00",
-     "comments": 0
-    },
-    {
-     "title": "이벤트 최고 허점은 이거임",
-     "url": "https://m.dcinside.com/board/marvelsnap/658213",
-     "author": "common0587",
-     "time": "2026-10-21T17:44:50+09:00",
-     "comments": 1
-    },
-    {
-     "title": "사실 이게 하이퍼큐브 이벤트 아닐까?",
-     "url": "https://m.dcinside.com/board/marvelsnap/658212",
-     "author": "Evan.",
-     "time": "2026-10-21T17:43:41+09:00",
-     "comments": 2
     }
    ],
-   "updatedAt": "2026-10-21T21:06:56+09:00"
+   "updatedAt": "2026-10-22T02:27:23+09:00"
   },
   {
    "id": "dc-bh",
@@ -233,18 +233,81 @@
    "url": "https://m.dcinside.com/board/bh",
    "posts": [
     {
+     "title": "이직할만한곳 추천",
+     "url": "https://m.dcinside.com/board/bh/59906",
+     "author": "보갤러",
+     "time": "2026-10-22T00:42:14+09:00",
+     "comments": 3
+    },
+    {
+     "title": "형사정책 공부법",
+     "url": "https://m.dcinside.com/board/bh/59904",
+     "author": "보갤러",
+     "time": "2026-10-21T23:16:12+09:00",
+     "comments": 0
+    },
+    {
+     "title": "23기도 근속확정임",
+     "url": "https://m.dcinside.com/board/bh/59903",
+     "author": "ㅇㅇ",
+     "time": "2026-10-21T23:15:11+09:00",
+     "comments": 2
+    },
+    {
+     "title": "21기는 불쌍하긴함",
+     "url": "https://m.dcinside.com/board/bh/59902",
+     "author": "ㅇㅇ",
+     "time": "2026-10-21T23:09:31+09:00",
+     "comments": 2
+    },
+    {
+     "title": "신규 수습 할 때만 해도 체계가 나름 잘 잡혀 있는 조직이라고 생각했는데",
+     "url": "https://m.dcinside.com/board/bh/59901",
+     "author": "보갤러",
+     "time": "2026-10-21T22:58:06+09:00",
+     "comments": 0
+    },
+    {
+     "title": "원이랑 관찰소 비교하는 애들 보면 이해 존나 안간다",
+     "url": "https://m.dcinside.com/board/bh/59900",
+     "author": "ㅇㅇ",
+     "time": "2026-10-21T22:56:56+09:00",
+     "comments": 2
+    },
+    {
+     "title": "애들아 보호직 할만해 너무 쫄지마",
+     "url": "https://m.dcinside.com/board/bh/59899",
+     "author": "보갤러",
+     "time": "2026-10-21T22:20:16+09:00",
+     "comments": 2
+    },
+    {
+     "title": "보호직 못 다니겠는데 어디로 이직하는게 맞나요?",
+     "url": "https://m.dcinside.com/board/bh/59898",
+     "author": "보갤러",
+     "time": "2026-10-21T22:15:58+09:00",
+     "comments": 8
+    },
+    {
+     "title": "임퇴자 구인장기각하면 뭘해야하나",
+     "url": "https://m.dcinside.com/board/bh/59896",
+     "author": "보갤러",
+     "time": "2026-10-21T21:29:04+09:00",
+     "comments": 11
+    },
+    {
      "title": "솔직히 얘기해줘.",
      "url": "https://m.dcinside.com/board/bh/59895",
      "author": "ㅇㅇ",
      "time": "2026-10-21T20:51:51+09:00",
-     "comments": 2
+     "comments": 4
     },
     {
      "title": "해남이랑 인천이랑 월급 같음",
      "url": "https://m.dcinside.com/board/bh/59894",
      "author": "보갤러",
      "time": "2026-10-21T20:36:29+09:00",
-     "comments": 1
+     "comments": 4
     },
     {
      "title": "다군 라군 가기vs 책피기",
@@ -272,21 +335,21 @@
      "url": "https://m.dcinside.com/board/bh/59888",
      "author": "보갤러",
      "time": "2026-10-21T18:27:54+09:00",
-     "comments": 3
+     "comments": 7
     },
     {
      "title": "진지하게 춤추는거는 좀 삭제하면 안되나",
      "url": "https://m.dcinside.com/board/bh/59887",
      "author": "ㅇㅇ",
      "time": "2026-10-21T18:14:41+09:00",
-     "comments": 5
+     "comments": 7
     },
     {
      "title": "이번 신규인데 쌍욕 듣는 경우가 흔해요?",
      "url": "https://m.dcinside.com/board/bh/59886",
      "author": "ㅇㅇ",
      "time": "2026-10-21T18:00:28+09:00",
-     "comments": 12
+     "comments": 17
     },
     {
      "title": "출장비 쌀먹하는 노계장, 실무관 출장비 챙겨주는 당직 관행",
@@ -307,7 +370,7 @@
      "url": "https://m.dcinside.com/board/bh/59880",
      "author": "보갤러",
      "time": "2026-10-21T12:30:28+09:00",
-     "comments": 7
+     "comments": 8
     },
     {
      "title": "직원들이 원하는 게 뭐 얼마나 크고 어려운 건가?",
@@ -349,7 +412,7 @@
      "url": "https://m.dcinside.com/board/bh/59872",
      "author": "ㅇㅇ",
      "time": "2026-10-21T06:40:27+09:00",
-     "comments": 5
+     "comments": 6
     },
     {
      "title": "근속",
@@ -378,72 +441,9 @@
      "author": "보갤러",
      "time": "2026-10-20T22:48:02+09:00",
      "comments": 3
-    },
-    {
-     "title": "신균데 퇴근하면 업무의 잔상이 안없어짐",
-     "url": "https://m.dcinside.com/board/bh/59865",
-     "author": "보갤러",
-     "time": "2026-10-20T21:30:24+09:00",
-     "comments": 15
-    },
-    {
-     "title": "홍보 방향부터 잘못됐음",
-     "url": "https://m.dcinside.com/board/bh/59864",
-     "author": "보갤러",
-     "time": "2026-10-20T21:26:16+09:00",
-     "comments": 3
-    },
-    {
-     "title": "본부 욕하지마라",
-     "url": "https://m.dcinside.com/board/bh/59863",
-     "author": "ㅇㅇ",
-     "time": "2026-10-20T21:16:38+09:00",
-     "comments": 1
-    },
-    {
-     "title": "출장비 및 유류비 부족에 따른 조치사항 예상",
-     "url": "https://m.dcinside.com/board/bh/59862",
-     "author": "보갤러",
-     "time": "2026-10-20T20:21:07+09:00",
-     "comments": 3
-    },
-    {
-     "title": "본부에 좆 병신새끼들만있으니까 조직이 이모양",
-     "url": "https://m.dcinside.com/board/bh/59861",
-     "author": "보갤러",
-     "time": "2026-10-20T20:02:54+09:00",
-     "comments": 5
-    },
-    {
-     "title": "본부 이 무능한놈들은 예산부족이 연례행사냐?",
-     "url": "https://m.dcinside.com/board/bh/59860",
-     "author": "보갤러",
-     "time": "2026-10-20T19:56:43+09:00",
-     "comments": 10
-    },
-    {
-     "title": "보호직 내년 티오 몇 보시나요?",
-     "url": "https://m.dcinside.com/board/bh/59859",
-     "author": "ㅇㅇ",
-     "time": "2026-10-20T18:24:30+09:00",
-     "comments": 14
-    },
-    {
-     "title": "소년원 언플의 기회가 왔다",
-     "url": "https://m.dcinside.com/board/bh/59858",
-     "author": "보갤러",
-     "time": "2026-10-20T16:05:04+09:00",
-     "comments": 2
-    },
-    {
-     "title": "음.... 승진순번 진짜 쓰레기같이 줬네",
-     "url": "https://m.dcinside.com/board/bh/59857",
-     "author": "보갤러",
-     "time": "2026-10-20T15:38:01+09:00",
-     "comments": 7
     }
    ],
-   "updatedAt": "2026-10-21T21:06:56+09:00"
+   "updatedAt": "2026-10-22T02:27:23+09:00"
   },
   {
    "id": "dc-thesingularity",
@@ -451,217 +451,217 @@
    "url": "https://m.dcinside.com/board/thesingularity",
    "posts": [
     {
-     "title": "아니 이게 무슨냄새야",
-     "url": "https://m.dcinside.com/board/thesingularity/1493043",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T21:06:43+09:00",
-     "comments": 0
-    },
-    {
-     "title": "페이블5.5 이 수준이면 영상agi는 달성한거 아님?",
-     "url": "https://m.dcinside.com/board/thesingularity/1493042",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T21:06:20+09:00",
-     "comments": 0
-    },
-    {
-     "title": "개추",
-     "url": "https://m.dcinside.com/board/thesingularity/1493041",
-     "author": "HeskaPeglad",
-     "time": "2026-10-21T21:05:12+09:00",
-     "comments": 4
-    },
-    {
-     "title": "창작이 쉬워지면 너도나도 찍어서 돈이 안된다는것도 애매한게",
-     "url": "https://m.dcinside.com/board/thesingularity/1493040",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T21:04:46+09:00",
+     "title": "나에게 220달러가 있는데 뭐사까",
+     "url": "https://m.dcinside.com/board/thesingularity/1493446",
+     "author": "나키리아야메",
+     "time": "2026-10-22T02:26:17+09:00",
      "comments": 1
     },
     {
-     "title": "trendmcp",
-     "url": "https://m.dcinside.com/board/thesingularity/1493039",
+     "title": "싱글벙글 개발자가 말하는 소설이 성공 할 수 없는 이유",
+     "url": "https://m.dcinside.com/board/thesingularity/1493445",
      "author": "ㅇㅇ",
-     "time": "2026-10-21T21:04:35+09:00",
-     "comments": 2
+     "time": "2026-10-22T02:25:34+09:00",
+     "comments": 0
     },
     {
-     "title": "대한민국은 UBI아니여도 쉬었음청년들하는거있긴함",
-     "url": "https://m.dcinside.com/board/thesingularity/1493038",
+     "title": "php터진거 조사해왔어",
+     "url": "https://m.dcinside.com/board/thesingularity/1493444",
      "author": "ㅇㅇ",
-     "time": "2026-10-21T21:04:26+09:00",
-     "comments": 2
+     "time": "2026-10-22T02:24:52+09:00",
+     "comments": 1
     },
     {
-     "title": "본인 삶의 낙 리스트 공유",
-     "url": "https://m.dcinside.com/board/thesingularity/1493037",
+     "title": "요즘 혼자 게임만드는데 왤케 재밌냐 진짜",
+     "url": "https://m.dcinside.com/board/thesingularity/1493443",
      "author": "ㅇㅇ",
-     "time": "2026-10-21T21:01:38+09:00",
-     "comments": 5
+     "time": "2026-10-22T02:24:36+09:00",
+     "comments": 1
     },
     {
-     "title": "소닉 하이드로시티 비쥬얼라이져 만드는 중",
-     "url": "https://m.dcinside.com/board/thesingularity/1493036",
-     "author": "Vas",
-     "time": "2026-10-21T21:01:14+09:00",
-     "comments": 2
-    },
-    {
-     "title": "전쟁 하는 이유가 뭐임",
-     "url": "https://m.dcinside.com/board/thesingularity/1493035",
+     "title": "짚 반존대 많이 줄었네",
+     "url": "https://m.dcinside.com/board/thesingularity/1493442",
      "author": "ㅇㅇ",
-     "time": "2026-10-21T20:57:54+09:00",
+     "time": "2026-10-22T02:18:15+09:00",
      "comments": 6
     },
     {
-     "title": "claude 시켜서 만든 웹사이트",
-     "url": "https://m.dcinside.com/board/thesingularity/1493034",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T20:57:06+09:00",
-     "comments": 5
-    },
-    {
-     "title": "클 VS 짚 VS 젬",
-     "url": "https://m.dcinside.com/board/thesingularity/1493033",
-     "author": "마리안느",
-     "time": "2026-10-21T20:55:28+09:00",
+     "title": "제미나이가 가장 휴머니즘이 좋은거 같아..",
+     "url": "https://m.dcinside.com/board/thesingularity/1493441",
+     "author": "GEMINI",
+     "time": "2026-10-22T02:17:21+09:00",
      "comments": 6
     },
     {
-     "title": "현시점 모딩 최강 ai가 뭐냐?",
-     "url": "https://m.dcinside.com/board/thesingularity/1493032",
+     "title": "지금 지피티도 내 사업아이템 다 빼가는거아님? ㄷㄷㄷㄷ",
+     "url": "https://m.dcinside.com/board/thesingularity/1493440",
      "author": "ㅇㅇ",
-     "time": "2026-10-21T20:53:17+09:00",
+     "time": "2026-10-22T02:15:43+09:00",
+     "comments": 1
+    },
+    {
+     "title": "지금 gpt 챗은 모델이 뭐임?",
+     "url": "https://m.dcinside.com/board/thesingularity/1493439",
+     "author": "ㅇㅇ",
+     "time": "2026-10-22T02:11:08+09:00",
+     "comments": 9
+    },
+    {
+     "title": "코딩이 해킹을 낳았는데 생명공학은 생화학 무기를 만들어",
+     "url": "https://m.dcinside.com/board/thesingularity/1493438",
+     "author": "ㅇㅇ",
+     "time": "2026-10-22T02:09:57+09:00",
+     "comments": 1
+    },
+    {
+     "title": "라우팅 걸리는 조건이라도 있나",
+     "url": "https://m.dcinside.com/board/thesingularity/1493437",
+     "author": "ㅇㅇ",
+     "time": "2026-10-22T02:08:33+09:00",
+     "comments": 0
+    },
+    {
+     "title": "과연 agi 가 오면 인간은행복할까",
+     "url": "https://m.dcinside.com/board/thesingularity/1493436",
+     "author": "유기젤",
+     "time": "2026-10-22T02:07:12+09:00",
+     "comments": 19
+    },
+    {
+     "title": "앤트로픽이 자체 생물학 습식 연구소를 운영중인데 oai도 바이오 인수라",
+     "url": "https://m.dcinside.com/board/thesingularity/1493435",
+     "author": "ㅇㅇ",
+     "time": "2026-10-22T02:06:53+09:00",
+     "comments": 0
+    },
+    {
+     "title": "블루칼라 고점은 바로 지금임",
+     "url": "https://m.dcinside.com/board/thesingularity/1493434",
+     "author": "ㅇㅇ",
+     "time": "2026-10-22T02:05:22+09:00",
+     "comments": 3
+    },
+    {
+     "title": "[매니저탭] 야 파딱들아 탭지정 잘해라 지금 php땜에 오류남",
+     "url": "https://m.dcinside.com/board/thesingularity/1493433",
+     "author": "ㅇㅇ",
+     "time": "2026-10-22T02:03:05+09:00",
+     "comments": 7
+    },
+    {
+     "title": "배관공이 그 슈퍼마리오 직업 말하는 거임???",
+     "url": "https://m.dcinside.com/board/thesingularity/1493432",
+     "author": "트라야누스",
+     "time": "2026-10-22T02:01:11+09:00",
+     "comments": 1
+    },
+    {
+     "title": "배관공되면 존나 좋은점",
+     "url": "https://m.dcinside.com/board/thesingularity/1493430",
+     "author": "ㅇㅇ",
+     "time": "2026-10-22T01:59:50+09:00",
+     "comments": 0
+    },
+    {
+     "title": "-+--PHP 바이러스 탐지--+- 이 글을 절대 클릭하지 마세요?",
+     "url": "https://m.dcinside.com/board/thesingularity/1493429",
+     "author": "ㅇㅇ",
+     "time": "2026-10-22T01:57:15+09:00",
+     "comments": 2
+    },
+    {
+     "title": "배관공만 10만명있으면",
+     "url": "https://m.dcinside.com/board/thesingularity/1493428",
+     "author": "ㅇㅇ",
+     "time": "2026-10-22T01:55:29+09:00",
+     "comments": 0
+    },
+    {
+     "title": "도로롱 마을.gif",
+     "url": "https://m.dcinside.com/board/thesingularity/1493427",
+     "author": "ㅇㅇ",
+     "time": "2026-10-22T01:54:15+09:00",
+     "comments": 3
+    },
+    {
+     "title": "젠슨황이 블루칼라 배관공 뜬다는말은 왤케 좋아함",
+     "url": "https://m.dcinside.com/board/thesingularity/1493426",
+     "author": "ㅇㅇ",
+     "time": "2026-10-22T01:54:07+09:00",
+     "comments": 3
+    },
+    {
+     "title": "누가 빙산가지고 프론티어 해킹 함 안해주나",
+     "url": "https://m.dcinside.com/board/thesingularity/1493425",
+     "author": "Match",
+     "time": "2026-10-22T01:52:38+09:00",
+     "comments": 1
+    },
+    {
+     "title": "진짜 공각기동대처럼 전뇌 해킹당하는 시대 열리는거아님?",
+     "url": "https://m.dcinside.com/board/thesingularity/1493424",
+     "author": "ㅇㅇ",
+     "time": "2026-10-22T01:50:04+09:00",
+     "comments": 1
+    },
+    {
+     "title": "조만간 윈도우라든지 스마트폰이라든지 크게 터질듯",
+     "url": "https://m.dcinside.com/board/thesingularity/1493423",
+     "author": "ㅇㅇ",
+     "time": "2026-10-22T01:49:07+09:00",
+     "comments": 0
+    },
+    {
+     "title": "애들아 정말 수명이 늘어날까?",
+     "url": "https://m.dcinside.com/board/thesingularity/1493422",
+     "author": "ddd_",
+     "time": "2026-10-22T01:47:13+09:00",
      "comments": 4
     },
     {
-     "title": "클로드로 2분짜리 애니메이션 블렌더로 렌더링하는데 49시간 걸림",
-     "url": "https://m.dcinside.com/board/thesingularity/1493031",
-     "author": "치킨먹는날",
-     "time": "2026-10-21T20:53:11+09:00",
-     "comments": 0
-    },
-    {
-     "title": "일단 사람들이 살아는 있어야 하니깐 버티라고 뿌리는게 ubi아님?",
-     "url": "https://m.dcinside.com/board/thesingularity/1493030",
-     "author": "ㅇㅇㅇㅇ",
-     "time": "2026-10-21T20:52:49+09:00",
-     "comments": 0
-    },
-    {
-     "title": "UBI와도 가챠창작물이 쏟아질까?",
-     "url": "https://m.dcinside.com/board/thesingularity/1493029",
-     "author": "6974콜맨",
-     "time": "2026-10-21T20:52:48+09:00",
-     "comments": 1
-    },
-    {
-     "title": "AI 안경으로 수능볼 생각하지말고 회사에서 끼고 일하자",
-     "url": "https://m.dcinside.com/board/thesingularity/1493028",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T20:52:29+09:00",
-     "comments": 1
-    },
-    {
-     "title": "Ubi라고 하는 이유가 뭐임",
-     "url": "https://m.dcinside.com/board/thesingularity/1493027",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T20:52:09+09:00",
-     "comments": 5
-    },
-    {
-     "title": "Ai 애니 3분짜리 짧은영상 하나 만드는데 보통 며칠 걸림?",
-     "url": "https://m.dcinside.com/board/thesingularity/1493025",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T20:51:29+09:00",
-     "comments": 0
-    },
-    {
-     "title": "ubi 지급하려면 탈희소성이 와야한다 <- 이미 잘못이해함",
-     "url": "https://m.dcinside.com/board/thesingularity/1493024",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T20:50:56+09:00",
-     "comments": 3
-    },
-    {
-     "title": "기획이나 겜 스토리는 클로드가 잘짬?",
-     "url": "https://m.dcinside.com/board/thesingularity/1493023",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T20:49:23+09:00",
-     "comments": 5
-    },
-    {
-     "title": "뭐뭐 전에는 ubi 주면 안됨 ㅇㅈㄹ",
-     "url": "https://m.dcinside.com/board/thesingularity/1493022",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T20:47:55+09:00",
-     "comments": 16
-    },
-    {
-     "title": "AI 안경때문에 AI에 대해서 부정적으로 바뀔까봐 두렵네",
-     "url": "https://m.dcinside.com/board/thesingularity/1493021",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T20:47:45+09:00",
-     "comments": 3
-    },
-    {
-     "title": "딥시크가 gpu 1대당 1시간에 38불을 벌정도면",
-     "url": "https://m.dcinside.com/board/thesingularity/1493020",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T20:47:28+09:00",
-     "comments": 1
-    },
-    {
-     "title": "과도기오면 기본소득할거다도 꿈같은 이야기임",
-     "url": "https://m.dcinside.com/board/thesingularity/1493019",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T20:47:17+09:00",
-     "comments": 3
-    },
-    {
-     "title": "탈희소성과 과도기 ubi는 다른건데",
-     "url": "https://m.dcinside.com/board/thesingularity/1493018",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T20:46:26+09:00",
-     "comments": 2
-    },
-    {
-     "title": "토르도털리네",
-     "url": "https://m.dcinside.com/board/thesingularity/1493017",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T20:46:17+09:00",
-     "comments": 0
-    },
-    {
-     "title": "한국사회는 꼭 모두가 보는 곳에서 사건이 터져야 바뀜",
-     "url": "https://m.dcinside.com/board/thesingularity/1493015",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T20:44:24+09:00",
-     "comments": 2
-    },
-    {
-     "title": "사이트 만들 때 db, 호스팅 추천좀",
-     "url": "https://m.dcinside.com/board/thesingularity/1493014",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T20:42:03+09:00",
-     "comments": 2
-    },
-    {
-     "title": "지금 과도기임?",
-     "url": "https://m.dcinside.com/board/thesingularity/1493012",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T20:40:56+09:00",
+     "title": "나 뭔가 페이블5.5 받은 거 같은데",
+     "url": "https://m.dcinside.com/board/thesingularity/1493421",
+     "author": "초존도초",
+     "time": "2026-10-22T01:46:58+09:00",
      "comments": 13
     },
     {
-     "title": "그동안은 사람들이 결과물 믿고 좋게좋게 넘어갔는데",
-     "url": "https://m.dcinside.com/board/thesingularity/1493010",
-     "author": "유미아의아틀리에",
-     "time": "2026-10-21T20:37:59+09:00",
-     "comments": 7
+     "title": "진짜 이것만 바라보고삼",
+     "url": "https://m.dcinside.com/board/thesingularity/1493420",
+     "author": "로카이",
+     "time": "2026-10-22T01:45:25+09:00",
+     "comments": 0
+    },
+    {
+     "title": "인간의노력이란게 점점 의미없어져",
+     "url": "https://m.dcinside.com/board/thesingularity/1493419",
+     "author": "유기젤",
+     "time": "2026-10-22T01:44:57+09:00",
+     "comments": 13
+    },
+    {
+     "title": "아르곤으로php조사중",
+     "url": "https://m.dcinside.com/board/thesingularity/1493418",
+     "author": "ㅇㅇ",
+     "time": "2026-10-22T01:43:39+09:00",
+     "comments": 0
+    },
+    {
+     "title": "ai가 만든 코드는 ai가 전부 꿰뚫고 있잖아",
+     "url": "https://m.dcinside.com/board/thesingularity/1493417",
+     "author": "ㅇㅇ",
+     "time": "2026-10-22T01:43:08+09:00",
+     "comments": 1
+    },
+    {
+     "title": "뇌에 나노봇 박으면 지능 운동신경 증강 가능하나요",
+     "url": "https://m.dcinside.com/board/thesingularity/1493416",
+     "author": "로카이",
+     "time": "2026-10-22T01:41:16+09:00",
+     "comments": 3
     }
    ],
-   "updatedAt": "2026-10-21T21:06:56+09:00"
+   "updatedAt": "2026-10-22T02:27:23+09:00"
   },
   {
    "id": "mlb-bullpen",
@@ -669,218 +669,217 @@
    "url": "https://mlbpark.donga.com/mp/b.php?b=bullpen",
    "posts": [
     {
-     "title": "NBA 은근한 난제.jpg",
-     "url": "https://mlbpark.donga.com/mp/b.php?id=202610210119581320&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
-     "author": "ConanDoyle",
-     "time": "2026-10-21T15:11:50+09:00",
+     "title": "나는솔로) 이번화 못봤는데 재밌나요?",
+     "url": "https://mlbpark.donga.com/mp/b.php?id=202610220119589942&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
+     "author": "럽미주",
+     "time": "2026-10-22T02:26:59+09:00",
      "comments": 0
     },
     {
-     "title": "김도영은 라팍 가면 손해일듯",
-     "url": "https://mlbpark.donga.com/mp/b.php?id=202610210119581302&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
-     "author": "전국의계단",
-     "time": "2026-10-21T15:11:00+09:00",
-     "comments": 0
-    },
-    {
-     "title": "수만옹은 왜 sm에서 나가리 된거에요?",
-     "url": "https://mlbpark.donga.com/mp/b.php?id=202610210119581299&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
-     "author": "사자호랑이",
-     "time": "2026-10-21T15:10:59+09:00",
-     "comments": 0
-    },
-    {
-     "title": "정상혈압인데도, 체중감량하니깐 더 낮아지네요",
-     "url": "https://mlbpark.donga.com/mp/b.php?id=202610210119581293&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
-     "author": "무념무상~",
-     "time": "2026-10-21T15:10:24+09:00",
-     "comments": 0
-    },
-    {
-     "title": "장원영 단발 숏컷 합성사진",
-     "url": "https://mlbpark.donga.com/mp/b.php?id=202610210119581290&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
-     "author": "창원조드남",
-     "time": "2026-10-21T15:10:13+09:00",
+     "title": "오늘 공개되는 넷플릭스 일드",
+     "url": "https://mlbpark.donga.com/mp/b.php?id=202610220119589939&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
+     "author": "봄의시작",
+     "time": "2026-10-22T02:20:10+09:00",
      "comments": 1
     },
     {
-     "title": "올해 김도영이 7관왕 이대호보다 고점 높아요",
-     "url": "https://mlbpark.donga.com/mp/b.php?id=202610210119581287&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
-     "author": "오렌지삭스",
-     "time": "2026-10-21T15:10:06+09:00",
+     "title": "달이 형성된 과정이라고 하네요...mp4",
+     "url": "https://mlbpark.donga.com/mp/b.php?id=202610220119589936&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
+     "author": "witcher",
+     "time": "2026-10-22T02:16:15+09:00",
      "comments": 2
     },
     {
-     "title": "psg이새끼들도 맨시처럼 회계장부 까보면 볼만할듯요",
-     "url": "https://mlbpark.donga.com/mp/b.php?id=202610210119581281&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
-     "author": "시온코",
-     "time": "2026-10-21T15:09:42+09:00",
-     "comments": 1
+     "title": "이상한 시험문제",
+     "url": "https://mlbpark.donga.com/mp/b.php?id=202610220119589933&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
+     "author": "lhg1003",
+     "time": "2026-10-22T02:15:43+09:00",
+     "comments": 0
     },
     {
-     "title": "존잘남 버스기사의 고달픈 삶",
-     "url": "https://mlbpark.donga.com/mp/b.php?id=202610210119581269&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
-     "author": "껄껄무새",
-     "time": "2026-10-21T15:09:12+09:00",
-     "comments": 4
-    },
-    {
-     "title": "80년대후반~90년대초반 반포 개포 잠실 주공 단지들 가격이 어땠나요?",
-     "url": "https://mlbpark.donga.com/mp/b.php?id=202610210119581257&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
-     "author": "PanAm",
-     "time": "2026-10-21T15:08:41+09:00",
-     "comments": 2
-    },
-    {
-     "title": "형님들 지금 미장 멈췄나요???",
-     "url": "https://mlbpark.donga.com/mp/b.php?id=202610210119581251&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
-     "author": "Propeller",
-     "time": "2026-10-21T15:08:29+09:00",
+     "title": "손흥민 돈 잘 안쓰나요",
+     "url": "https://mlbpark.donga.com/mp/b.php?id=202610220119589930&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
+     "author": "CaoCao",
+     "time": "2026-10-22T02:15:31+09:00",
      "comments": 3
     },
     {
-     "title": "가수 바다 근황.jpg",
-     "url": "https://mlbpark.donga.com/mp/b.php?id=202610210119581248&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
-     "author": "최양락",
-     "time": "2026-10-21T15:08:27+09:00",
+     "title": "실미도 볼 때마다 진짜 재밋음 영화",
+     "url": "https://mlbpark.donga.com/mp/b.php?id=202610220119589924&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
+     "author": "박동훈상무",
+     "time": "2026-10-22T02:13:23+09:00",
+     "comments": 0
+    },
+    {
+     "title": "헐 마츠다 부장 유투브 하고 계셧네요? 근데..",
+     "url": "https://mlbpark.donga.com/mp/b.php?id=202610220119589921&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
+     "author": "신라면순한",
+     "time": "2026-10-22T02:13:10+09:00",
+     "comments": 7
+    },
+    {
+     "title": "손흥민이니 홍명보니 김민재니 왜 이렇게 열 내세요?",
+     "url": "https://mlbpark.donga.com/mp/b.php?id=202610220119589918&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
+     "author": "퇴직금개꿀띠",
+     "time": "2026-10-22T02:12:48+09:00",
+     "comments": 2
+    },
+    {
+     "title": "A2O 오아 아이린 닮았지않나요?",
+     "url": "https://mlbpark.donga.com/mp/b.php?id=202610220119589909&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
+     "author": "미누1",
+     "time": "2026-10-22T02:09:15+09:00",
+     "comments": 3
+    },
+    {
+     "title": "쌀 3개중에 어느거 살까요.?",
+     "url": "https://mlbpark.donga.com/mp/b.php?id=202610220119589906&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
+     "author": "메트로킹",
+     "time": "2026-10-22T02:09:14+09:00",
+     "comments": 7
+    },
+    {
+     "title": "마이클 케릭은 챔피언쉽에서 수련좀더 쌓아야겠네요",
+     "url": "https://mlbpark.donga.com/mp/b.php?id=202610220119589903&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
+     "author": "dwdfww",
+     "time": "2026-10-22T02:06:00+09:00",
+     "comments": 0
+    },
+    {
+     "title": "손흥민이 국대에서 못 하니까 96라인이 들고 일어난것도 있죠",
+     "url": "https://mlbpark.donga.com/mp/b.php?id=202610220119589897&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
+     "author": "아이패드0",
+     "time": "2026-10-22T02:03:49+09:00",
+     "comments": 3
+    },
+    {
+     "title": "타이슨 헤비급 중 굉장히 작았죠",
+     "url": "https://mlbpark.donga.com/mp/b.php?id=202610220119589891&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
+     "author": "가을이야",
+     "time": "2026-10-22T02:01:39+09:00",
+     "comments": 0
+    },
+    {
+     "title": "북한이랑 싸우면 백프로 집니다",
+     "url": "https://mlbpark.donga.com/mp/b.php?id=202610220119589888&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=naver.com",
+     "author": "넬파",
+     "time": "2026-10-22T02:01:25+09:00",
+     "comments": 0
+    },
+    {
+     "title": "이진호 A2O 바이럴로 음원 올킬은 절대 불가능",
+     "url": "https://mlbpark.donga.com/mp/b.php?id=202610220119589882&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
+     "author": "1&3&4",
+     "time": "2026-10-22T01:57:41+09:00",
+     "comments": 21
+    },
+    {
+     "title": "우리나라 안경낀 사람들 많나요",
+     "url": "https://mlbpark.donga.com/mp/b.php?id=202610220119589879&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
+     "author": "정서주",
+     "time": "2026-10-22T01:57:19+09:00",
+     "comments": 0
+    },
+    {
+     "title": "이동국의 근무태만을 떠나서",
+     "url": "https://mlbpark.donga.com/mp/b.php?id=202610220119589864&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
+     "author": "일레트릭",
+     "time": "2026-10-22T01:52:16+09:00",
+     "comments": 4
+    },
+    {
+     "title": "맨유는 안됨",
+     "url": "https://mlbpark.donga.com/mp/b.php?id=202610220119589861&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
+     "author": "카를스루에",
+     "time": "2026-10-22T01:51:53+09:00",
+     "comments": 1
+    },
+    {
+     "title": "요즘 한번씩 듣는 추억의 아이돌 노래",
+     "url": "https://mlbpark.donga.com/mp/b.php?id=202610220119589858&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
+     "author": "간장싸이",
+     "time": "2026-10-22T01:50:21+09:00",
+     "comments": 2
+    },
+    {
+     "title": "몇시간전 SK 최태원 회장 근황...mp4",
+     "url": "https://mlbpark.donga.com/mp/b.php?id=202610220119589852&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
+     "author": "witcher",
+     "time": "2026-10-22T01:47:37+09:00",
+     "comments": 3
+    },
+    {
+     "title": "오재원 애국가 배경화면에 나올뻔한 장면..",
+     "url": "https://mlbpark.donga.com/mp/b.php?id=202610220119589846&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
+     "author": "교동이",
+     "time": "2026-10-22T01:46:46+09:00",
+     "comments": 2
+    },
+    {
+     "title": "누가 더 급이 높나요?",
+     "url": "https://mlbpark.donga.com/mp/b.php?id=202610220119589843&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
+     "author": "단테리",
+     "time": "2026-10-22T01:43:27+09:00",
+     "comments": 5
+    },
+    {
+     "title": "일본 장원영",
+     "url": "https://mlbpark.donga.com/mp/b.php?id=202610220119589837&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
+     "author": "교동이",
+     "time": "2026-10-22T01:42:07+09:00",
+     "comments": 0
+    },
+    {
+     "title": "1970년대 초반, 한국 가정에서 공기청정기가 쓰였던 모양이군요",
+     "url": "https://mlbpark.donga.com/mp/b.php?id=202610220119589831&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
+     "author": "가입하",
+     "time": "2026-10-22T01:39:22+09:00",
+     "comments": 0
+    },
+    {
+     "title": "조선왕조 최대의 문제아이자, 미스터리 인물 허균(1569~1618)- 1편",
+     "url": "https://mlbpark.donga.com/mp/b.php?id=202610220119589828&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
+     "author": "Fareast",
+     "time": "2026-10-22T01:38:45+09:00",
+     "comments": 1
+    },
+    {
+     "title": "손흥민이 국대내에서 대접받지 못한다니까 씁쓸하네요",
+     "url": "https://mlbpark.donga.com/mp/b.php?id=202610220119589822&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
+     "author": "씨네필임",
+     "time": "2026-10-22T01:34:49+09:00",
      "comments": 11
     },
     {
-     "title": "후드를 쓴 미나.jpg",
-     "url": "https://mlbpark.donga.com/mp/b.php?id=202610210119581239&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
-     "author": "미나",
-     "time": "2026-10-21T15:07:30+09:00",
-     "comments": 1
-    },
-    {
-     "title": "기아가 4일이나 휴식하면 삼성이 투타 앞서는 부분이 있나요",
-     "url": "https://mlbpark.donga.com/mp/b.php?id=202610210119581230&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
-     "author": "yntwin20",
-     "time": "2026-10-21T15:07:00+09:00",
-     "comments": 5
-    },
-    {
-     "title": "주야 교대근무 vs 야간 고정근무",
-     "url": "https://mlbpark.donga.com/mp/b.php?id=202610210119581227&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
-     "author": "Travelers",
-     "time": "2026-10-21T15:06:49+09:00",
-     "comments": 3
-    },
-    {
-     "title": "69세가 되는, Beat It 그 기타 리프의 주인공이자 대밴드의 기타리스트",
-     "url": "https://mlbpark.donga.com/mp/b.php?id=202610210119581224&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
-     "author": "토네이드오브소울",
-     "time": "2026-10-21T15:06:49+09:00",
+     "title": "트리플에스 지연 (161)",
+     "url": "https://mlbpark.donga.com/mp/b.php?id=202610220119589819&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
+     "author": "행복나눔",
+     "time": "2026-10-22T01:34:23+09:00",
      "comments": 0
     },
     {
-     "title": "아무리 봐도 캐슬이 팍스 공격롤까지 가져가는게 문제",
-     "url": "https://mlbpark.donga.com/mp/b.php?id=202610210119581221&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
-     "author": "1.웸반야마",
-     "time": "2026-10-21T15:06:35+09:00",
-     "comments": 8
+     "title": "한참 전 걸그룹 노래 들었습니다.",
+     "url": "https://mlbpark.donga.com/mp/b.php?id=202610220119589810&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
+     "author": "원투플러스",
+     "time": "2026-10-22T01:32:16+09:00",
+     "comments": 6
     },
     {
-     "title": "부캉이 사망하면 푸바오급 대성통곡 나올까요?",
-     "url": "https://mlbpark.donga.com/mp/b.php?id=202610210119581212&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
-     "author": "A380",
-     "time": "2026-10-21T15:06:14+09:00",
-     "comments": 5
+     "title": "우리 지금까지 뭐 한 거지?.. 종이빨대 \"발암 영향 6배\" 조사결과 나와 충격",
+     "url": "https://mlbpark.donga.com/mp/b.php?id=202610220119589804&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
+     "author": "데이원",
+     "time": "2026-10-22T01:30:46+09:00",
+     "comments": 29
     },
     {
-     "title": "삼 하 오늘 파멸적 상승 했군요",
-     "url": "https://mlbpark.donga.com/mp/b.php?id=202610210119581206&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
-     "author": "18perhour",
-     "time": "2026-10-21T15:06:08+09:00",
-     "comments": 0
-    },
-    {
-     "title": "이거 되면 진짜 평생 찬양 합니다",
-     "url": "https://mlbpark.donga.com/mp/b.php?id=202610210119581194&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
-     "author": "스파이드",
-     "time": "2026-10-21T15:05:47+09:00",
-     "comments": 8
-    },
-    {
-     "title": "박찬욱 암살자들 평가.jpf",
-     "url": "https://mlbpark.donga.com/mp/b.php?id=202610210119581188&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
+     "title": "대한민국 성범죄 매커니즘.",
+     "url": "https://mlbpark.donga.com/mp/b.php?id=202610220119589801&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
      "author": "있잖아",
-     "time": "2026-10-21T15:05:34+09:00",
-     "comments": 2
-    },
-    {
-     "title": "보라 아윤 아이찡 캐치캐치 ㄷㄷㄷ",
-     "url": "https://mlbpark.donga.com/mp/b.php?id=202610210119581179&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
-     "author": "선정이딸",
-     "time": "2026-10-21T15:05:15+09:00",
-     "comments": 0
-    },
-    {
-     "title": "와이프가 회사 동료랑 룸카페 같다는데 빼박이지?.blind",
-     "url": "https://mlbpark.donga.com/mp/b.php?id=202610210119581176&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
-     "author": "TABASCO",
-     "time": "2026-10-21T15:04:24+09:00",
-     "comments": 4
-    },
-    {
-     "title": "송승헌 근황.",
-     "url": "https://mlbpark.donga.com/mp/b.php?id=202610210119581170&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
-     "author": "아는행님",
-     "time": "2026-10-21T15:04:16+09:00",
-     "comments": 6
-    },
-    {
-     "title": "코스피 변동성이 다시 심해진 거 같습니다",
-     "url": "https://mlbpark.donga.com/mp/b.php?id=202610210119581161&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=naver.com",
-     "author": "보라둥이7",
-     "time": "2026-10-21T15:03:53+09:00",
-     "comments": 3
-    },
-    {
-     "title": "KBO팬들 은퇴투어 가지고 불타는건 언제 봐도 웃겨요",
-     "url": "https://mlbpark.donga.com/mp/b.php?id=202610210119581158&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
-     "author": "노잼예스잼",
-     "time": "2026-10-21T15:03:15+09:00",
-     "comments": 0
-    },
-    {
-     "title": "불페너들은 수많은 스포츠 종목중 야구에 대한 애정이 엄청남",
-     "url": "https://mlbpark.donga.com/mp/b.php?id=202610210119581152&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
-     "author": "싸이벡스",
-     "time": "2026-10-21T15:03:00+09:00",
-     "comments": 6
-    },
-    {
-     "title": "호랑이가 새끼 크기에서 멈추면",
-     "url": "https://mlbpark.donga.com/mp/b.php?id=202610210119581146&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
-     "author": "월드챔피언",
-     "time": "2026-10-21T15:02:51+09:00",
-     "comments": 9
-    },
-    {
-     "title": "송승헌 마지막 히트작이 에덴의동쪽인가요?",
-     "url": "https://mlbpark.donga.com/mp/b.php?id=202610210119581137&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
-     "author": "dawn",
-     "time": "2026-10-21T15:02:23+09:00",
-     "comments": 5
-    },
-    {
-     "title": "과거부터 10대 20대가 케이팝 돌리고 주변 세대가 같이붙는 건데",
-     "url": "https://mlbpark.donga.com/mp/b.php?id=202610210119581134&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
-     "author": "3억채우자",
-     "time": "2026-10-21T15:02:13+09:00",
-     "comments": 0
-    },
-    {
-     "title": "한국이 아시아에서 가장 서유럽에 가까운 나라가 맞죠?",
-     "url": "https://mlbpark.donga.com/mp/b.php?id=202610210119581125&p=1&b=bullpen&m=view&select=&query=&subselect=&subquery=&user=&site=donga.com",
-     "author": "오렌지삭스",
-     "time": "2026-10-21T15:01:49+09:00",
+     "time": "2026-10-22T01:30:32+09:00",
      "comments": 1
     }
    ],
-   "updatedAt": "2026-10-21T15:12:06+09:00",
-   "error": "ConnectionError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))"
+   "updatedAt": "2026-10-22T02:27:23+09:00"
   },
   {
    "id": "dc-ai_utilize",
@@ -888,217 +887,217 @@
    "url": "https://m.dcinside.com/board/ai_utilize",
    "posts": [
     {
-     "title": "근데 오픈코드go에서 주는 모델들 다 자체호스팅임?",
-     "url": "https://m.dcinside.com/board/ai_utilize/145348",
-     "author": "대황시크",
-     "time": "2026-10-21T21:07:04+09:00",
+     "title": "코덱스 크레딧은 어떻게 사용하는거임?",
+     "url": "https://m.dcinside.com/board/ai_utilize/145707",
+     "author": "ㅇㅇ",
+     "time": "2026-10-22T02:27:28+09:00",
      "comments": 0
     },
     {
-     "title": "아니 ㅅㅂ 관리 안하는 갤을 원하면 정식 갤러리를 가던가",
-     "url": "https://m.dcinside.com/board/ai_utilize/145347",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T21:06:44+09:00",
+     "title": "짚 23일권 눌러버렸오",
+     "url": "https://m.dcinside.com/board/ai_utilize/145706",
+     "author": "hermes",
+     "time": "2026-10-22T02:25:37+09:00",
      "comments": 0
     },
     {
-     "title": "주딱 생기면 분탕들 빡세게 관리가능하니까 발작하네",
-     "url": "https://m.dcinside.com/board/ai_utilize/145346",
+     "title": "이거 에활갤에 누가 올렷길래 보는데 (링크수정)",
+     "url": "https://m.dcinside.com/board/ai_utilize/145705",
      "author": "ㅇㅇ",
-     "time": "2026-10-21T21:06:35+09:00",
-     "comments": 0
-    },
-    {
-     "title": "ai 진짜 존나 신기하네 진짜",
-     "url": "https://m.dcinside.com/board/ai_utilize/145345",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T21:05:59+09:00",
-     "comments": 1
-    },
-    {
-     "title": "왜 아직도 php를 고집하는거야??",
-     "url": "https://m.dcinside.com/board/ai_utilize/145344",
-     "author": "소삼",
-     "time": "2026-10-21T21:05:55+09:00",
-     "comments": 1
-    },
-    {
-     "title": "오오푸스 짬처리 제정신인가",
-     "url": "https://m.dcinside.com/board/ai_utilize/145343",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T21:05:48+09:00",
-     "comments": 0
-    },
-    {
-     "title": "주딱 뽑는 이유와 떡밥 관련",
-     "url": "https://m.dcinside.com/board/ai_utilize/145279",
-     "author": "ㄱㄱ",
-     "time": "2026-10-21T20:24:44+09:00",
-     "comments": 25
-    },
-    {
-     "title": "키미는 보나마나 나와도 존나비싸겠지",
-     "url": "https://m.dcinside.com/board/ai_utilize/145341",
-     "author": "오펫",
-     "time": "2026-10-21T21:05:11+09:00",
-     "comments": 1
-    },
-    {
-     "title": "opencode 무료 딥식 vs 제미나이 3.8 flash",
-     "url": "https://m.dcinside.com/board/ai_utilize/145340",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T21:05:04+09:00",
-     "comments": 0
-    },
-    {
-     "title": "php는 날 때부터 쌍놈이더니",
-     "url": "https://m.dcinside.com/board/ai_utilize/145338",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T21:04:38+09:00",
-     "comments": 1
-    },
-    {
-     "title": "주딱은 절대 만들면안됨",
-     "url": "https://m.dcinside.com/board/ai_utilize/145337",
-     "author": "히키코모리",
-     "time": "2026-10-21T21:01:09+09:00",
-     "comments": 12
-    },
-    {
-     "title": "엔비디아 flare 추가 테스트 1dgx qwen3.8fn",
-     "url": "https://m.dcinside.com/board/ai_utilize/145336",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T21:00:48+09:00",
-     "comments": 0
-    },
-    {
-     "title": "ai활용걀러리 주딱 위임신청합니다.",
-     "url": "https://m.dcinside.com/board/ai_utilize/142982",
-     "author": "ㄱㄱ",
-     "time": "2026-10-20T13:57:57+09:00",
-     "comments": 210
-    },
-    {
-     "title": "클로드 스킬최신꺼 분명있었는데",
-     "url": "https://m.dcinside.com/board/ai_utilize/145335",
-     "author": "끼요오오오옷",
-     "time": "2026-10-21T21:00:01+09:00",
-     "comments": 2
-    },
-    {
-     "title": "나도 제미나이 테스터 프로그램 메일 왔네",
-     "url": "https://m.dcinside.com/board/ai_utilize/145334",
-     "author": "유메카",
-     "time": "2026-10-21T20:58:11+09:00",
+     "time": "2026-10-22T02:23:58+09:00",
      "comments": 3
     },
     {
-     "title": "지금 웹 서버들 하나둘 서비스 긴급중단중인 이유",
-     "url": "https://m.dcinside.com/board/ai_utilize/145333",
+     "title": "제미나이는 이미지 생성한도 ㅈㄴ짜다",
+     "url": "https://m.dcinside.com/board/ai_utilize/145704",
      "author": "ㅇㅇ",
-     "time": "2026-10-21T20:58:05+09:00",
-     "comments": 2
+     "time": "2026-10-22T02:21:00+09:00",
+     "comments": 3
     },
     {
-     "title": "AI도 극한직업이노",
-     "url": "https://m.dcinside.com/board/ai_utilize/145332",
+     "title": "기존 짚프로20 사용자 중에 10월 중에 재구독한 사람들 있음?",
+     "url": "https://m.dcinside.com/board/ai_utilize/145703",
      "author": "ㅇㅇ",
-     "time": "2026-10-21T20:57:29+09:00",
-     "comments": 1
-    },
-    {
-     "title": "moss image로 난 완몰가 시작함",
-     "url": "https://m.dcinside.com/board/ai_utilize/145331",
-     "author": "딸숭이",
-     "time": "2026-10-21T20:57:26+09:00",
-     "comments": 1
-    },
-    {
-     "title": "강팔이들 진짜 척결안되나",
-     "url": "https://m.dcinside.com/board/ai_utilize/145330",
-     "author": "히키코모리",
-     "time": "2026-10-21T20:56:56+09:00",
+     "time": "2026-10-22T02:14:44+09:00",
      "comments": 0
     },
     {
-     "title": "3주전엔 hello world밖에 몰랐는데",
-     "url": "https://m.dcinside.com/board/ai_utilize/145329",
+     "title": "제미나이 원래 이렇게 개멍청함? 클로드는 사람하고 대화하듯이 가능했는데",
+     "url": "https://m.dcinside.com/board/ai_utilize/145702",
      "author": "ㅇㅇ",
-     "time": "2026-10-21T20:54:45+09:00",
-     "comments": 2
-    },
-    {
-     "title": "사형수 뇌 뚜따해서",
-     "url": "https://m.dcinside.com/board/ai_utilize/145328",
-     "author": "XX",
-     "time": "2026-10-21T20:54:38+09:00",
-     "comments": 1
-    },
-    {
-     "title": "이거 아이디어 어떰?",
-     "url": "https://m.dcinside.com/board/ai_utilize/145327",
-     "author": "칠시",
-     "time": "2026-10-21T20:54:32+09:00",
+     "time": "2026-10-22T02:14:00+09:00",
      "comments": 5
     },
     {
-     "title": "디디딛딥딥시크",
-     "url": "https://m.dcinside.com/board/ai_utilize/145326",
+     "title": "검색은 아르곤 >>> 오푸스 5.5네",
+     "url": "https://m.dcinside.com/board/ai_utilize/145701",
      "author": "ㅇㅇ",
-     "time": "2026-10-21T20:53:26+09:00",
-     "comments": 0
-    },
-    {
-     "title": "50대도 컴터 잘씀?",
-     "url": "https://m.dcinside.com/board/ai_utilize/145325",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T20:53:26+09:00",
+     "time": "2026-10-22T02:13:47+09:00",
      "comments": 2
     },
     {
-     "title": "수능 ai 글래스 기사 보면서 드는 생각",
-     "url": "https://m.dcinside.com/board/ai_utilize/145322",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T20:51:27+09:00",
-     "comments": 4
-    },
-    {
-     "title": "딥식 쌀먹한다고 이상한데 쓰지말고 오픈코드써라",
-     "url": "https://m.dcinside.com/board/ai_utilize/145321",
-     "author": "ㅇㅇ",
-     "time": "2026-10-21T20:51:09+09:00",
+     "title": "혹시 깃허브 코파일럿 쓰는 새끼 있냐??",
+     "url": "https://m.dcinside.com/board/ai_utilize/145700",
+     "author": "에붕이3787",
+     "time": "2026-10-22T02:12:48+09:00",
      "comments": 3
     },
     {
-     "title": "너네 클로드 뭐로쓰냐??",
-     "url": "https://m.dcinside.com/board/ai_utilize/145320",
-     "author": "점젬짚",
-     "time": "2026-10-21T20:51:09+09:00",
-     "comments": 3
-    },
-    {
-     "title": "지금 웹서버들 php 취약점 이슈로 서버 다 내리고있는거 머임..",
-     "url": "https://m.dcinside.com/board/ai_utilize/145319",
+     "title": "Hive 이런데는 어떻게 100달러나 주는거지",
+     "url": "https://m.dcinside.com/board/ai_utilize/145699",
      "author": "ㅇㅇ",
-     "time": "2026-10-21T20:50:47+09:00",
+     "time": "2026-10-22T02:10:57+09:00",
      "comments": 1
     },
     {
-     "title": "이상한나라의 남성부",
-     "url": "https://m.dcinside.com/board/ai_utilize/145318",
+     "title": "이 갤엔 왜이리 불순한 세력들이 많지?",
+     "url": "https://m.dcinside.com/board/ai_utilize/145698",
      "author": "ㅇㅇ",
-     "time": "2026-10-21T20:49:26+09:00",
+     "time": "2026-10-22T02:10:06+09:00",
+     "comments": 1
+    },
+    {
+     "title": "클프로 건당 외주비 1300원이라 생각하고 쓰는 중",
+     "url": "https://m.dcinside.com/board/ai_utilize/145697",
+     "author": "ㅇㅇ",
+     "time": "2026-10-22T02:08:51+09:00",
+     "comments": 2
+    },
+    {
+     "title": "일론머스크도 범부였네. 화성에 이주하는게 아니라",
+     "url": "https://m.dcinside.com/board/ai_utilize/145696",
+     "author": "OoO",
+     "time": "2026-10-22T02:08:44+09:00",
      "comments": 0
     },
     {
-     "title": "근데 전문 분탕들 다시 고소안하나?",
-     "url": "https://m.dcinside.com/board/ai_utilize/145317",
-     "author": "아모데이씹창년",
-     "time": "2026-10-21T20:49:09+09:00",
+     "title": "채팅싸개로도 클로드가 낫지 않나 ㅇㅇ..?",
+     "url": "https://m.dcinside.com/board/ai_utilize/145695",
+     "author": "대황시크",
+     "time": "2026-10-22T02:08:43+09:00",
+     "comments": 4
+    },
+    {
+     "title": "어사이드도 rea 가 되나",
+     "url": "https://m.dcinside.com/board/ai_utilize/145694",
+     "author": "ㅇㅇ",
+     "time": "2026-10-22T02:08:09+09:00",
+     "comments": 2
+    },
+    {
+     "title": "세상에서 제일 좋은 소프트웨어",
+     "url": "https://m.dcinside.com/board/ai_utilize/145693",
+     "author": "ㅇㅇ",
+     "time": "2026-10-22T02:07:35+09:00",
+     "comments": 0
+    },
+    {
+     "title": "GPT 4o 시절에 어케 플러스나 구독했나싶음",
+     "url": "https://m.dcinside.com/board/ai_utilize/145692",
+     "author": "ㅇㅇ",
+     "time": "2026-10-22T02:06:23+09:00",
+     "comments": 0
+    },
+    {
+     "title": "필쫀쿠는 스크립트만 콘솔에 넣고 결제하기 누르면되는거이ㅣㅁ?",
+     "url": "https://m.dcinside.com/board/ai_utilize/145691",
+     "author": "ㅇㅇ",
+     "time": "2026-10-22T02:05:01+09:00",
+     "comments": 10
+    },
+    {
+     "title": "기술발전 최전선에서 쌀먹해야돼... 근데 하고싶지않아",
+     "url": "https://m.dcinside.com/board/ai_utilize/145690",
+     "author": "ㅇㅇ",
+     "time": "2026-10-22T02:04:59+09:00",
+     "comments": 2
+    },
+    {
+     "title": "존경하는 갤러 여러분, 저는 파딱으로서 피를 토하는 심정으로 국민 여러",
+     "url": "https://m.dcinside.com/board/ai_utilize/145689",
+     "author": "자연대생",
+     "time": "2026-10-22T02:02:22+09:00",
+     "comments": 3
+    },
+    {
+     "title": "지금 디시 서버 대대적인 ai 척결중인것 같은데",
+     "url": "https://m.dcinside.com/board/ai_utilize/145687",
+     "author": "Named",
+     "time": "2026-10-22T02:01:58+09:00",
+     "comments": 3
+    },
+    {
+     "title": "리버싱은 빠르면 빠를 수록 좋음.",
+     "url": "https://m.dcinside.com/board/ai_utilize/145686",
+     "author": "Named",
+     "time": "2026-10-22T01:59:04+09:00",
+     "comments": 4
+    },
+    {
+     "title": "마이크로소프트 윈도우11 탐색기에서 코파일럿 제거",
+     "url": "https://m.dcinside.com/board/ai_utilize/145685",
+     "author": "ㅇㅇ",
+     "time": "2026-10-22T01:58:50+09:00",
+     "comments": 4
+    },
+    {
+     "title": "티보 씹창년아 오늘은 또 어떤 씹창질을 할래?",
+     "url": "https://m.dcinside.com/board/ai_utilize/145684",
+     "author": "ㅇㅇ",
+     "time": "2026-10-22T01:58:41+09:00",
+     "comments": 0
+    },
+    {
+     "title": "일반인은 GPT Plus 쓰는게 맞지 뭔",
+     "url": "https://m.dcinside.com/board/ai_utilize/145683",
+     "author": "자연대생",
+     "time": "2026-10-22T01:57:36+09:00",
+     "comments": 8
+    },
+    {
+     "title": "리버싱 ㅈㄴ 쉬워져서 좋네 ㄹㅇ;;;;;;;",
+     "url": "https://m.dcinside.com/board/ai_utilize/145682",
+     "author": "ㅇㅇ",
+     "time": "2026-10-22T01:56:50+09:00",
+     "comments": 7
+    },
+    {
+     "title": "윈도우 장난감 중고 본체 어디서 사야함?",
+     "url": "https://m.dcinside.com/board/ai_utilize/145681",
+     "author": "Named",
+     "time": "2026-10-22T01:54:40+09:00",
      "comments": 14
+    },
+    {
+     "title": "하.. 일이 안 끈난다.... 하지만",
+     "url": "https://m.dcinside.com/board/ai_utilize/145680",
+     "author": "단타미",
+     "time": "2026-10-22T01:53:53+09:00",
+     "comments": 0
+    },
+    {
+     "title": "취미에 100달러 태우는거아깝다든가",
+     "url": "https://m.dcinside.com/board/ai_utilize/145679",
+     "author": "ㅇㅇ",
+     "time": "2026-10-22T01:53:14+09:00",
+     "comments": 6
+    },
+    {
+     "title": "게임에 현실같은 발전을 구현하고 몬스터를 구현하면",
+     "url": "https://m.dcinside.com/board/ai_utilize/145678",
+     "author": "OoO",
+     "time": "2026-10-22T01:51:18+09:00",
+     "comments": 0
+    },
+    {
+     "title": "갤이 죽었어….",
+     "url": "https://m.dcinside.com/board/ai_utilize/145677",
+     "author": "ㅇㅇ",
+     "time": "2026-10-22T01:50:34+09:00",
+     "comments": 0
     }
    ],
-   "updatedAt": "2026-10-21T21:06:56+09:00"
+   "updatedAt": "2026-10-22T02:27:23+09:00"
   }
  ]
 }
