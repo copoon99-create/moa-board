@@ -576,6 +576,7 @@ const NAMES={"dc-marvelsnap":"마블 스냅 갤러리","dc-bh":"보호직 갤러
 function setDocs(m,docs){docs=docs.filter(d=>d.id!=="fm-realestate");docsBy[m]=docs;if(m===mode){feedDocs=docs;renderFeed()}}
 function applyFeed(j){setDocs("new",(j.boards||[]).filter(d=>(d.posts||[]).length||d.error))}
 async function loadFeed(fresh,m=mode){
+  lastLoad=Date.now();
   if(API){
     // 게시판마다 따로 불러서 먼저 도착한 게시판부터 보여준다
     const got={}, ids=IDS[m];
@@ -588,7 +589,10 @@ async function loadFeed(fresh,m=mode){
       const have=new Set(o.posts.map(p=>p.url)), add=j.posts.filter(p=>!have.has(p.url));
       const upd=new Map(j.posts.map(p=>[p.url,p]));
       fresh_n+=add.length;
-      return Object.assign({},o,{updatedAt:j.updatedAt,error:j.error,posts:add.concat(o.posts.map(p=>upd.get(p.url)||p))});
+      let posts=add.concat(o.posts.map(p=>upd.get(p.url)||p));
+      // 맨 위를 보고 있으면 오래 켜 둔 탭에 글이 끝없이 쌓이지 않게 최근 것만 남긴다
+      if(window.scrollY<300&&posts.length>KEEP){posts=posts.sort((a,b)=>(Date.parse(b.time)||0)-(Date.parse(a.time)||0)).slice(0,KEEP);shown=PAGE_SHOW;return Object.assign({},o,{updatedAt:j.updatedAt,error:j.error,posts,_page:1,_done:false})}
+      return Object.assign({},o,{updatedAt:j.updatedAt,error:j.error,posts});
     };
     const show=()=>{setDocs(m,ids.filter(k=>got[k]&&((got[k].posts||[]).length||got[k].error)).map(k=>got[k]));if(fresh_n)newBar(fresh_n)};
     const results=await Promise.all(ids.map(async id=>{
@@ -609,8 +613,10 @@ async function loadFeed(fresh,m=mode){
   }catch(e){}
   return false;
 }
+let lastLoad=0;const KEEP=60;
 loadFeed();
-setInterval(()=>loadFeed(),5*60000);
+// 다른 탭을 보고 있을 때는 새로 불러오거나 다시 그리지 않는다. 돌아오면 그때 한 번에 갱신
+setInterval(()=>{if(!document.hidden)loadFeed()},5*60000);
 /* 새 글 알림 띠: 아래를 보고 있을 때 새 글이 들어오면 띄우고, 누르면 맨 위로 */
 let newCount=0;
 function newBar(n){
@@ -621,7 +627,7 @@ function newBar(n){
 document.getElementById("newBar").onclick=()=>{window.scrollTo({top:0,behavior:"smooth"});document.getElementById("newBar").hidden=true;newCount=0};
 window.addEventListener("scroll",()=>{if(window.scrollY<150&&!document.getElementById("newBar").hidden){document.getElementById("newBar").hidden=true;newCount=0}},{passive:true});
 syncRead();
-document.addEventListener("visibilitychange",()=>{if(!document.hidden)syncRead()});
+document.addEventListener("visibilitychange",()=>{if(document.hidden)return;syncRead();if(Date.now()-lastLoad>5*60000)loadFeed();else renderFeed()});
 document.getElementById("syncBtn").onclick=startSync;
 document.getElementById("syncNew").onclick=async()=>{
   // 헷갈리는 글자(0,O,1,I,L)는 빼고 8자리
@@ -684,7 +690,7 @@ document.getElementById("refreshBtn").onclick=async()=>{
   note('지금 바로 새로 모으려면 <a id="runLink" href="'+RUN_URL+'" target="_blank" rel="noopener">GitHub에서 수집 실행</a>을 눌러주세요.');
   document.getElementById("runLink").onclick=watch;
 };
-setInterval(renderFeed,60000);
+setInterval(()=>{if(!document.hidden)renderFeed()},60000);
 </script>
 </body>
 </html>
