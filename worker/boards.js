@@ -159,7 +159,8 @@ export function parseMlbpark(html) {
     const href = attr(aTag, "href").replace(/&amp;/g, "&");
     posts.push({
       title: clean(attr(aTag, "alt")) || clean(pick(tr, /<a\b[^>]*class="(?:[^"]*\s)?txt(?:\s[^"]*)?"[^>]*>([\s\S]*?)<\/a>/)),
-      url: new URL(href, "https://mlbpark.donga.com/").href,
+      // 목록 쪽수(p=31 등)가 주소에 붙어 같은 글이 쪽마다 다른 주소가 되지 않게 p=1로 맞춘다
+      url: new URL(href, "https://mlbpark.donga.com/").href.replace(/([?&])p=\d+/, "$1p=1"),
       author: clean(pick(tr, /<[a-z]+[^>]*class="[^"]*\bnick\b[^"]*"[^>]*>([\s\S]*?)<\/span>/)),
       time: parseTime(clean(pick(tr, /<[a-z]+[^>]*class="[^"]*\bdate\b[^"]*"[^>]*>([\s\S]*?)<\/span>/))),
       comments: num(pick(tr, /<[a-z]+[^>]*class="[^"]*\breplycnt\b[^"]*"[^>]*>([\s\S]*?)<\/span>/)),

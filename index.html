@@ -430,7 +430,7 @@ function renderFeed(){
   // 모든 게시판의 글을 시간순으로 보여준다 (인기글에서 겹치는 불펜 글은 한 번만)
   const seen=new Set();
   for(const d of feedDocs) if(tab==="all"||tab===d.id){
-    for(const p of d.posts||[]) if(!seen.has(p.url)){seen.add(p.url);posts.push(Object.assign({board:d.name||d.id,boardId:d.id,boardUrl:d.url||""},p))}
+    for(const p of d.posts||[]) if(!seen.has(pkey(p.url))){seen.add(pkey(p.url));posts.push(Object.assign({board:d.name||d.id,boardId:d.id,boardUrl:d.url||""},p))}
   }
   posts.sort((a,b)=>(Date.parse(b.time)||0)-(Date.parse(a.time)||0));
   // 최근 글은 게시판마다 불러온 만큼의 시각이 다르다. 모든 게시판이 다 불러온 시각(frontier)까지만
@@ -469,6 +469,8 @@ function renderFeed(){
 document.getElementById("moreBtn").onclick=()=>loadMore();
 /* 지난 글 더 불러오기 */
 let feedVisible=0, moreLoading=false;
+// 같은 글인지 비교할 때 쓰는 열쇠 (불펜 주소의 쪽수 p=는 무시)
+function pkey(u){return String(u||"").replace(/([?&])p=\d+/,"$1p=1")}
 const oldest=d=>{let m=Infinity;for(const p of d.posts||[]){const t=Date.parse(p.time);if(t&&t<m)m=t}return m};
 const inTab=d=>tab==="all"||tab===d.id;
 // 아직 더 읽을 수 있는 게시판들
@@ -488,7 +490,7 @@ async function loadMore(){
       const pg=(d._page||1)+1;
       try{
         const r=await fetch(API+"?board="+d.id+"&page="+pg,{cache:"no-store"});const j=r.ok?await r.json():null;
-        const have=new Set((d.posts||[]).map(p=>p.url));const add=((j&&j.posts)||[]).filter(p=>!have.has(p.url));
+        const have=new Set((d.posts||[]).map(p=>pkey(p.url)));const add=((j&&j.posts)||[]).filter(p=>!have.has(pkey(p.url))&&have.add(pkey(p.url)));
         d._page=pg;d.posts=(d.posts||[]).concat(add);
         if(!add.length||pg>=20) d._done=true;
       }catch(e){d._done=true}
@@ -586,10 +588,10 @@ async function loadFeed(fresh,m=mode){
     const merge=(id,j)=>{
       const o=prev[id];
       if(m!=="new"||!o||!(o.posts||[]).length||!(j.posts||[]).length) return j;
-      const have=new Set(o.posts.map(p=>p.url)), add=j.posts.filter(p=>!have.has(p.url));
-      const upd=new Map(j.posts.map(p=>[p.url,p]));
+      const have=new Set(o.posts.map(p=>pkey(p.url))), add=j.posts.filter(p=>!have.has(pkey(p.url)));
+      const upd=new Map(j.posts.map(p=>[pkey(p.url),p]));
       fresh_n+=add.length;
-      let posts=add.concat(o.posts.map(p=>upd.get(p.url)||p));
+      let posts=add.concat(o.posts.map(p=>upd.get(pkey(p.url))||p));
       // 맨 위를 보고 있으면 오래 켜 둔 탭에 글이 끝없이 쌓이지 않게 최근 것만 남긴다
       if(window.scrollY<300&&posts.length>KEEP){posts=posts.sort((a,b)=>(Date.parse(b.time)||0)-(Date.parse(a.time)||0)).slice(0,KEEP);shown=PAGE_SHOW;return Object.assign({},o,{updatedAt:j.updatedAt,error:j.error,posts,_page:1,_done:false})}
       return Object.assign({},o,{updatedAt:j.updatedAt,error:j.error,posts});
