@@ -628,6 +628,12 @@ document.getElementById("newBar").onclick=()=>{window.scrollTo({top:0,behavior:"
 window.addEventListener("scroll",()=>{if(window.scrollY<150&&!document.getElementById("newBar").hidden){document.getElementById("newBar").hidden=true;newCount=0}},{passive:true});
 syncRead();
 document.addEventListener("visibilitychange",()=>{if(document.hidden)return;syncRead();if(Date.now()-lastLoad>5*60000)loadFeed();else renderFeed()});
+/* 시작 화면이라 탭이 여러 개 쌓여도 가볍게: 새 탭이 열리면 뒤에 숨은 예전 탭은 불러온 글을 비워 두고, 다시 볼 때 새로 불러온다 */
+try{
+  const bc=new BroadcastChannel("moa-tabs");
+  bc.onmessage=()=>{if(!document.hidden)return;docsBy.new=[];docsBy.hot=[];feedDocs=[];shown=PAGE_SHOW;feedVisible=0;lastLoad=0;document.getElementById("feed").innerHTML="";document.getElementById("moreBtn").hidden=true};
+  bc.postMessage("open");
+}catch(e){}
 document.getElementById("syncBtn").onclick=startSync;
 document.getElementById("syncNew").onclick=async()=>{
   // 헷갈리는 글자(0,O,1,I,L)는 빼고 8자리
