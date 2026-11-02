@@ -32,6 +32,20 @@ export default {
     const refresh = async () => {
       const body = JSON.stringify(board ? await collectOne(board, undefined, page) : await collect());
       const ok = /"posts":\[\{/.test(body);
+      // 이번에 못 읽었으면, 저장해 둔 정상 결과를 오류로 덮지 않고 그 결과에 오류 표시만 붙여 돌려준다
+      if (!ok && board) {
+        const old = await cache.match(key);
+        if (old) {
+          try {
+            const o = JSON.parse(await old.text());
+            if ((o.posts || []).length) {
+              o.error = JSON.parse(body).error || "새로 못 읽었어요";
+              o.stale = true;
+              return JSON.stringify(o);
+            }
+          } catch {}
+        }
+      }
       await cache.put(key, new Response(body, { headers: { ...headers, "Cache-Control": `max-age=${ok ? STALE_SECONDS : CACHE_SECONDS}`, "X-Fetched-At": String(Date.now()) } }));
       return body;
     };
