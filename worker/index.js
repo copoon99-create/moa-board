@@ -78,27 +78,37 @@ async function ebook(url, headers, ctx) {
 }
 
 // 읽은 글 연동: 같은 연동 코드를 쓰는 기기끼리 읽은 글 목록을 같이 쓴다
+//   since=<번호> 를 붙이면 그 번호 뒤에 새로 들어온 주소만 돌려준다 (글 하나 누를 때마다 목록 전체를 받지 않게)
 const READ_MAX = 3000;
 async function reads(request, url, env, headers) {
   const k = url.searchParams.get("k") || "";
   if (!/^[a-z0-9]{6,40}$/.test(k)) return new Response(JSON.stringify({ error: "연동 코드가 이상해요" }), { status: 400, headers });
+  const since = Math.max(0, parseInt(url.searchParams.get("since") || "0", 10) || 0);
   const store = env.READS.get(env.READS.idFromName(k));
   let add = [];
   if (request.method === "POST") {
     try { add = ((await request.json()).add || []).filter(u => typeof u === "string" && u.length < 500).slice(0, 200); } catch {}
   }
-  return new Response(JSON.stringify({ urls: await store.sync(add) }), { headers: { ...headers, "Cache-Control": "no-store" } });
+  return new Response(JSON.stringify(await store.sync(add, since)), { headers: { ...headers, "Cache-Control": "no-store" } });
 }
 
 export class ReadStore extends DurableObject {
-  async sync(add) {
-    let urls = (await this.ctx.storage.get("urls")) || [];
-    if (add.length) {
-      const set = new Set(urls);
-      for (const u of add) { set.delete(u); set.add(u); }
-      urls = [...set].slice(-READ_MAX);
-      await this.ctx.storage.put("urls", urls);
+  // items: [[주소, 번호]...] 오래된 것부터. seq: 지금까지 붙인 마지막 번호
+  async sync(add, since = 0) {
+    let items = await this.ctx.storage.get("items"), seq = (await this.ctx.storage.get("seq")) || 0;
+    if (!items) { // 예전 모양(주소 목록만)에서 옮기기
+      items = ((await this.ctx.storage.get("urls")) || []).map(u => [u, ++seq]);
     }
-    return urls;
+    if (add.length) {
+      const fresh = new Set(add);
+      items = items.filter(([u]) => !fresh.has(u));
+      for (const u of fresh) items.push([u, ++seq]);
+      items = items.slice(-READ_MAX);
+      await this.ctx.storage.put({ items, seq });
+      await this.ctx.storage.delete("urls");
+    }
+    // 이 기기가 아는 번호가 서버보다 크면(코드를 다시 만든 경우 등) 처음부터 다 준다
+    const from = since > seq ? 0 : since;
+    return { urls: items.filter(([, n]) => n > from).map(([u]) => u), seq };
   }
 }

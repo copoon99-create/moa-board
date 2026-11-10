@@ -205,6 +205,11 @@ form select{flex:0 0 auto}
   body:not(.editing) .shortcuts{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:-2px;padding:2px;
     -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent)}
   body:not(.editing) .shortcuts::-webkit-scrollbar{display:none}
+  /* 게시판 탭도 두 줄로 접히지 않게 한 줄 가로 스크롤 */
+  .tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:-2px;padding:2px;
+    -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent)}
+  .tabs::-webkit-scrollbar{display:none}
+  .tabs.atend{-webkit-mask-image:none;mask-image:none}
   body.editing .o5,body.editing .o6{order:2}
 }
 /* 손가락으로 누르는 화면: 누르는 곳을 넉넉하게 */
@@ -415,37 +420,46 @@ function ago(iso){
 function short(n){n=(n||"").replace(/\s*갤러리/g,"").replace("특이점이 온다","특이점");if(mode==="hot")n=n.replace(/\s*개념글/,"").replace("최다","");return n.trim()}
 /* 읽은 글: 누른 글 주소를 이 기기에 저장해서 제목을 회색으로 */
 const READ_KEY="moa-read";
+// 같은 글인지 비교할 때 쓰는 주소. 불펜은 최근 글 목록(p=, select= 등이 붙음)과 베스트 목록의 주소 모양이 달라서
+// b=게시판&id=글번호 만 남긴 한 모양으로 맞춘다 (그래야 최근 글에서 읽은 글이 인기글에서도 회색이 된다)
+function canon(u){u=String(u||"");
+  if(u.includes("mlbpark.donga.com")){const b=(u.match(/[?&]b=(\w+)/)||[])[1],id=(u.match(/[?&]id=(\d+)/)||[])[1];
+    if(b&&id)return "https://mlbpark.donga.com/mp/b.php?b="+b+"&id="+id+"&m=view"}
+  return u}
 let readSet=new Set();
-try{readSet=new Set(JSON.parse(localStorage.getItem(READ_KEY))||[])}catch(e){}
+try{readSet=new Set((JSON.parse(localStorage.getItem(READ_KEY))||[]).map(canon))}catch(e){}
 // 저장하기 전에 다른 탭이 저장한 읽은 글을 먼저 합친다 (탭이 여러 개 열려 있어도 서로 지우지 않게)
-function storedRead(){try{return JSON.parse(localStorage.getItem(READ_KEY))||[]}catch(e){return[]}}
+function storedRead(){try{return (JSON.parse(localStorage.getItem(READ_KEY))||[]).map(canon)}catch(e){return[]}}
 function saveRead(){readSet=new Set([...storedRead(),...readSet]);try{localStorage.setItem(READ_KEY,JSON.stringify([...readSet].slice(-3000)))}catch(e){}}
 window.addEventListener("storage",e=>{if(e.key!==READ_KEY)return;let n=false;for(const u of storedRead())if(!readSet.has(u)){readSet.add(u);n=true}
   if(n)for(const li of document.querySelectorAll("#feed li"))if(readSet.has(li.dataset.u))li.classList.add("read")});
 function markRead(url,li){
-  readSet.delete(url);readSet.add(url);li.classList.add("read");saveRead();
+  url=canon(url);readSet.delete(url);readSet.add(url);li.classList.add("read");saveRead();
   syncRead([url]);
 }
 /* 기기 연동: 연동 코드가 같은 기기끼리 읽은 글을 서버에서 맞춘다.
    주소 끝에 #sync=코드 를 붙여 열면 그 기기도 같은 코드를 쓴다. */
-const SYNC_KEY="moa-sync";
-let syncCode="";
-try{syncCode=localStorage.getItem(SYNC_KEY)||""}catch(e){}
+const SYNC_KEY="moa-sync", SEQ_KEY="moa-sync-seq";
+let syncCode="", syncSeq=0;
+try{syncCode=localStorage.getItem(SYNC_KEY)||"";syncSeq=+localStorage.getItem(SEQ_KEY)||0}catch(e){}
 const hm=location.hash.match(/sync=([a-z0-9]{6,40})/);
-if(hm){syncCode=hm[1];try{localStorage.setItem(SYNC_KEY,syncCode)}catch(e){}history.replaceState(null,"",location.pathname+location.search)}
-function readApi(){const base=location.hostname.endsWith("workers.dev")?"":"https://moa-board.copoon99.workers.dev";return base+"/api/read?k="+syncCode}
+if(hm&&hm[1]!==syncCode){syncCode=hm[1];syncSeq=0;try{localStorage.setItem(SYNC_KEY,syncCode);localStorage.setItem(SEQ_KEY,"0")}catch(e){}}
+if(hm){history.replaceState(null,"",location.pathname+location.search)}
+function readApi(){const base=location.hostname.endsWith("workers.dev")?"":"https://moa-board.copoon99.workers.dev";return base+"/api/read?k="+syncCode+"&since="+syncSeq}
 async function syncRead(add){
   if(!syncCode) return;
   try{
     const r=await fetch(readApi(),add&&add.length?{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify({add})}:{cache:"no-store"});
     if(!r.ok) return;
+    // 서버는 이 기기가 마지막으로 받은 번호(since) 뒤에 새로 들어온 주소만 준다
     const j=await r.json(); let changed=false;
-    for(const u of j.urls||[]) if(!readSet.has(u)){readSet.add(u);changed=true}
+    for(const x of j.urls||[]){const u=canon(x);if(!readSet.has(u)){readSet.add(u);changed=true}}
+    if(j.seq>=0){syncSeq=j.seq;try{localStorage.setItem(SEQ_KEY,String(syncSeq))}catch(e){}}
     if(changed){saveRead();renderFeed()}
   }catch(e){}
 }
 const fmtCode=c=>c.toUpperCase();
-function setSync(c){syncCode=c;try{localStorage.setItem(SYNC_KEY,c)}catch(e){}showSync()}
+function setSync(c){syncCode=c;syncSeq=0;try{localStorage.setItem(SYNC_KEY,c);localStorage.setItem(SEQ_KEY,"0")}catch(e){}showSync()}
 async function startSync(){
   const box=document.getElementById("syncBox");
   if(!box.hidden){box.hidden=true;return}
@@ -465,9 +479,10 @@ function boardColor(id){const k=(id||"").replace(/^hot-/,"").replace(/^dc-/,"").
 function boardHome(id){const k=(id||"").replace(/^hot-/,"");
   if(k.startsWith("dc-"))return "https://m.dcinside.com/board/"+k.slice(3);
   if(k.startsWith("mlb-"))return "https://mlbpark.donga.com/mp/b.php?b=bullpen";return ""}
-const metaText=(a,t)=>[a,ago(t)].filter(Boolean).join(" · ");
+// 디시 익명 기본 닉네임 'ㅇㅇ'은 거의 모든 글에 붙어 있어 빼고 보여준다
+const metaText=(a,t)=>[a==="ㅇㅇ"?"":a,ago(t)].filter(Boolean).join(" · ");
 function renderFeed(){
-  const tabs=document.getElementById("tabs"); tabs.innerHTML="";
+  const tabs=document.getElementById("tabs"), tabX=tabs.scrollLeft; tabs.innerHTML="";
   const all=[["all","전체"]].concat(feedDocs.map(d=>[d.id,short(d.name||d.id)]));
   for(const [k,n] of all){const b=document.createElement("button");b.type="button";b.className="tab";b.textContent=n;
     const bc=boardColor(k);if(bc){const d=document.createElement("span");d.className="dot";d.style.setProperty("--c",bc);b.prepend(d)}
@@ -492,8 +507,8 @@ function renderFeed(){
   const touch=matchMedia("(pointer:coarse)").matches;
   posts.slice(0,shown).forEach(p=>{
     const s=site(p.boardUrl||p.url,p.board),li=document.createElement("li"),a=document.createElement("a");
-    a.href=p.url;a.target="_blank";a.rel="noopener";li.dataset.u=p.url;
-    if(readSet.has(p.url)) li.classList.add("read");
+    a.href=p.url;a.target="_blank";a.rel="noopener";li.dataset.u=canon(p.url);
+    if(readSet.has(li.dataset.u)) li.classList.add("read");
     a.addEventListener("click",()=>markRead(p.url,li));a.addEventListener("auxclick",e=>{if(e.button===1)markRead(p.url,li)});
     // 휴대폰에서 길게 눌러 "새 탭에서 열기"로 연 글도 읽은 글로
     if(touch)a.addEventListener("contextmenu",()=>markRead(p.url,li));
@@ -536,8 +551,17 @@ function renderFeed(){
     const rb=document.createElement("button");rb.type="button";rb.className="linkbtn";rb.textContent="다시 시도";rb.onclick=()=>retryBoards(errs.map(d=>d.id));er.appendChild(rb);
   }
   tabs.hidden=!feedDocs.length;
+  // 휴대폰에서 탭 줄이 가로로 넘칠 때: 보던 위치를 지키고, 고른 탭이 화면 밖이면 보이게 민다
+  tabs.scrollLeft=tabX;
+  const pb=tabs.querySelector('[aria-pressed="true"]');
+  if(pb&&tabs.scrollWidth>tabs.clientWidth){const tr=tabs.getBoundingClientRect(),br=pb.getBoundingClientRect();
+    if(br.left<tr.left)tabs.scrollLeft-=tr.left-br.left+8;else if(br.right>tr.right-28)tabs.scrollLeft+=br.right-tr.right+36}
+  tabEnd();
   tick();
 }
+// 탭 줄 오른쪽 끝까지 밀었으면 흐려지는 효과를 뺀다 (마지막 탭이 흐리게 보이지 않게)
+function tabEnd(){const t=document.getElementById("tabs");t.classList.toggle("atend",t.scrollLeft+t.clientWidth>=t.scrollWidth-2)}
+document.getElementById("tabs").addEventListener("scroll",tabEnd,{passive:true});
 // "N분 전" 글자만 다시 계산한다 (글을 새로 불러오지는 않는다)
 function tick(){
   for(const m of document.querySelectorAll("#feed .meta"))m.textContent=metaText(m.dataset.a,m.dataset.t);
@@ -550,8 +574,8 @@ setInterval(()=>{if(!document.hidden)tick()},60000);
 document.getElementById("moreBtn").onclick=()=>loadMore();
 /* 지난 글 더 불러오기 */
 let feedVisible=0, moreLoading=false;
-// 같은 글인지 비교할 때 쓰는 열쇠 (불펜 주소의 쪽수 p=는 무시)
-function pkey(u){return String(u||"").replace(/([?&])p=\d+/,"$1p=1")}
+// 같은 글인지 비교할 때 쓰는 열쇠 (불펜 주소의 쪽수 p= 등은 무시)
+const pkey=canon;
 const oldest=d=>{let m=Infinity;for(const p of d.posts||[]){const t=Date.parse(p.time);if(t&&t<m)m=t}return m};
 const inTab=d=>tab==="all"||tab===d.id;
 // 아직 더 읽을 수 있는 게시판들
@@ -639,7 +663,7 @@ document.getElementById("ebookForm").onsubmit=e=>{
   for(const l of LIBS){
     const row=libRow(l,l.login?"login":"wait"); ul.appendChild(row);
     if(l.login||!API)continue;
-    fetch(API+"/ebook?lib="+l.id+"&q="+encodeURIComponent(q)).then(r=>r.json()).then(r=>{
+    fetch(API+"/ebook?lib="+l.id+"&q="+encodeURIComponent(q),limit()).then(r=>r.json()).then(r=>{
       if(document.getElementById("ebookQ").value.trim()!==q)return;
       row.replaceWith(libRow(l,r.error?"err":r.count?"yes":"no",r));
     }).catch(()=>{row.replaceWith(libRow(l,"err"))});
