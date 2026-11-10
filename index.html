@@ -157,6 +157,13 @@ form select{flex:0 0 auto}
 .feed li.read .title,.feed li.read a:hover .title{color:var(--faint)}
 .feed li.read .cm,.feed li.read .meta{color:var(--faint)}
 .feed li.read .badge{opacity:.5}
+/* 말머리, 사진·동영상 아이콘, 지난번 뒤 새 글(N) */
+.hd{display:inline-block;font-size:11.5px;font-weight:700;line-height:1.5;color:var(--muted);background:var(--soft);border-radius:5px;padding:0 5px;margin-right:5px;vertical-align:1px;white-space:nowrap}
+.md{display:inline-block;width:14px;height:14px;margin-left:4px;vertical-align:-2px;color:var(--faint)}
+.md svg{display:block;width:100%;height:100%}
+.nw{display:inline-block;font-size:10px;font-weight:800;line-height:15px;width:15px;text-align:center;border-radius:4px;margin-left:5px;vertical-align:2px;color:#fff;background:var(--mlb)}
+li.read .nw{display:none}
+li.read .hd{opacity:.6}
 .feed .badge{flex:none;width:5.6em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border:0;cursor:pointer;font-family:inherit;margin-top:13px;text-align:center;font-size:11px;font-weight:700;color:var(--c);background:color-mix(in srgb,var(--c) 12%,transparent);border-radius:7px;padding:3px 6px;position:relative}
 .feed .badge::before{content:"";position:absolute;inset:-10px -5px}
 .feed .title{font-size:15px;line-height:1.45;word-break:keep-all;overflow-wrap:anywhere;transition:color .15s}
@@ -426,7 +433,28 @@ render();
 
 /* 최근 글: posts.json(30분마다 GitHub Actions가 갱신)을 모아 시간순으로 */
 const PAGE_SHOW=40;
-let feedDocs=[], tab="all", shown=PAGE_SHOW, mode="new";
+let feedDocs=[], tab="all", shown=PAGE_SHOW, mode="new", newN=0;
+/* 지난번 뒤 새 글: 게시판마다 지난번에 본 가장 새 글의 시각을 기억해 두고, 그보다 새 글에 N 표시.
+   처음 열 때는 지난번 방문 기준, 새로고침 버튼을 누르면 그 탭에서 보던 목록 기준 */
+const LAST_KEY="moa-last";
+function readLast(){try{return JSON.parse(localStorage.getItem(LAST_KEY))||{}}catch(e){return{}}}
+function newestBy(docs){const o={};for(const d of docs)for(const p of d.posts||[]){const t=Date.parse(p.time);if(t&&!(o[d.id]>=t))o[d.id]=t}return o}
+let seenBase=readLast();
+function saveLast(){const o=readLast(),n=newestBy(docsBy.new);let ch=false;
+  for(const k in n)if(!(o[k]>=n[k])){o[k]=n[k];ch=true}
+  if(ch)try{localStorage.setItem(LAST_KEY,JSON.stringify(o))}catch(e){}}
+const isNew=p=>mode==="new"&&seenBase[p.boardId]&&Date.parse(p.time)>seenBase[p.boardId];
+const ICON={pic:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.75" y="2.75" width="12.5" height="10.5" rx="2"/><circle cx="5.6" cy="6.4" r="1.2" fill="currentColor" stroke="none"/><path d="M2.5 12l3.4-3.3 2.4 2.3 2-1.9 3.2 3.1"/></svg>',
+  video:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.75" y="2.75" width="12.5" height="10.5" rx="2"/><path d="M6.5 5.6v4.8L10.4 8z" fill="currentColor" stroke="none"/></svg>'};
+// 제목 줄: [말머리] 제목 (사진) [댓글 수] (N)
+function titleBits(ti,p,o={}){
+  ti.textContent="";
+  if(o.head!==false&&p.head&&p.head!=="일반"){const h=document.createElement("span");h.className="hd";h.textContent=p.head;ti.appendChild(h)}
+  ti.append(p.title);
+  if(ICON[p.media]){const m=document.createElement("span");m.className="md";m.innerHTML=ICON[p.media];m.setAttribute("role","img");m.setAttribute("aria-label",p.media==="pic"?"사진":"동영상");m.title=p.media==="pic"?"사진":"동영상";ti.appendChild(m)}
+  if(p.comments){const c=document.createElement("span");c.className="cm";c.textContent=" ["+p.comments+"]";ti.appendChild(c)}
+  if(o.nw){const n=document.createElement("span");n.className="nw";n.textContent="N";n.title="지난번 뒤 새 글";ti.appendChild(n)}
+}
 const docsBy={new:[],hot:[]};
 // 펼친 폴드·PC처럼 두 칸으로 보이는 화면 (왼쪽 칸에 인기글을 같이 보여준다)
 const wide=matchMedia("(min-width:720px)"), loadingM={};
@@ -503,7 +531,7 @@ function boardHome(id){const k=(id||"").replace(/^hot-/,"");
   if(k.startsWith("dc-"))return "https://m.dcinside.com/board/"+k.slice(3);
   if(k.startsWith("mlb-"))return "https://mlbpark.donga.com/mp/b.php?b=bullpen";return ""}
 // 디시 익명 기본 닉네임 'ㅇㅇ'은 거의 모든 글에 붙어 있어 빼고 보여준다
-const metaText=(a,t)=>[a==="ㅇㅇ"?"":a,ago(t)].filter(Boolean).join(" · ");
+const metaText=(a,t,l)=>[a==="ㅇㅇ"?"":a,ago(t),+l?"추천 "+l:""].filter(Boolean).join(" · ");
 function renderFeed(){
   const tabs=document.getElementById("tabs"), tabX=tabs.scrollLeft; tabs.innerHTML="";
   const all=[["all","전체"]].concat(feedDocs.map(d=>[d.id,short(d.name||d.id)]));
@@ -526,6 +554,7 @@ function renderFeed(){
   // 보여줘야 순서가 안 꼬인다. 그 아래는 스크롤하면 해당 게시판의 다음 페이지를 읽어서 채운다.
   if(mode==="new"){const T=frontier();if(T>-Infinity)posts=posts.filter(p=>!Date.parse(p.time)||Date.parse(p.time)>=T)}
   feedVisible=posts.length;
+  newN=posts.filter(p=>isNew(p)&&!readSet.has(canon(p.url))).length;
   const ul=document.getElementById("feed"); ul.innerHTML="";
   const touch=matchMedia("(pointer:coarse)").matches;
   posts.slice(0,shown).forEach(p=>{
@@ -542,9 +571,8 @@ function renderFeed(){
       // 탭 줄이 위쪽 제목줄 밑에 숨지 않게, 목록 맨 위가 제목줄 바로 아래 오도록 올린다
       const h=document.querySelector("header").getBoundingClientRect().bottom, t=document.getElementById("tabs").getBoundingClientRect().top;
       if(t<h)window.scrollTo({top:window.scrollY+t-h-10,behavior:"smooth"})};
-    const ti=a.querySelector(".title");ti.textContent=p.title;
-    if(p.comments){const c=document.createElement("span");c.className="cm";c.textContent=" ["+p.comments+"]";ti.appendChild(c)}
-    const me=a.querySelector(".meta");me.dataset.a=p.author||"";me.dataset.t=p.time||"";me.textContent=metaText(p.author,p.time);
+    titleBits(a.querySelector(".title"),p,{nw:isNew(p)});
+    const me=a.querySelector(".meta");me.dataset.a=p.author||"";me.dataset.t=p.time||"";me.dataset.l=p.likes||"";me.textContent=metaText(p.author,p.time,p.likes);
     li.appendChild(bd);li.appendChild(a);ul.appendChild(li);
   });
   ul.hidden=!posts.length;
@@ -600,10 +628,10 @@ function renderSide(){
     if(readSet.has(li.dataset.u))li.classList.add("read");
     a.addEventListener("click",()=>markRead(p.url,li));a.addEventListener("auxclick",e=>{if(e.button===1)markRead(p.url,li)});
     a.innerHTML='<span class="title"></span><span class="meta"><span class="bn"></span></span>';
-    const ti=a.querySelector(".title");ti.textContent=p.title;
-    if(p.comments){const c=document.createElement("span");c.className="cm";c.textContent=" ["+p.comments+"]";ti.appendChild(c)}
+    titleBits(a.querySelector(".title"),p,{head:false});
     const bn=a.querySelector(".bn");bn.textContent=short(p.board,true);bn.style.setProperty("--c",boardColor(p.boardId)||"var(--accent)");
     const t=ago(p.time);if(t)a.querySelector(".meta").append(" · "+t);
+    if(p.likes)a.querySelector(".meta").append(" · 추천 "+p.likes);
     li.appendChild(a);ul.appendChild(li);
   }
 }
@@ -612,10 +640,11 @@ function tabEnd(){const t=document.getElementById("tabs");t.classList.toggle("at
 document.getElementById("tabs").addEventListener("scroll",tabEnd,{passive:true});
 // "N분 전" 글자만 다시 계산한다 (글을 새로 불러오지는 않는다)
 function tick(){
-  for(const m of document.querySelectorAll("#feed .meta"))m.textContent=metaText(m.dataset.a,m.dataset.t);
+  for(const m of document.querySelectorAll("#feed .meta"))m.textContent=metaText(m.dataset.a,m.dataset.t,m.dataset.l);
   const up=feedDocs.map(d=>Date.parse(d.updatedAt)||0).reduce((a,b)=>Math.max(a,b),0);
   const u=document.getElementById("updated"); u.hidden=!up; u.textContent=up?ago(new Date(up).toISOString())+"에 모은 글이에요":"";
   if(up&&ago(new Date(up).toISOString())==="방금")u.textContent="방금 모은 글이에요";
+  if(up&&newN&&mode==="new")u.textContent+=" · 지난번 뒤 새 글 "+newN+"개";
 }
 document.addEventListener("visibilitychange",()=>{if(!document.hidden)tick()});
 setInterval(()=>{if(!document.hidden)tick()},60000);
@@ -728,7 +757,7 @@ const FEED_IDS=IDS.new;
 const NAMES={"dc-marvelsnap":"마블 스냅 갤러리","dc-bh":"보호직 갤러리","dc-thesingularity":"특이점이 온다 갤러리","mlb-bullpen":"불펜","dc-ai_utilize":"AI 활용 갤러리",
   "hot-dc-marvelsnap":"마블 스냅 개념글","hot-dc-bh":"보호직 개념글","hot-dc-thesingularity":"특이점이 온다 개념글","hot-dc-ai_utilize":"AI 활용 개념글",
   "hot-mlb-like":"불펜 최다추천","hot-mlb-view":"불펜 최다조회","hot-mlb-reply":"불펜 최다댓글"};
-function setDocs(m,docs){docs=docs.filter(d=>d.id!=="fm-realestate");docsBy[m]=docs;if(m===mode){feedDocs=docs;renderFeed()}else renderSide()}
+function setDocs(m,docs){docs=docs.filter(d=>d.id!=="fm-realestate");docsBy[m]=docs;if(m==="new")saveLast();if(m===mode){feedDocs=docs;renderFeed()}else renderSide()}
 function applyFeed(j){setDocs("new",(j.boards||[]).filter(d=>(d.posts||[]).length||d.error))}
 // 오래 걸리는 게시판은 15초에서 끊는다 (새로고침 버튼이 한없이 잠기지 않게)
 const limit=()=>(window.AbortSignal&&AbortSignal.timeout)?{signal:AbortSignal.timeout(15000)}:{};
@@ -846,6 +875,8 @@ async function retryBoards(ids){
 }
 document.getElementById("refreshBtn").onclick=async()=>{
   const b=document.getElementById("refreshBtn"); b.disabled=true;
+  // 새로고침으로 들어온 글에 N 표시: 이 탭에서 지금까지 보던 목록이 기준
+  seenBase=Object.assign({},seenBase,newestBy(docsBy.new));
   if(API){
     note("게시판에서 바로 읽어오는 중이에요.");
     // 넓은 화면에서는 왼쪽 칸 인기글도 같이 새로 읽는다
