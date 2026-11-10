@@ -19,7 +19,8 @@ const num = s => { const m = String(s || "").replace(/,/g, "").match(/\d+/); ret
 const abs = (base, href) => { try { return new URL(clean(href), base).href; } catch { return base; } };
 
 async function get(url) {
-  const r = await fetch(url, { headers: { "User-Agent": UA, "Accept-Language": "ko-KR,ko;q=0.9", Referer: new URL(url).origin + "/" } });
+  // 도서관이 응답하지 않으면 12초에서 끊는다 (화면이 '찾는 중'에서 멈추지 않게)
+  const r = await fetch(url, { headers: { "User-Agent": UA, "Accept-Language": "ko-KR,ko;q=0.9", Referer: new URL(url).origin + "/" }, signal: AbortSignal.timeout(12000) });
   if (!r.ok) throw new Error("HTTP " + r.status);
   return r.text();
 }

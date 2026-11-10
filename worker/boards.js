@@ -147,6 +147,12 @@ export const dcForTest = dc;
 // 작은따옴표 속성(class='x')을 큰따옴표로 맞춰 정규식을 하나로 쓴다
 const dq = html => html.replace(/=\s*'([^']*)'/g, '="$1"');
 
+// 엠팍 글 주소를 b=게시판&id=글번호&m=view 모양 하나로 (화면 쪽 canon()과 같은 규칙)
+export function mlbUrl(u) {
+  const b = (u.match(/[?&]b=(\w+)/) || [])[1], id = (u.match(/[?&]id=(\d+)/) || [])[1];
+  return b && id ? `https://mlbpark.donga.com/mp/b.php?b=${b}&id=${id}&m=view` : u;
+}
+
 export function parseMlbpark(html) {
   html = dq(slice(html, "tbl_type01", "</table>"));
   const posts = [];
@@ -159,8 +165,8 @@ export function parseMlbpark(html) {
     const href = attr(aTag, "href").replace(/&amp;/g, "&");
     posts.push({
       title: clean(attr(aTag, "alt")) || clean(pick(tr, /<a\b[^>]*class="(?:[^"]*\s)?txt(?:\s[^"]*)?"[^>]*>([\s\S]*?)<\/a>/)),
-      // 목록 쪽수(p=31 등)가 주소에 붙어 같은 글이 쪽마다 다른 주소가 되지 않게 p=1로 맞춘다
-      url: new URL(href, "https://mlbpark.donga.com/").href.replace(/([?&])p=\d+/, "$1p=1"),
+      // 최근 글 목록과 베스트 목록이 같은 글에 다른 주소를 쓰므로(쪽수 p=, select= 등) 한 가지 모양으로 맞춘다
+      url: mlbUrl(new URL(href, "https://mlbpark.donga.com/").href),
       author: clean(pick(tr, /<[a-z]+[^>]*class="[^"]*\bnick\b[^"]*"[^>]*>([\s\S]*?)<\/span>/)),
       time: parseTime(clean(pick(tr, /<[a-z]+[^>]*class="[^"]*\bdate\b[^"]*"[^>]*>([\s\S]*?)<\/span>/))),
       comments: num(pick(tr, /<[a-z]+[^>]*class="[^"]*\breplycnt\b[^"]*"[^>]*>([\s\S]*?)<\/span>/)),
