@@ -94,10 +94,17 @@ export function parseDc(html, key) {
       author: clean(attr(wTag, "data-nick")),
       time: parseTime(attr(dTag, "title") || clean(pick(tr, /<td class="gall_date[^>]*>([\s\S]*?)<\/td>/))),
       comments: num(pick(tr, /<span class="reply_num">([\s\S]*?)<\/span>/)),
+      ...extra(subj === "일반" ? "" : subj, dcMedia(attr(head, "data-type")),
+        num(clean(pick(tr, /<td class="gall_recommend[^>]*>([\s\S]*?)<\/td>/))))
     });
   }
   return posts;
 }
+
+// 디시 글 종류 아이콘: icon_pic·icon_recomimg = 사진, icon_movie·icon_recommovie = 동영상
+const dcMedia = t => /movie/.test(t) ? "video" : /pic|img/.test(t) ? "pic" : "";
+// 말머리(head), 사진·동영상(media), 추천 수(likes)는 있을 때만 붙여서 응답을 가볍게 둔다
+const extra = (head, media, likes) => Object.assign({}, head && { head }, media && { media }, likes > 0 && { likes });
 
 // 디시 모바일 목록 (PC 목록이 막혔을 때 쓰는 두 번째 길)
 export function parseDcMobile(html, key) {
@@ -170,6 +177,8 @@ export function parseMlbpark(html) {
       author: clean(pick(tr, /<[a-z]+[^>]*class="[^"]*\bnick\b[^"]*"[^>]*>([\s\S]*?)<\/span>/)),
       time: parseTime(clean(pick(tr, /<[a-z]+[^>]*class="[^"]*\bdate\b[^"]*"[^>]*>([\s\S]*?)<\/span>/))),
       comments: num(pick(tr, /<[a-z]+[^>]*class="[^"]*\breplycnt\b[^"]*"[^>]*>([\s\S]*?)<\/span>/)),
+      // 말머리(list_word)와 사진 표시(icon_img). 불펜 목록에는 추천 수가 없다
+      ...extra(clean(pick(tr, /<a\b[^>]*class="list_word"[^>]*>([\s\S]*?)<\/a>/)), /class="icon_img"/.test(tr) ? "pic" : "", 0),
     });
   }
   return posts;
