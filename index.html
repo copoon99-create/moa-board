@@ -4,6 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>모아게시판</title>
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="icon" href="icons/icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" id="themeColor" content="#f4f5f7">
+<!-- 직접 고른 화면 밝기(밝게·어둡게)를 그리기 전에 먼저 적용해서 깜빡이지 않게 -->
+<script>try{var t=localStorage.getItem("moa-theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" media="(hover:hover) and (pointer:fine)">
 <!-- 휴대폰은 웹 글꼴을 받지 않고 기기 기본 글꼴을 쓴다 (탭이 여러 개 쌓여도 가볍게) -->
 <style>
@@ -209,6 +216,35 @@ li.read .hd{opacity:.6}
 .hotside .empty{padding:14px 12px;font-size:13px}
 .hotside{order:3}
 @media (max-width:719px){.hotside{display:none!important}}
+/* 오래된 목록이면 새로고침 버튼을 눈에 띄게 */
+.refresh.stale{background:var(--accent);color:var(--accent-fg)}
+.refresh.stale:hover{background:color-mix(in srgb,var(--accent) 88%,#000)}
+/* 제목 검색 */
+.ptools{display:flex;align-items:center;gap:6px}
+.iconbtn{display:inline-grid;place-items:center;width:36px;height:36px;padding:0}
+.iconbtn svg{width:16px;height:16px}
+.iconbtn[aria-pressed="true"]{background:color-mix(in srgb,var(--accent) 18%,var(--soft));color:var(--accent)}
+.searchrow{display:flex;align-items:center;gap:6px;margin:0;padding:3px 3px 3px 14px;box-shadow:none;background:var(--soft);border:1px solid transparent;border-radius:999px}
+.searchrow:focus-within{border-color:var(--accent);background:var(--card)}
+.searchrow input{flex:1;min-width:0;font:inherit;font-size:15px;padding:7px 0;border:0;background:none;color:var(--fg);outline:none}
+.searchrow .btn{flex:none;padding:6px 12px;background:var(--card)}
+/* 읽은 글에 새로 달린 댓글 수 */
+.nc{color:var(--accent)!important;font-weight:800;font-size:12px;margin-left:3px}
+/* '전체'에서 뺀 게시판 탭 */
+.tab.off{opacity:.5;text-decoration:line-through}
+/* 화면·숨기기 설정 */
+.setrow{margin:0 0 14px}
+.setrow:last-of-type{margin-bottom:6px}
+.setrow>b{display:block;color:var(--fg);font-size:13px;margin-bottom:6px}
+.setrow p{margin:0 0 6px}
+.seg.small{display:inline-flex}
+.seg.small .segb{font-size:13px;padding:5px 12px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chipx{font:inherit;font-size:12.5px;font-weight:600;border:0;border-radius:999px;padding:6px 11px;background:var(--soft);color:var(--fg);cursor:pointer}
+.chipx[aria-pressed="true"]{background:var(--fg);color:var(--card);text-decoration:line-through}
+.syncbox form{padding:0;box-shadow:none;background:none;border-radius:0}
+.keys{color:var(--faint)}
+@media (pointer:coarse){.keys{display:none}}
 /* 맨 위로 */
 .totop{position:fixed;right:16px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:6;font:inherit;font-size:13px;font-weight:700;border:0;border-radius:999px;padding:11px 16px;
   background:var(--fg);color:var(--card);box-shadow:0 4px 14px rgba(0,0,0,.2);cursor:pointer}
@@ -289,18 +325,33 @@ li.read .hd{opacity:.6}
   </form>
 
   <div class="foot o6">
-    <p class="footp">편집한 내용은 이 기기 브라우저에만 저장돼요.</p>
+    <p class="footp" id="footNote">편집한 내용은 이 기기 브라우저에만 저장돼요.</p>
     <button class="linkbtn" id="syncBtn" type="button">읽은 글 다른 기기와 연동하기</button>
     <div class="syncbox" id="syncBox" hidden>
       <div id="syncHave" hidden>
         <p>이 기기의 연동 코드</p>
         <p class="scode" id="syncShow"></p>
-        <p>다른 기기에서 연동 버튼(휴대폰은 '편집'을 누르면 보여요)을 누르고 아래 칸에 이 코드를 넣으면, 두 기기가 읽은 글을 같이 써요.</p>
+        <p>다른 기기에서 연동 버튼(휴대폰은 '편집'을 누르면 보여요)을 누르고 아래 칸에 이 코드를 넣으면, 두 기기가 읽은 글과 바로가기 편집, 숨길 단어를 같이 써요.</p>
       </div>
       <p>다른 기기에서 받은 코드가 있으면 여기에 넣으세요.</p>
       <form class="row" id="syncForm"><input id="syncInput" placeholder="예: AB3K7QXP" autocomplete="off" autocapitalize="characters" aria-label="연동 코드"><button class="btn" type="submit">연결</button></form>
       <p class="smsg" id="syncMsg"></p>
       <button class="btn" id="syncNew" type="button">이 기기에서 새 코드 만들기</button>
+    </div>
+    <button class="linkbtn" id="setBtn" type="button">화면·숨기기 설정</button>
+    <div class="syncbox" id="setBox" hidden>
+      <div class="setrow"><b>화면 밝기</b>
+        <div class="seg small" id="themeSeg" role="group" aria-label="화면 밝기"><button type="button" class="segb" data-v="auto">자동</button><button type="button" class="segb" data-v="light">밝게</button><button type="button" class="segb" data-v="dark">어둡게</button></div></div>
+      <div class="setrow"><b>글 열기 (이 기기만)</b>
+        <div class="seg small" id="openSeg" role="group" aria-label="글 열기"><button type="button" class="segb" data-v="new">새 탭</button><button type="button" class="segb" data-v="same">같은 탭</button></div></div>
+      <div class="setrow"><b>숨길 단어</b>
+        <p>제목이나 말머리에 이 단어가 들어간 글은 목록에서 빼요. 쉼표로 나눠 적어요.</p>
+        <form class="row" id="wordsForm"><input id="hideWords" placeholder="예: 후방, 19, 아이돌" autocomplete="off" aria-label="숨길 단어"><button class="btn" type="submit">저장</button></form></div>
+      <div class="setrow"><b>'전체'에서 뺄 게시판</b>
+        <p>누른 게시판은 '전체'와 왼쪽 인기글 칸에서 빠져요. 그 게시판 탭을 누르면 따로 볼 수 있어요.</p>
+        <div class="chips" id="hideBoards"></div></div>
+      <p class="smsg" id="setMsg"></p>
+      <p class="keys">PC 단축키: J/K 글 이동 · O 열기 · R 새로고침 · / 검색 · Esc 검색 닫기</p>
     </div>
   </div>
   </div>
@@ -310,8 +361,12 @@ li.read .hd{opacity:.6}
         <button type="button" class="segb" id="modeNew" aria-pressed="true">최근 글</button>
         <button type="button" class="segb" id="modeHot" aria-pressed="false">인기글</button>
       </div>
-      <button class="btn refresh" id="refreshBtn" type="button"><span class="spin" aria-hidden="true">↻</span><span id="refreshLabel">새로고침</span></button>
+      <div class="ptools">
+        <button class="btn iconbtn" id="searchBtn" type="button" aria-label="불러온 글에서 찾기" aria-pressed="false" title="불러온 글 제목에서 찾기 (/)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="7" cy="7" r="4.6"/><path d="M10.4 10.4L14 14"/></svg></button>
+        <button class="btn refresh" id="refreshBtn" type="button"><span class="spin" aria-hidden="true">↻</span><span id="refreshLabel">새로고침</span></button>
+      </div>
     </div>
+    <form class="searchrow" id="searchRow" role="search" hidden><input id="q" type="search" placeholder="불러온 글 제목·말머리에서 찾기" aria-label="불러온 글에서 찾기" autocomplete="off" enterkeyhint="search"><button class="btn" type="button" id="qClear">닫기</button></form>
     <p class="note" id="refreshNote" aria-live="polite" hidden></p>
     <div class="tabs" id="tabs" role="toolbar" aria-label="게시판 고르기"></div>
     <div class="filterbar" id="filterBar" hidden><span class="dot"></span><span id="filterName"></span><button class="btn" type="button" id="filterAll">전체 보기</button></div>
@@ -372,7 +427,7 @@ function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&Array.is
   if(!s.lib){s.lib=1;s.shortcuts=s.shortcuts.filter(x=>!/yes24library|suwonlib|mlss\.co\.kr|dkyobobook|library\.kr|goe\.go\.kr/.test(x.url))}
   if(!s.st){s.st=1;if(!s.shortcuts.some(x=>x.url.includes("saveticker")))s.shortcuts.push({name:"세이브티커 뉴스",url:"https://www.saveticker.com/news"})}
   return s}}catch(e){}return clone()}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(data))}catch(e){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(data))}catch(e){}touchPrefs()}
 const SITES=[["dcinside","디시","var(--dc)"],["fmkorea","펨코","var(--fm)"],["mlbpark","엠팍","var(--mlb)"],["youtube","▶","var(--yt)"],["x.com","X","var(--fg)"],["naver","N","var(--naver)"],["pgr21","P","var(--fm)"],["snapcomplete","S","var(--dc)"]];
 function site(u,name){
   for(const [k,t,c] of SITES) if(u.includes(k)) return{t,c};
@@ -433,7 +488,7 @@ render();
 
 /* 최근 글: posts.json(30분마다 GitHub Actions가 갱신)을 모아 시간순으로 */
 const PAGE_SHOW=40;
-let feedDocs=[], tab="all", shown=PAGE_SHOW, mode="new", newN=0;
+let feedDocs=[], tab="all", shown=PAGE_SHOW, mode="new", newN=0, hidN=0, query="";
 /* 지난번 뒤 새 글: 게시판마다 지난번에 본 가장 새 글의 시각을 기억해 두고, 그보다 새 글에 N 표시.
    처음 열 때는 지난번 방문 기준, 새로고침 버튼을 누르면 그 탭에서 보던 목록 기준 */
 const LAST_KEY="moa-last";
@@ -453,6 +508,7 @@ function titleBits(ti,p,o={}){
   ti.append(p.title);
   if(ICON[p.media]){const m=document.createElement("span");m.className="md";m.innerHTML=ICON[p.media];m.setAttribute("role","img");m.setAttribute("aria-label",p.media==="pic"?"사진":"동영상");m.title=p.media==="pic"?"사진":"동영상";ti.appendChild(m)}
   if(p.comments){const c=document.createElement("span");c.className="cm";c.textContent=" ["+p.comments+"]";ti.appendChild(c)}
+  if(o.more){const c=document.createElement("span");c.className="nc";c.textContent="+"+o.more;c.title="읽은 뒤 새로 달린 댓글";ti.appendChild(c)}
   if(o.nw){const n=document.createElement("span");n.className="nw";n.textContent="N";n.title="지난번 뒤 새 글";ti.appendChild(n)}
 }
 const docsBy={new:[],hot:[]};
@@ -482,8 +538,10 @@ function storedRead(){try{return (JSON.parse(localStorage.getItem(READ_KEY))||[]
 function saveRead(){readSet=new Set([...storedRead(),...readSet]);try{localStorage.setItem(READ_KEY,JSON.stringify([...readSet].slice(-3000)))}catch(e){}}
 window.addEventListener("storage",e=>{if(e.key!==READ_KEY)return;let n=false;for(const u of storedRead())if(!readSet.has(u)){readSet.add(u);n=true}
   if(n)for(const li of document.querySelectorAll("#feed li,#hotList li"))if(readSet.has(li.dataset.u))li.classList.add("read")});
-function markRead(url,li){
+function markRead(url,li,c){
   url=canon(url);readSet.delete(url);readSet.add(url);li.classList.add("read");saveRead();
+  if(c!=null)saveCm(url,+c||0);
+  for(const x of document.querySelectorAll("#feed li,#hotList li"))if(x.dataset.u===url){const n=x.querySelector(".nc");if(n)n.remove()}
   // 같은 글이 최근 글 목록과 왼쪽 인기글 칸에 함께 있으면 둘 다 회색으로
   for(const x of document.querySelectorAll("#feed li,#hotList li"))if(x.dataset.u===url)x.classList.add("read");
   syncRead([url]);
@@ -500,7 +558,7 @@ function readApi(){const base=location.hostname.endsWith("workers.dev")?"":"http
 async function syncRead(add){
   if(!syncCode) return;
   try{
-    const r=await fetch(readApi(),add&&add.length?{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify({add})}:{cache:"no-store"});
+    const r=await fetch(readApi(),add&&add.length?{method:"POST",keepalive:true,headers:{"Content-Type":"text/plain"},body:JSON.stringify({add})}:{cache:"no-store"});
     if(!r.ok) return;
     // 서버는 이 기기가 마지막으로 받은 번호(since) 뒤에 새로 들어온 주소만 준다
     const j=await r.json(); let changed=false;
@@ -523,8 +581,54 @@ function showSync(){
   document.getElementById("syncBtn").textContent=syncCode?"읽은 글 연동 중 (코드 보기)":"읽은 글 다른 기기와 연동하기";
 }
 
+
+/* ===== 설정: 숨길 단어·'전체'에서 뺄 게시판 (연동 코드로 기기끼리 맞춤) ===== */
+const PREF_KEY="moa-prefs", PT_KEY="moa-prefs-t";
+function loadPrefs(){try{const p=JSON.parse(localStorage.getItem(PREF_KEY));if(p&&typeof p==="object")
+  return{words:(Array.isArray(p.words)?p.words:[]).filter(w=>typeof w==="string").slice(0,50),boards:(Array.isArray(p.boards)?p.boards:[]).filter(b=>typeof b==="string")}}catch(e){}
+  return{words:[],boards:[]}}
+let prefs=loadPrefs();
+function savePrefs(){try{localStorage.setItem(PREF_KEY,JSON.stringify(prefs))}catch(e){}touchPrefs()}
+const boardOff=id=>prefs.boards.includes(bkey(id));
+function hiddenPost(p){if(!prefs.words.length)return false;const s=((p.title||"")+" "+(p.head||"")).toLowerCase();return prefs.words.some(w=>w&&s.includes(w.toLowerCase()))}
+const matchQuery=p=>((p.title||"")+" "+(p.head||"")).toLowerCase().includes(query);
+// 바로가기 편집·숨길 단어 연동: 고친 시각이 더 늦은 쪽이 이긴다
+function apiBase(){return location.hostname.endsWith("workers.dev")?"":"https://moa-board.copoon99.workers.dev"}
+function prefsT(){try{return +localStorage.getItem(PT_KEY)||0}catch(e){return 0}}
+function touchPrefs(){try{localStorage.setItem(PT_KEY,String(Date.now()))}catch(e){}pushPrefs()}
+async function pushPrefs(){if(typeof syncCode==="undefined"||!syncCode)return;
+  try{await fetch(apiBase()+"/api/prefs?k="+syncCode,{method:"POST",keepalive:true,headers:{"Content-Type":"text/plain"},
+    body:JSON.stringify({t:prefsT(),v:{links:{shortcuts:data.shortcuts,boards:data.boards},prefs}})})}catch(e){}}
+const okLink=x=>x&&typeof x.name==="string"&&typeof x.url==="string"&&/^https?:\/\//.test(x.url);
+async function pullPrefs(){if(!syncCode)return;
+  try{const r=await fetch(apiBase()+"/api/prefs?k="+syncCode,{cache:"no-store"});if(!r.ok)return;
+    const j=await r.json(),mine=prefsT();
+    if(j&&j.v&&j.t>mine){
+      const l=j.v.links;
+      if(l&&Array.isArray(l.shortcuts)&&Array.isArray(l.boards)){data.shortcuts=l.shortcuts.filter(okLink);data.boards=l.boards.filter(okLink);try{localStorage.setItem(KEY,JSON.stringify(data))}catch(e){}}
+      if(j.v.prefs){prefs={words:(j.v.prefs.words||[]).filter(w=>typeof w==="string").slice(0,50),boards:(j.v.prefs.boards||[]).filter(b=>typeof b==="string")};try{localStorage.setItem(PREF_KEY,JSON.stringify(prefs))}catch(e){}}
+      try{localStorage.setItem(PT_KEY,String(j.t))}catch(e){}
+      render();showPrefs();renderFeed();
+    }else if(mine>((j&&j.t)||0))pushPrefs();
+  }catch(e){}}
+window.addEventListener("storage",e=>{if(e.key===PREF_KEY){prefs=loadPrefs();showPrefs();renderFeed()}});
+/* 읽은 글의 댓글 수: 읽을 때 댓글 수를 기억해 두고, 더 늘면 "+3" */
+const CM_KEY="moa-cm";
+let cmSeen={};try{cmSeen=JSON.parse(localStorage.getItem(CM_KEY))||{}}catch(e){}
+function saveCm(u,c){try{const o=JSON.parse(localStorage.getItem(CM_KEY))||{};delete o[u];o[u]=c;
+  const ks=Object.keys(o);if(ks.length>3000)for(const k of ks.slice(0,ks.length-3000))delete o[k];
+  cmSeen=o;localStorage.setItem(CM_KEY,JSON.stringify(o))}catch(e){}}
+function moreCm(p){const u=canon(p.url),was=cmSeen[u];return readSet.has(u)&&was!=null&&p.comments>was?p.comments-was:0}
+/* 이 기기만의 설정: 화면 밝기, 글을 같은 탭에서 열기 */
+const THEME_KEY="moa-theme", SAME_KEY="moa-same";
+let sameTab=false;try{sameTab=localStorage.getItem(SAME_KEY)==="1"}catch(e){}
+function themeColor(){requestAnimationFrame(()=>{const m=document.getElementById("themeColor");if(m)m.content=getComputedStyle(document.body).backgroundColor})}
+function applyTheme(v){const r=document.documentElement;if(v==="light"||v==="dark")r.dataset.theme=v;else delete r.dataset.theme;themeColor()}
+function curTheme(){try{return localStorage.getItem(THEME_KEY)||"auto"}catch(e){return "auto"}}
 // 게시판마다 고유 색 (개념글·불펜 베스트도 원래 게시판 색을 따른다)
-function boardColor(id){const k=(id||"").replace(/^hot-/,"").replace(/^dc-/,"").replace(/^mlb-(like|view|reply)$/,"bullpen").replace(/^mlb-/,"");
+// 게시판 열쇠: 개념글·불펜 베스트도 원래 게시판으로 (hot-dc-bh → bh, hot-mlb-like → bullpen)
+function bkey(id){return (id||"").replace(/^hot-/,"").replace(/^dc-/,"").replace(/^mlb-(like|view|reply)$/,"bullpen").replace(/^mlb-/,"")}
+function boardColor(id){const k=bkey(id);
   return ["marvelsnap","bh","thesingularity","ai_utilize","bullpen"].includes(k)?"var(--c-"+k+")":"";}
 // 게시판 원래 주소 (못 불러왔을 때 바로 가 볼 수 있게)
 function boardHome(id){const k=(id||"").replace(/^hot-/,"");
@@ -538,6 +642,7 @@ function renderFeed(){
   for(const [k,n] of all){const b=document.createElement("button");b.type="button";b.className="tab";b.textContent=n;
     const bc=boardColor(k);if(bc){const d=document.createElement("span");d.className="dot";d.style.setProperty("--c",bc);b.prepend(d)}
     const doc=feedDocs.find(d=>d.id===k);if(doc&&doc.error&&!(doc.posts||[]).length){b.classList.add("bad");b.title="지금 못 불러왔어요"}
+    if(k!=="all"&&boardOff(k)){b.classList.add("off");b.title="'전체'에서 뺀 게시판 (설정에서 바꿀 수 있어요)"}
     b.setAttribute("aria-pressed",String(tab===k));b.onclick=()=>{tab=k;shown=PAGE_SHOW;renderFeed()};tabs.appendChild(b)}
   // 게시판 하나만 보는 중이면 띠로 알려주고, 한 번에 전체로 돌아가게
   const cur=tab!=="all"&&feedDocs.find(d=>d.id===tab), fb=document.getElementById("filterBar");
@@ -546,8 +651,12 @@ function renderFeed(){
   let posts=[];
   // 모든 게시판의 글을 시간순으로 보여준다 (인기글에서 겹치는 불펜 글은 한 번만)
   const seen=new Set();
-  for(const d of feedDocs) if(tab==="all"||tab===d.id){
-    for(const p of d.posts||[]) if(!seen.has(pkey(p.url))){seen.add(pkey(p.url));posts.push(Object.assign({board:d.name||d.id,boardId:d.id,boardUrl:d.url||""},p))}
+  hidN=0;
+  for(const d of feedDocs) if(inTab(d)){
+    for(const p of d.posts||[]) if(!seen.has(pkey(p.url))){seen.add(pkey(p.url));
+      if(hiddenPost(p)){hidN++;continue}
+      if(query&&!matchQuery(p))continue;
+      posts.push(Object.assign({board:d.name||d.id,boardId:d.id,boardUrl:d.url||""},p))}
   }
   posts.sort((a,b)=>(Date.parse(b.time)||0)-(Date.parse(a.time)||0));
   // 최근 글은 게시판마다 불러온 만큼의 시각이 다르다. 모든 게시판이 다 불러온 시각(frontier)까지만
@@ -559,11 +668,11 @@ function renderFeed(){
   const touch=matchMedia("(pointer:coarse)").matches;
   posts.slice(0,shown).forEach(p=>{
     const s=site(p.boardUrl||p.url,p.board),li=document.createElement("li"),a=document.createElement("a");
-    a.href=p.url;a.target="_blank";a.rel="noopener";li.dataset.u=canon(p.url);
+    a.href=p.url;a.target=sameTab?"_self":"_blank";a.rel="noopener";li.dataset.u=canon(p.url);
     if(readSet.has(li.dataset.u)) li.classList.add("read");
-    a.addEventListener("click",()=>markRead(p.url,li));a.addEventListener("auxclick",e=>{if(e.button===1)markRead(p.url,li)});
+    a.addEventListener("click",()=>markRead(p.url,li,p.comments));a.addEventListener("auxclick",e=>{if(e.button===1)markRead(p.url,li,p.comments)});
     // 휴대폰에서 길게 눌러 "새 탭에서 열기"로 연 글도 읽은 글로
-    if(touch)a.addEventListener("contextmenu",()=>markRead(p.url,li));
+    if(touch)a.addEventListener("contextmenu",()=>markRead(p.url,li,p.comments));
     a.innerHTML='<span class="txt"><span class="title"></span><span class="meta"></span></span>';
     // 게시판 이름을 누르면 그 게시판 글만 본다
     const bd=document.createElement("button");bd.type="button";bd.className="badge";bd.textContent=short(p.board);bd.style.setProperty("--c",boardColor(p.boardId)||s.c);
@@ -571,7 +680,7 @@ function renderFeed(){
       // 탭 줄이 위쪽 제목줄 밑에 숨지 않게, 목록 맨 위가 제목줄 바로 아래 오도록 올린다
       const h=document.querySelector("header").getBoundingClientRect().bottom, t=document.getElementById("tabs").getBoundingClientRect().top;
       if(t<h)window.scrollTo({top:window.scrollY+t-h-10,behavior:"smooth"})};
-    titleBits(a.querySelector(".title"),p,{nw:isNew(p)});
+    titleBits(a.querySelector(".title"),p,{nw:isNew(p),more:moreCm(p)});
     const me=a.querySelector(".meta");me.dataset.a=p.author||"";me.dataset.t=p.time||"";me.dataset.l=p.likes||"";me.textContent=metaText(p.author,p.time,p.likes);
     li.appendChild(bd);li.appendChild(a);ul.appendChild(li);
   });
@@ -589,11 +698,13 @@ function renderFeed(){
       const rb=document.createElement("button");rb.type="button";rb.className="btn";rb.textContent="다시 시도";rb.onclick=()=>retryBoards(bad.map(d=>d.id));r.appendChild(rb);
       const home=cur&&boardHome(cur.id);if(home){const l=document.createElement("a");l.href=home;l.target="_blank";l.rel="noopener";l.className="btn";l.textContent="원래 게시판 열기";r.appendChild(l)}
       fe.appendChild(r);
-    }else fe.textContent="아직 올라온 글이 없어요.";
+    }else if(query) fe.textContent="'"+document.getElementById("q").value.trim()+"' 들어간 글이 불러온 글 중에는 없어요."+(mode==="new"&&olderBoards().length?" 아래 '지난 글에서 더 찾기'를 눌러 보세요.":"");
+    else if(hidN) fe.textContent="숨길 단어에 걸려서 보여줄 글이 없어요.";
+    else fe.textContent="아직 올라온 글이 없어요.";
   }
   const mb=document.getElementById("moreBtn");
-  mb.hidden=!(posts.length>shown||(mode==="new"&&posts.length&&olderBoards().length));
-  mb.textContent=moreLoading?"지난 글 불러오는 중…":"더 보기";
+  mb.hidden=!(posts.length>shown||(mode==="new"&&(posts.length||query)&&olderBoards().length));
+  mb.textContent=moreLoading?"지난 글 불러오는 중…":query&&posts.length<=shown?"지난 글에서 더 찾기":"더 보기";
   // 못 불러온 게시판 (이전 글이 남아 있으면 그 글은 그대로 보여준다)
   const errs=feedDocs.filter(d=>d.error);
   const er=document.getElementById("feedErr"); er.hidden=!errs.length; er.innerHTML="";
@@ -616,7 +727,7 @@ function renderSide(){
   const box=document.getElementById("hotSide"),ul=document.getElementById("hotList"),em=document.getElementById("hotEmpty");
   if(!wide.matches||mode==="hot"){box.hidden=true;return}
   const seen=new Set(),posts=[];
-  for(const d of docsBy.hot)for(const p of d.posts||[]){const k=canon(p.url);if(!seen.has(k)){seen.add(k);posts.push(Object.assign({board:d.name||d.id,boardId:d.id},p))}}
+  for(const d of docsBy.hot)if(!boardOff(d.id))for(const p of d.posts||[]){const k=canon(p.url);if(!seen.has(k)&&!hiddenPost(p)){seen.add(k);posts.push(Object.assign({board:d.name||d.id,boardId:d.id},p))}}
   posts.sort((a,b)=>(Date.parse(b.time)||0)-(Date.parse(a.time)||0));
   const loading=loadingM.hot||docsBy.hot.some(d=>d._loading);
   box.hidden=!posts.length&&!loading;
@@ -624,11 +735,11 @@ function renderSide(){
   em.hidden=!!posts.length;em.textContent="개념글과 불펜 베스트를 불러오는 중이에요.";
   for(const p of posts.slice(0,10)){
     const li=document.createElement("li"),a=document.createElement("a");
-    a.href=p.url;a.target="_blank";a.rel="noopener";li.dataset.u=canon(p.url);
+    a.href=p.url;a.target=sameTab?"_self":"_blank";a.rel="noopener";li.dataset.u=canon(p.url);
     if(readSet.has(li.dataset.u))li.classList.add("read");
-    a.addEventListener("click",()=>markRead(p.url,li));a.addEventListener("auxclick",e=>{if(e.button===1)markRead(p.url,li)});
+    a.addEventListener("click",()=>markRead(p.url,li,p.comments));a.addEventListener("auxclick",e=>{if(e.button===1)markRead(p.url,li,p.comments)});
     a.innerHTML='<span class="title"></span><span class="meta"><span class="bn"></span></span>';
-    titleBits(a.querySelector(".title"),p,{head:false});
+    titleBits(a.querySelector(".title"),p,{head:false,more:moreCm(p)});
     const bn=a.querySelector(".bn");bn.textContent=short(p.board,true);bn.style.setProperty("--c",boardColor(p.boardId)||"var(--accent)");
     const t=ago(p.time);if(t)a.querySelector(".meta").append(" · "+t);
     if(p.likes)a.querySelector(".meta").append(" · 추천 "+p.likes);
@@ -644,7 +755,13 @@ function tick(){
   const up=feedDocs.map(d=>Date.parse(d.updatedAt)||0).reduce((a,b)=>Math.max(a,b),0);
   const u=document.getElementById("updated"); u.hidden=!up; u.textContent=up?ago(new Date(up).toISOString())+"에 모은 글이에요":"";
   if(up&&ago(new Date(up).toISOString())==="방금")u.textContent="방금 모은 글이에요";
-  if(up&&newN&&mode==="new")u.textContent+=" · 지난번 뒤 새 글 "+newN+"개";
+  if(up&&newN&&mode==="new"&&!query)u.textContent+=" · 지난번 뒤 새 글 "+newN+"개";
+  if(up&&query)u.textContent+=" · 찾은 글 "+feedVisible+"개";
+  if(up&&hidN)u.textContent+=" · 숨긴 글 "+hidN+"개";
+  // 모은 지 1시간이 넘으면 새로고침 버튼을 눈에 띄게 (자동으로 불러오지는 않는다)
+  const stale=!!up&&Date.now()-up>3600e3, rb=document.getElementById("refreshBtn");
+  rb.classList.toggle("stale",stale);rb.title=stale?"모은 지 1시간이 넘었어요. 눌러서 새 글을 불러오세요":"";
+  if(stale)u.textContent+=" · 새로고침해 보세요";
 }
 document.addEventListener("visibilitychange",()=>{if(!document.hidden)tick()});
 setInterval(()=>{if(!document.hidden)tick()},60000);
@@ -654,7 +771,7 @@ let feedVisible=0, moreLoading=false;
 // 같은 글인지 비교할 때 쓰는 열쇠 (불펜 주소의 쪽수 p= 등은 무시)
 const pkey=canon;
 const oldest=d=>{let m=Infinity;for(const p of d.posts||[]){const t=Date.parse(p.time);if(t&&t<m)m=t}return m};
-const inTab=d=>tab==="all"||tab===d.id;
+const inTab=d=>tab==="all"?!boardOff(d.id):tab===d.id;
 // 아직 더 읽을 수 있는 게시판들
 function olderBoards(){return feedDocs.filter(d=>inTab(d)&&!d._done&&!d.error&&oldest(d)<Infinity)}
 function frontier(){let T=-Infinity;for(const d of olderBoards())T=Math.max(T,oldest(d));return T}
@@ -682,10 +799,10 @@ async function loadMore(){
   moreLoading=false;shown=Math.max(shown,Math.min(feedVisible,shown+PAGE_SHOW));renderFeed();keepGoing();
 }
 // "더 보기"가 아직 화면 근처에 있으면 (관찰자는 다시 안 알려주므로) 이어서 더 불러온다
-function keepGoing(){requestAnimationFrame(()=>{const b=document.getElementById("moreBtn");
+function keepGoing(){if(query)return;requestAnimationFrame(()=>{const b=document.getElementById("moreBtn");
   if(!b.hidden&&b.getBoundingClientRect().top<innerHeight+600)loadMore()})}
 // 목록 끝의 "더 보기"가 화면에 보이면 자동으로 더 불러온다
-if("IntersectionObserver" in window) new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting))loadMore()},{rootMargin:"600px 0px"}).observe(document.getElementById("moreBtn"));
+if("IntersectionObserver" in window) new IntersectionObserver(es=>{if(!query&&es.some(e=>e.isIntersecting))loadMore()},{rootMargin:"600px 0px"}).observe(document.getElementById("moreBtn"));
 
 /* 전자책 찾기: 도서관마다 따로 물어보고 먼저 온 곳부터 보여준다.
    login 이 있는 곳은 로그인해야 검색되는 곳이라 바로가기만 보여준다. */
@@ -828,12 +945,13 @@ function newBar(n){
 document.getElementById("newBar").onclick=()=>{window.scrollTo({top:0,behavior:"smooth"});document.getElementById("newBar").hidden=true;newCount=0};
 window.addEventListener("scroll",()=>{if(window.scrollY<150&&!document.getElementById("newBar").hidden){document.getElementById("newBar").hidden=true;newCount=0}},{passive:true});
 syncRead();
+pullPrefs();
 document.getElementById("syncBtn").onclick=startSync;
 document.getElementById("syncNew").onclick=async()=>{
   // 헷갈리는 글자(0,O,1,I,L)는 빼고 8자리
   const A="abcdefghjkmnpqrstuvwxyz23456789";
   setSync(Array.from(crypto.getRandomValues(new Uint8Array(8)),b=>A[b%A.length]).join(""));
-  await syncRead([...readSet].slice(-200));
+  await syncRead([...readSet].slice(-200));pullPrefs();
   document.getElementById("syncMsg").textContent="코드를 만들었어요. 다른 기기에서 이 코드를 넣어주세요.";
 };
 document.getElementById("syncForm").onsubmit=async e=>{
@@ -843,7 +961,8 @@ document.getElementById("syncForm").onsubmit=async e=>{
   if(c.length<6){m.textContent="코드를 다시 확인해 주세요.";return}
   setSync(c); m.textContent="연결하는 중이에요.";
   await syncRead([...readSet].slice(-200));
-  m.textContent="연결됐어요. 이제 두 기기가 읽은 글을 같이 써요.";
+  await pullPrefs();
+  m.textContent="연결됐어요. 이제 두 기기가 읽은 글과 바로가기 편집, 숨길 단어를 같이 써요.";
   document.getElementById("syncInput").value="";
 };
 showSync();
@@ -898,6 +1017,51 @@ document.getElementById("refreshBtn").onclick=async()=>{
 {const h=document.querySelector("header");const set=()=>document.documentElement.style.setProperty("--hh",h.offsetHeight+"px");
   set();if(window.ResizeObserver)new ResizeObserver(set).observe(h);else window.addEventListener("resize",set)}
 document.getElementById("filterAll").onclick=()=>{tab="all";shown=PAGE_SHOW;renderFeed()};
+/* ===== 화면·숨기기 설정 상자 ===== */
+const HB=[["marvelsnap","마블 스냅"],["bh","보호직"],["thesingularity","특이점"],["ai_utilize","AI 활용"],["bullpen","불펜"]];
+function showPrefs(){
+  const th=curTheme();for(const b of document.querySelectorAll("#themeSeg .segb"))b.setAttribute("aria-pressed",String(b.dataset.v===th));
+  for(const b of document.querySelectorAll("#openSeg .segb"))b.setAttribute("aria-pressed",String((b.dataset.v==="same")===sameTab));
+  const w=document.getElementById("hideWords");if(document.activeElement!==w)w.value=prefs.words.join(", ");
+  const hb=document.getElementById("hideBoards");hb.innerHTML="";
+  for(const [k,n] of HB){const b=document.createElement("button");b.type="button";b.className="chipx";b.textContent=n;b.setAttribute("aria-pressed",String(prefs.boards.includes(k)));
+    b.onclick=()=>{prefs.boards=prefs.boards.includes(k)?prefs.boards.filter(x=>x!==k):prefs.boards.concat(k);savePrefs();showPrefs();shown=PAGE_SHOW;renderFeed()};hb.appendChild(b)}
+  document.getElementById("footNote").textContent=syncCode?"바로가기 편집과 숨길 단어도 연동 코드로 다른 기기와 맞춰져요.":"편집한 내용은 이 기기 브라우저에만 저장돼요. 연동 코드를 쓰면 다른 기기와 맞춰져요.";
+}
+document.getElementById("setBtn").onclick=()=>{const b=document.getElementById("setBox");b.hidden=!b.hidden;if(!b.hidden)showPrefs()};
+for(const b of document.querySelectorAll("#themeSeg .segb"))b.onclick=()=>{try{localStorage.setItem(THEME_KEY,b.dataset.v)}catch(e){}applyTheme(b.dataset.v);showPrefs()};
+for(const b of document.querySelectorAll("#openSeg .segb"))b.onclick=()=>{sameTab=b.dataset.v==="same";try{localStorage.setItem(SAME_KEY,sameTab?"1":"0")}catch(e){}showPrefs();renderFeed()};
+document.getElementById("wordsForm").onsubmit=e=>{e.preventDefault();
+  prefs.words=[...new Set(document.getElementById("hideWords").value.split(/[,，\n]/).map(x=>x.trim()).filter(Boolean))].slice(0,50);
+  savePrefs();shown=PAGE_SHOW;renderFeed();document.getElementById("hideWords").blur();showPrefs();
+  document.getElementById("setMsg").textContent=prefs.words.length?"저장했어요. 지금 목록에서 "+hidN+"개를 숨겼어요.":"숨길 단어를 모두 지웠어요."};
+matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change",themeColor);
+themeColor();showPrefs();
+/* ===== 불러온 글에서 제목 찾기 ===== */
+function openSearch(){document.getElementById("searchRow").hidden=false;document.getElementById("searchBtn").setAttribute("aria-pressed","true");document.getElementById("q").focus()}
+function closeSearch(){document.getElementById("searchRow").hidden=true;document.getElementById("searchBtn").setAttribute("aria-pressed","false");
+  const q=document.getElementById("q");q.value="";if(query){query="";shown=PAGE_SHOW;renderFeed()}}
+document.getElementById("searchBtn").onclick=()=>document.getElementById("searchRow").hidden?openSearch():closeSearch();
+document.getElementById("qClear").onclick=closeSearch;
+document.getElementById("searchRow").onsubmit=e=>{e.preventDefault();document.getElementById("q").blur()};
+document.getElementById("q").addEventListener("input",e=>{query=e.target.value.trim().toLowerCase();shown=PAGE_SHOW;renderFeed()});
+document.getElementById("q").addEventListener("keydown",e=>{if(e.key==="Escape")closeSearch()});
+/* ===== PC 단축키: J/K 글 이동, O 열기, R 새로고침, / 찾기 (한글 자판이어도 같은 자리 키로) ===== */
+document.addEventListener("keydown",e=>{
+  if(e.ctrlKey||e.metaKey||e.altKey||e.isComposing)return;
+  const t=e.target;if(t&&(t.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)))return;
+  if(document.body.classList.contains("v-ebook"))return;
+  if(e.code==="KeyJ"||e.code==="KeyK"){
+    const ls=[...document.querySelectorAll("#feed li > a")];if(!ls.length)return;
+    let i=ls.indexOf(document.activeElement);const dn=e.code==="KeyJ";
+    i=i<0?(dn?0:ls.length-1):Math.max(0,Math.min(ls.length-1,i+(dn?1:-1)));
+    ls[i].focus({preventScroll:true});ls[i].scrollIntoView({block:"center",behavior:"smooth"});
+    if(dn&&i>=ls.length-3)loadMore();e.preventDefault();
+  }else if(e.code==="KeyO"){const a=document.activeElement;if(a&&a.closest&&a.closest("#feed li,#hotList li")&&a.tagName==="A"){a.click();e.preventDefault()}}
+  else if(e.code==="KeyR"){document.getElementById("refreshBtn").click();e.preventDefault()}
+  else if(e.code==="Slash"){if(!document.body.classList.contains("v-ebook")){openSearch();e.preventDefault()}}
+});
+
 </script>
 </body>
 </html>
