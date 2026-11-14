@@ -4,6 +4,7 @@
 //   /api?board=hot-<id>  인기글 (개념글, 불펜 베스트)
 //   /api             게시판 전부
 //   /api/read?k=<연동 코드>  읽은 글 주소 목록 (GET 읽기, POST {add:[주소]} 추가)
+//   /api/prefs?k=<연동 코드>  바로가기·게시판 편집과 숨길 단어 (GET 읽기, POST {t, v} 더 새것이면 저장)
 //   /api/ebook?lib=<id>&q=<책 제목>  전자도서관 한 곳에서 책 찾기 (/api/ebook 만 부르면 도서관 목록)
 // 나머지 주소는 저장소의 index.html 같은 정적 파일을 그대로 보여준다(wrangler.toml의 assets).
 import { BOARDS, HOT, collect, collectOne } from "./boards.js";
@@ -19,6 +20,7 @@ export default {
     const headers = { "Access-Control-Allow-Origin": "*", "Content-Type": "application/json; charset=utf-8" };
     if (url.pathname === "/api/ebook") return ebook(url, headers, ctx);
     if (url.pathname === "/api/read") return reads(request, url, env, headers);
+    if (url.pathname === "/api/prefs") return prefs(request, url, env, headers);
     if (url.pathname !== "/api") return env.ASSETS.fetch(request);
 
     const id = url.searchParams.get("board") || "";
@@ -92,7 +94,30 @@ async function reads(request, url, env, headers) {
   return new Response(JSON.stringify(await store.sync(add, since)), { headers: { ...headers, "Cache-Control": "no-store" } });
 }
 
+// 설정 연동: 같은 연동 코드를 쓰는 기기끼리 바로가기·게시판 편집과 숨길 단어를 같이 쓴다.
+// 고친 시각(t)이 더 늦은 쪽이 이긴다.
+async function prefs(request, url, env, headers) {
+  const k = url.searchParams.get("k") || "";
+  if (!/^[a-z0-9]{6,40}$/.test(k)) return new Response(JSON.stringify({ error: "연동 코드가 이상해요" }), { status: 400, headers });
+  let put = null;
+  if (request.method === "POST") {
+    try {
+      const text = await request.text();
+      const b = text.length < 30000 ? JSON.parse(text) : null;
+      if (b && typeof b.t === "number" && b.v && typeof b.v === "object") put = { t: b.t, v: b.v };
+    } catch {}
+  }
+  const store = env.READS.get(env.READS.idFromName(k));
+  return new Response(JSON.stringify((await store.prefs(put)) || {}), { headers: { ...headers, "Cache-Control": "no-store" } });
+}
+
 export class ReadStore extends DurableObject {
+  async prefs(put) {
+    const cur = await this.ctx.storage.get("prefs");
+    if (put && !(cur && cur.t >= put.t)) { await this.ctx.storage.put("prefs", put); return put; }
+    return cur || null;
+  }
+
   // items: [[주소, 번호]...] 오래된 것부터. seq: 지금까지 붙인 마지막 번호
   async sync(add, since = 0) {
     let items = await this.ctx.storage.get("items"), seq = (await this.ctx.storage.get("seq")) || 0;
