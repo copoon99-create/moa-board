@@ -344,6 +344,9 @@ li.read .hd{opacity:.6}
         <div class="seg small" id="themeSeg" role="group" aria-label="화면 밝기"><button type="button" class="segb" data-v="auto">자동</button><button type="button" class="segb" data-v="light">밝게</button><button type="button" class="segb" data-v="dark">어둡게</button></div></div>
       <div class="setrow"><b>글 열기 (이 기기만)</b>
         <div class="seg small" id="openSeg" role="group" aria-label="글 열기"><button type="button" class="segb" data-v="new">새 탭</button><button type="button" class="segb" data-v="same">같은 탭</button></div></div>
+      <div class="setrow" id="ytRow" hidden><b>유튜브 링크 (이 휴대폰만)</b>
+        <p>브레이브를 고르면 유튜브 앱 대신 브레이브 브라우저에서 열려요. 브레이브가 없으면 지금 브라우저로 열려요.</p>
+        <div class="seg small" id="ytSeg" role="group" aria-label="유튜브 링크 열기"><button type="button" class="segb" data-v="brave">브레이브</button><button type="button" class="segb" data-v="app">유튜브 앱</button></div></div>
       <div class="setrow"><b>숨길 단어</b>
         <p>제목이나 말머리에 이 단어가 들어간 글은 목록에서 빼요. 쉼표로 나눠 적어요.</p>
         <form class="row" id="wordsForm"><input id="hideWords" placeholder="예: 후방, 19, 아이돌" autocomplete="off" aria-label="숨길 단어"><button class="btn" type="submit">저장</button></form></div>
@@ -622,6 +625,16 @@ function moreCm(p){const u=canon(p.url),was=cmSeen[u];return readSet.has(u)&&was
 /* 이 기기만의 설정: 화면 밝기, 글을 같은 탭에서 열기 */
 const THEME_KEY="moa-theme", SAME_KEY="moa-same";
 let sameTab=false;try{sameTab=localStorage.getItem(SAME_KEY)==="1"}catch(e){}
+/* 안드로이드에서 유튜브 링크를 유튜브 앱 대신 브레이브 브라우저로 연다 (이 기기만, 기본 켜짐) */
+const YT_KEY="moa-yt", isAndroid=/Android/i.test(navigator.userAgent);
+let ytBrave=true;try{ytBrave=localStorage.getItem(YT_KEY)!=="app"}catch(e){}
+const YT_RE=/^https?:\/\/([a-z0-9-]+\.)?(youtube\.com|youtu\.be)(\/|$)/i;
+function braveIntent(u){return "intent://"+u.replace(/^https?:\/\//i,"")+"#Intent;scheme=https;package=com.brave.browser;S.browser_fallback_url="+encodeURIComponent(u)+";end"}
+document.addEventListener("click",e=>{
+  if(!isAndroid||!ytBrave||e.defaultPrevented||e.button!==0)return;
+  const a=e.target.closest&&e.target.closest("a[href]");if(!a||!YT_RE.test(a.href))return;
+  e.preventDefault();location.href=braveIntent(a.href);
+},true);
 function themeColor(){requestAnimationFrame(()=>{const m=document.getElementById("themeColor");if(m)m.content=getComputedStyle(document.body).backgroundColor})}
 function applyTheme(v){const r=document.documentElement;if(v==="light"||v==="dark")r.dataset.theme=v;else delete r.dataset.theme;themeColor()}
 function curTheme(){try{return localStorage.getItem(THEME_KEY)||"auto"}catch(e){return "auto"}}
@@ -1022,6 +1035,8 @@ const HB=[["marvelsnap","마블 스냅"],["bh","보호직"],["thesingularity","�
 function showPrefs(){
   const th=curTheme();for(const b of document.querySelectorAll("#themeSeg .segb"))b.setAttribute("aria-pressed",String(b.dataset.v===th));
   for(const b of document.querySelectorAll("#openSeg .segb"))b.setAttribute("aria-pressed",String((b.dataset.v==="same")===sameTab));
+  document.getElementById("ytRow").hidden=!isAndroid;
+  for(const b of document.querySelectorAll("#ytSeg .segb"))b.setAttribute("aria-pressed",String((b.dataset.v==="brave")===ytBrave));
   const w=document.getElementById("hideWords");if(document.activeElement!==w)w.value=prefs.words.join(", ");
   const hb=document.getElementById("hideBoards");hb.innerHTML="";
   for(const [k,n] of HB){const b=document.createElement("button");b.type="button";b.className="chipx";b.textContent=n;b.setAttribute("aria-pressed",String(prefs.boards.includes(k)));
@@ -1031,6 +1046,7 @@ function showPrefs(){
 document.getElementById("setBtn").onclick=()=>{const b=document.getElementById("setBox");b.hidden=!b.hidden;if(!b.hidden)showPrefs()};
 for(const b of document.querySelectorAll("#themeSeg .segb"))b.onclick=()=>{try{localStorage.setItem(THEME_KEY,b.dataset.v)}catch(e){}applyTheme(b.dataset.v);showPrefs()};
 for(const b of document.querySelectorAll("#openSeg .segb"))b.onclick=()=>{sameTab=b.dataset.v==="same";try{localStorage.setItem(SAME_KEY,sameTab?"1":"0")}catch(e){}showPrefs();renderFeed()};
+for(const b of document.querySelectorAll("#ytSeg .segb"))b.onclick=()=>{ytBrave=b.dataset.v==="brave";try{localStorage.setItem(YT_KEY,ytBrave?"brave":"app")}catch(e){}showPrefs()};
 document.getElementById("wordsForm").onsubmit=e=>{e.preventDefault();
   prefs.words=[...new Set(document.getElementById("hideWords").value.split(/[,，\n]/).map(x=>x.trim()).filter(Boolean))].slice(0,50);
   savePrefs();shown=PAGE_SHOW;renderFeed();document.getElementById("hideWords").blur();showPrefs();
